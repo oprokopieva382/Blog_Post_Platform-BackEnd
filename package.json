@@ -5,6 +5,11 @@
   "repository": "git@github.com:oprokopieva382/killBackEnd.git",
   "author": "Oksana(KsyFate) <oprokopieva382@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "watch": "tsc -w",
+    "dev": "yarn nodemon --inspect dist/index.js",
+    "jest": "jest -i"
+  },
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.1"
