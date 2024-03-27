@@ -16,7 +16,7 @@ describe("/videos tests", () => {
   });
 
   it("shouldn't return empty array", async () => {
-     setDB(dataset1);
+    setDB(dataset1);
     const res = await request.get(SETTINGS.PATH.VIDEOS).expect(200);
     console.log(res.body);
   });
