@@ -42,6 +42,23 @@ app.get(
   }
 );
 
+app.delete(
+  `${SETTINGS.PATH.VIDEOS}/:id`,
+  (req: Request<ParamType>, res: Response<void | OutputErrorsType>) => {
+
+    const videoToDelete = db.videos.find((v) => v.id === +req.params.id);
+
+    if (!videoToDelete) {
+      res.sendStatus(404);
+      return;
+    }
+
+    db.videos = db.videos.filter((v) => v.id !== +req.params.id);
+
+    res.sendStatus(204);
+  }
+);
+
 app.post(
   SETTINGS.PATH.VIDEOS,
   (
