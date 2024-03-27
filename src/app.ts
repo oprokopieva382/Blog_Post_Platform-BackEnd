@@ -45,7 +45,6 @@ app.get(
 app.delete(
   `${SETTINGS.PATH.VIDEOS}/:id`,
   (req: Request<ParamType>, res: Response<void | OutputErrorsType>) => {
-
     const videoToDelete = db.videos.find((v) => v.id === +req.params.id);
 
     if (!videoToDelete) {
@@ -96,6 +95,27 @@ app.post(
 
     db.videos.push(newVideo);
     res.status(201).json(newVideo);
+  }
+);
+
+app.put(
+  `${SETTINGS.PATH.VIDEOS}/:id`,
+  (
+    req: Request<ParamType, {}, InputVideoType>,
+    res: Response<OutputVideoType | OutputErrorsType>
+  ) => {
+    const videoToUpdateExist = db.videos.find((v) => v.id === +req.params.id);
+
+    if (!videoToUpdateExist) {
+      res.sendStatus(404);
+      return;
+    }
+
+    db.videos = db.videos.map((v) =>
+      v.id === +req.params.id ? { ...v, ...req.body } : v
+    );
+
+    res.sendStatus(204);
   }
 );
 
