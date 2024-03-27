@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { db } from "../../../db/db";
 import { BodyType } from "..";
 
-export const createVideoController = () => {
+export const createVideoController = 
   (req: Request, res: Response) => {
 
     //  const newVideo: BodyType = {
@@ -14,4 +14,4 @@ export const createVideoController = () => {
 
     //  res.status(201);
   };
-};
+

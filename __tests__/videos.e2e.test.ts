@@ -26,14 +26,16 @@ describe("/videos tests", () => {
   it("should return video by ID and status code of 200", async () => {
     setDB(dataset1);
 
-    const videoId = db.videos[0].id;
+    const foundVideo = db.videos[0];
 
     const res = await request
-      .get(`${SETTINGS.PATH.VIDEOS}/${videoId}`)
+      .get(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
+      .send()
       .expect(200);
 
-    expect(res.body).toBeDefined();
-    console.log(`videoId id ${videoId}`);
+    expect(res.body.id).toEqual(foundVideo.id);
+    console.log(`videoId id ${foundVideo.id}`);
+    console.log(res.body);
   });
 
   it("shouldn't return video if ID not found and status code of 404", async () => {
