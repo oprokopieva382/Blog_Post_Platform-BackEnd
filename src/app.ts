@@ -9,6 +9,7 @@ import {
   Resolutions,
 } from "./features/videos/input-output-types/video-types";
 import { OutputErrorsType } from "./features/videos/input-output-types/output-errors-type";
+import { ParamType } from "./features/videos";
 
 export const app = express();
 
@@ -23,6 +24,23 @@ app.get("/", (req, res) => {
 app.get(SETTINGS.PATH.VIDEOS, (req, res: Response<OutputVideoType[]>) => {
   res.status(200).json(db.videos);
 });
+
+app.get(
+  `${SETTINGS.PATH.VIDEOS}/:id`,
+  (
+    req: Request<ParamType>,
+    res: Response<OutputVideoType[] | OutputErrorsType>
+  ) => {
+    const foundVideo = db.videos.find((v) => v.id === +req.params.id);
+
+    if (!foundVideo) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.status(200).json(foundVideo);
+  }
+);
 
 app.post(
   SETTINGS.PATH.VIDEOS,
