@@ -4,8 +4,9 @@ config()
 
 export const SETTINGS = {
   //for updating comforts here all hardcoded values
-  PORT: process.env.PORT || 3003,
+  PORT: process.env.PORT || 3004,
   PATH: {
     VIDEOS: "/videos",
+    TESTING: "/testing"
   },
 };
