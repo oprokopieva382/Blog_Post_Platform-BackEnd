@@ -60,7 +60,7 @@ describe("/videos tests", () => {
       canBeDownloaded: false,
       minAgeRestriction: null,
       createdAt: new Date().toISOString(),
-      publicationDate: new Date().toISOString(),
+      publicationDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     };
 
     const res = await request
@@ -76,39 +76,48 @@ describe("/videos tests", () => {
   it("shouldn't create new video with incorrect input & return status code 400", async () => {
     setDB();
 
-    const videoWithoutTitle = { title: "" };
-
     let errors: OutputErrorsType = {
       errorsMessages: [],
     };
 
-     await request
+    const testCases = [
+      {
+        data: { title: "" },
+        expectedError: { message: "title field is required", field: "title" },
+      },
+      {
+        data: { author: "" },
+        expectedError: {
+          message: "author field is required",
+          field: "author",
+        },
+      },
+      {
+        data: { minAgeRestriction: 0 },
+        expectedError: {
+          message: "the age restriction should be between 1 and 18",
+          field: "minAgeRestriction",
+        },
+      },
+      {
+        data: { minAgeRestriction: 19 },
+        expectedError: {
+          message: "the age restriction should be between 1 and 18",
+          field: "minAgeRestriction",
+        },
+      },
+    ];
+
+    for (const testCase of testCases) {
+      await request.post(SETTINGS.PATH.VIDEOS).send(testCase.data).expect(400);
+
+      errors.errorsMessages.push(testCase.expectedError);
+    }
+
+    const res = await request
       .post(SETTINGS.PATH.VIDEOS)
-      .send(videoWithoutTitle)
+      .send(errors)
       .expect(400);
-
-    const expectedError1 = {
-      message: "title field is required",
-      field: "title",
-    };
-
-    errors.errorsMessages.push(expectedError1);
-
-    const videoWithoutAuthor = { author: "" };
-
-    await request
-      .post(SETTINGS.PATH.VIDEOS)
-      .send(videoWithoutAuthor)
-      .expect(400);
-
-    const expectedError2 = {
-      message: "author field is required",
-      field: "author",
-    };
-
-    errors.errorsMessages.push(expectedError2);
-
-    const res = await request.post(SETTINGS.PATH.VIDEOS).send(errors).expect(400);
 
     console.log(errors);
   });

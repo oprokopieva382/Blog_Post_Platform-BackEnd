@@ -27,6 +27,12 @@ export const createVideoController = (
       field: "title",
     });
   }
+  if(req.body.minAgeRestriction && (req.body.minAgeRestriction > 18 && req.body.minAgeRestriction < 1)) {
+     errors.errorsMessages.push({
+       message: "the age restriction should be between 1 and 18",
+       field: "minAgeRestriction",
+     });
+  }
 
     if (errors.errorsMessages.length > 0) {
       res.status(400).json(errors);
@@ -38,10 +44,10 @@ export const createVideoController = (
     title: req.body.title,
     author: req.body.author,
     availableResolutions: req.body.availableResolutions,
-    canBeDownloaded: false,
-    minAgeRestriction: null,
+    canBeDownloaded: req.body.canBeDownloaded ?? false,
+    minAgeRestriction: req.body.minAgeRestriction ?? null,
     createdAt: new Date().toISOString(),
-    publicationDate: new Date().toISOString(),
+    publicationDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
   };
 
   db.videos.push(newVideo);
