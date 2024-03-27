@@ -15,11 +15,11 @@ describe("/videos tests", () => {
     console.log(res.body);
   });
 
-  // it("shouldn't return empty array", async () => {
-  //    setDB(dataset1);
-  //   const res = await request.get(SETTINGS.PATH.VIDEOS).expect(200);
-  //   console.log(res.body);
-  // });
+  it("shouldn't return empty array", async () => {
+     setDB(dataset1);
+    const res = await request.get(SETTINGS.PATH.VIDEOS).expect(200);
+    console.log(res.body);
+  });
 
   // it("should create new video", async () => {
   //   setDB();
