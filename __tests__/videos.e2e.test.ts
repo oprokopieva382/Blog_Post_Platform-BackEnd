@@ -6,6 +6,7 @@ import {
   Resolutions,
 } from "../src/features/videos/input-output-types/video-types";
 import { dataset1 } from "./datasets";
+import { OutputErrorsType } from "../src/features/videos/input-output-types/output-errors-type";
 describe("/videos tests", () => {
   beforeAll(() => {});
 
@@ -48,21 +49,67 @@ describe("/videos tests", () => {
       .expect(404);
   });
 
-  // it("should create new video", async () => {
-  //   setDB();
+  it("should create & return new video with status code 201", async () => {
+    setDB();
 
-  //   const newVideo: InputVideoType = {
-  //     title: "rest api",
-  //     author: "code mosh",
-  //     availableResolutions: [Resolutions.P144],
-  //   };
+    const newVideo = {
+      id: Math.floor(Date.now() + Math.random() * 1000000),
+      title: "rest api",
+      author: "code mosh",
+      availableResolutions: [Resolutions.P144],
+      canBeDownloaded: false,
+      minAgeRestriction: null,
+      createdAt: new Date().toISOString(),
+      publicationDate: new Date().toISOString(),
+    };
 
-  //   const res = await request
-  //     .post(SETTINGS.PATH.VIDEOS)
-  //     .send(newVideo)
-  //     .expect(201);
-  //   expect(res.body.availableResolutions).toEqual(
-  //     newVideo.availableResolutions
-  //   );
-  // });
+    const res = await request
+      .post(SETTINGS.PATH.VIDEOS)
+      .send(newVideo)
+      .expect(201);
+    expect(res.body.availableResolutions).toEqual(
+      newVideo.availableResolutions
+    );
+    console.log(res.body);
+  });
+
+  it("shouldn't create new video with incorrect input & return status code 400", async () => {
+    setDB();
+
+    const videoWithoutTitle = { title: "" };
+
+    let errors: OutputErrorsType = {
+      errorsMessages: [],
+    };
+
+     await request
+      .post(SETTINGS.PATH.VIDEOS)
+      .send(videoWithoutTitle)
+      .expect(400);
+
+    const expectedError1 = {
+      message: "title field is required",
+      field: "title",
+    };
+
+    errors.errorsMessages.push(expectedError1);
+
+    const videoWithoutAuthor = { author: "" };
+
+    await request
+      .post(SETTINGS.PATH.VIDEOS)
+      .send(videoWithoutAuthor)
+      .expect(400);
+
+    const expectedError2 = {
+      message: "author field is required",
+      field: "author",
+    };
+
+    errors.errorsMessages.push(expectedError2);
+
+    const res = await request.post(SETTINGS.PATH.VIDEOS).send(errors).expect(400);
+
+    console.log(errors);
+  });
 });
