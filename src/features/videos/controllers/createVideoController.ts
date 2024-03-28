@@ -27,17 +27,21 @@ export const createVideoController = (
       field: "title",
     });
   }
-  if(req.body.minAgeRestriction && (req.body.minAgeRestriction > 18 && req.body.minAgeRestriction < 1)) {
-     errors.errorsMessages.push({
-       message: "the age restriction should be between 1 and 18",
-       field: "minAgeRestriction",
-     });
+  if (
+    req.body.minAgeRestriction &&
+    req.body.minAgeRestriction > 18 &&
+    req.body.minAgeRestriction < 1
+  ) {
+    errors.errorsMessages.push({
+      message: "the age restriction should be between 1 and 18",
+      field: "minAgeRestriction",
+    });
   }
 
-    if (errors.errorsMessages.length > 0) {
-      res.status(400).json(errors);
-      return;
-    }
+  if (errors.errorsMessages.length > 0) {
+    res.status(400).json(errors);
+    return;
+  }
 
   const newVideo = {
     id: Math.floor(Date.now() + Math.random() * 1000000),

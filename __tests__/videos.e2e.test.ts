@@ -52,7 +52,7 @@ describe("/videos tests", () => {
   it("should create & return new video with status code 201", async () => {
     setDB();
 
-    const newVideo = {
+    const newVideo: InputVideoType = {
       id: Math.floor(Date.now() + Math.random() * 1000000),
       title: "rest api",
       author: "code mosh",
@@ -121,4 +121,18 @@ describe("/videos tests", () => {
 
     console.log(errors);
   });
+  // it("should delete video by ID and return status code of 204", async () => {
+  //   setDB(dataset1);
+
+  //   const foundVideo = db.videos[0];
+
+  //   const res = await request
+  //     .delete(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
+  //     .send()
+  //     .expect(200);
+
+  //   expect(res.body.id).toEqual(foundVideo.id);
+  //   console.log(`videoId id ${foundVideo.id}`);
+  //   console.log(res.body);
+  // });
 });
