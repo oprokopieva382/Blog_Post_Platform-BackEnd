@@ -121,18 +121,16 @@ describe("/videos tests", () => {
 
     console.log(errors);
   });
-  // it("should delete video by ID and return status code of 204", async () => {
-  //   setDB(dataset1);
+  it("should delete video by ID and return status code of 204", async () => {
+    setDB(dataset1);
 
-  //   const foundVideo = db.videos[0];
+    const foundVideo = db.videos[0];
 
-  //   const res = await request
-  //     .delete(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
-  //     .send()
-  //     .expect(200);
+    const res = await request
+      .delete(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
+      .send()
+      .expect(204);
 
-  //   expect(res.body.id).toEqual(foundVideo.id);
-  //   console.log(`videoId id ${foundVideo.id}`);
-  //   console.log(res.body);
-  // });
+    expect(res.body.id).toEqual(foundVideo.id);
+  });
 });
