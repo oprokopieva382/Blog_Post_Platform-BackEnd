@@ -22,9 +22,9 @@ app.get("/", (req, res) => {
   res.status(200).json({ version: "1.0" });
 });
 
-// app.get(SETTINGS.PATH.VIDEOS, (req, res: Response<OutputVideoType[]>) => {
-//   res.status(200).json(db.videos);
-// });
+app.get(SETTINGS.PATH.VIDEOS, (req, res: Response<OutputVideoType[]>) => {
+  res.status(200).json(db.videos);
+});
 
 // app.get(
 //   `${SETTINGS.PATH.VIDEOS}/:id`,
@@ -105,10 +105,64 @@ app.get("/", (req, res) => {
 //     req: Request<ParamType, {}, InputVideoType>,
 //     res: Response<OutputVideoType | OutputErrorsType>
 //   ) => {
-//     const videoToUpdateExist = db.videos.find((v) => v.id === +req.params.id);
+//     const videoToUpdateExist: OutputVideoType = db.videos.find(
+//       (v) => v.id === +req.params.id
+//     );
+
+//     let errors: OutputErrorsType = {
+//       errorsMessages: [],
+//     };
 
 //     if (!videoToUpdateExist) {
 //       res.sendStatus(404);
+//       return;
+//     }
+
+//     if (
+//       !videoToUpdateExist.author ||
+//       videoToUpdateExist.author.length === 0 ||
+//       req.body.author.length > 40
+//     ) {
+//       errors.errorsMessages.push({
+//         message: req.body.author
+//           ? "max length 40 characters"
+//           : "author field is required",
+//         field: "author",
+//       });
+//     }
+
+//     if (
+//       !videoToUpdateExist.title ||
+//       videoToUpdateExist.title.length === 0 ||
+//       req.body.title.length > 40
+//     ) {
+//       errors.errorsMessages.push({
+//         message: req.body.title
+//           ? "max length 40 characters"
+//           : "title field is required",
+//         field: "title",
+//       });
+//     }
+
+//     if (req.body.availableResolutions?.length === 0) {
+//       errors.errorsMessages.push({
+//         message: "at least one resolution should be added",
+//         field: "availableResolutions",
+//       });
+//     }
+
+//     if (
+//       req.body.minAgeRestriction &&
+//       (req.body.minAgeRestriction > 18 || req.body.minAgeRestriction < 1)
+//     ) {
+//       errors.errorsMessages.push({
+//         message: "the age restriction should be between 1 and 18",
+//         field: "minAgeRestriction",
+//       });
+//     }
+
+//     if (errors.errorsMessages.length > 0) {
+//       res.status(400).json(errors);
 //       return;
 //     }
 

@@ -7,6 +7,7 @@ import {
 } from "../src/features/videos/input-output-types/video-types";
 import { dataset1 } from "./datasets";
 import { OutputErrorsType } from "../src/features/videos/input-output-types/output-errors-type";
+
 describe("/videos tests", () => {
   beforeAll(() => {});
 
@@ -121,16 +122,16 @@ describe("/videos tests", () => {
 
     console.log(errors);
   });
+
   it("should delete video by ID and return status code of 204", async () => {
     setDB(dataset1);
 
     const video = db.videos[0];
-    console.log(video.id);
 
     const res = await request
-      .delete(`${SETTINGS.PATH.VIDEOS}/${video.id}`).expect(204);
-
-    });
+      .delete(`${SETTINGS.PATH.VIDEOS}/${video.id}`)
+      .expect(204);
+  });
 
   it("shouldn't delete video if ID not found and return status code of 404", async () => {
     setDB(dataset1);
@@ -140,5 +141,79 @@ describe("/videos tests", () => {
     const res = await request
       .delete(`${SETTINGS.PATH.VIDEOS}/${notExistingVideoId}`)
       .expect(404);
+  });
+
+  it("should update video by id & return new video with status code 204", async () => {
+    setDB(dataset1);
+    const videoToUpdate = db.videos[0];
+    console.log(videoToUpdate.id)
+     const dataToUpdate = { ...videoToUpdate, title: "REST API" };
+
+    const res = await request
+      .put(`${SETTINGS.PATH.VIDEOS}/${videoToUpdate.id}`)
+      .send(dataToUpdate)
+      .expect(204);
+  });
+
+  it("shouldn't update video if id not found & return status code 404", async () => {
+    setDB(dataset1);
+    const notExistingVideoId = "171155323290255";
+
+    const res = await request
+      .put(`${SETTINGS.PATH.VIDEOS}/${notExistingVideoId}`)
+      .expect(404);
+  });
+
+  it("shouldn't update video with incorrect input & return status code 400", async () => {
+    setDB();
+
+    let errors: OutputErrorsType = {
+      errorsMessages: [],
+    };
+
+    const testCases = [
+      {
+        data: { title: "A".repeat(41) },
+        expectedError: { message: "max length 40 characters", field: "title" },
+      },
+      {
+        data: { title: "A".repeat(41) },
+        expectedError: { message: "max length 40 characters", field: "author" },
+      },
+      {
+        data: { minAgeRestriction: 0 },
+        expectedError: {
+          message: "the age restriction should be between 1 and 18",
+          field: "minAgeRestriction",
+        },
+      },
+      {
+        data: { minAgeRestriction: 19 },
+        expectedError: {
+          message: "the age restriction should be between 1 and 18",
+          field: "minAgeRestriction",
+        },
+      },
+      {
+        data: { availableResolutions: [] },
+        expectedError: {
+          message: "at least one resolution should be added",
+          field: "availableResolutions",
+        },
+      },
+    ];
+
+    for (const testCase of testCases) {
+      await request.post(SETTINGS.PATH.VIDEOS).send(testCase.data).expect(400);
+
+      errors.errorsMessages.push(testCase.expectedError);
+    }
+
+    const res = await request
+      .post(SETTINGS.PATH.VIDEOS)
+      .send(errors)
+      .expect(400);
+
+    console.log(errors);
   });
 });
