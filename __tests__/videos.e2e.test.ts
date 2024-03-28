@@ -31,7 +31,7 @@ describe("/videos tests", () => {
 
     const res = await request
       .get(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
-      .send()
+      .send(foundVideo)
       .expect(200);
 
     expect(res.body.id).toEqual(foundVideo.id);
@@ -124,13 +124,21 @@ describe("/videos tests", () => {
   it("should delete video by ID and return status code of 204", async () => {
     setDB(dataset1);
 
-    const foundVideo = db.videos[0];
+    const video = db.videos[0];
+    console.log(video.id);
 
     const res = await request
-      .delete(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
-      .send()
-      .expect(204);
+      .delete(`${SETTINGS.PATH.VIDEOS}/${video.id}`).expect(204);
 
-    expect(res.body.id).toEqual(foundVideo.id);
+    });
+
+  it("shouldn't delete video if ID not found and return status code of 404", async () => {
+    setDB(dataset1);
+
+    const notExistingVideoId = "171155323290255";
+
+    const res = await request
+      .delete(`${SETTINGS.PATH.VIDEOS}/${notExistingVideoId}`)
+      .expect(404);
   });
 });
