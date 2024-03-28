@@ -1,17 +1,59 @@
 import { Request, Response } from "express";
 import { db } from "../../../db/db";
-import { BodyType } from "..";
+import {
+  InputVideoType,
+  OutputVideoType,
+} from "../input-output-types/video-types";
+import { OutputErrorsType } from "../input-output-types/output-errors-type";
 
-export const createVideoController = () => {
-  (req: Request, res: Response) => {
-
-    //  const newVideo: BodyType = {
-    //    id: Number(Date.now() + Math.random()),
-    //    title: req.body.title,
-    //    author: req.body.author,
-    //  };
-    //  db.videos.push(newVideo);
-
-    //  res.status(201);
+export const createVideoController = (
+  req: Request<{}, {}, InputVideoType>,
+  res: Response<OutputVideoType | OutputErrorsType>
+) => {
+  let errors: OutputErrorsType = {
+    errorsMessages: [],
   };
+
+  if (!req.body.author) {
+    errors.errorsMessages.push({
+      message: "author field is required",
+      field: "author",
+    });
+  }
+
+  if (!req.body.title) {
+    errors.errorsMessages.push({
+      message: "title field is required",
+      field: "title",
+    });
+  }
+  if (
+    req.body.minAgeRestriction &&
+    req.body.minAgeRestriction > 18 &&
+    req.body.minAgeRestriction < 1
+  ) {
+    errors.errorsMessages.push({
+      message: "the age restriction should be between 1 and 18",
+      field: "minAgeRestriction",
+    });
+  }
+
+  if (errors.errorsMessages.length > 0) {
+    res.status(400).json(errors);
+    return;
+  }
+
+  const newVideo = {
+    id: Math.floor(Date.now() + Math.random() * 1000000),
+    title: req.body.title,
+    author: req.body.author,
+    availableResolutions: req.body.availableResolutions,
+    canBeDownloaded: req.body.canBeDownloaded ?? false,
+    minAgeRestriction: req.body.minAgeRestriction ?? null,
+    createdAt: new Date().toISOString(),
+    publicationDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+  };
+
+  db.videos.push(newVideo);
+  res.status(201).json(newVideo);
 };

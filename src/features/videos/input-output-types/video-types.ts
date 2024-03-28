@@ -3,15 +3,20 @@ export type OutputVideoType = {
   title: string;
   author: string;
   canBeDownloaded?: boolean;
-  minAgeRestriction?: number;
+  minAgeRestriction?: number | null;
   createdAt?: string;
   publicationDate?: string;
   availableResolutions?: (keyof typeof Resolutions)[] | null;
 };
 
 export type InputVideoType = {
+  id?: number;
   title: string;
   author: string;
+  canBeDownloaded?: boolean;
+  minAgeRestriction?: number | null;
+  createdAt?: string;
+  publicationDate?: string;
   availableResolutions?: (keyof typeof Resolutions)[] | null;
 };
 

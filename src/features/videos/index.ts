@@ -17,4 +17,4 @@ export type QueryType = {
     search?: string
 }
 
-export type ControllerType = (req: Request<ParamType, {}, BodyType, QueryType>, res: Response<void | OutputErrorsType>) => {}
+export const ControllerType = (req: Request<ParamType, {}, BodyType, QueryType>, res: Response<void | OutputErrorsType>) => {}
