@@ -7,39 +7,38 @@ import {
 } from "../src/features/videos/input-output-types/video-types";
 import { dataset1 } from "./datasets";
 import { OutputErrorsType } from "../src/features/videos/input-output-types/output-errors-type";
+
 describe("/videos tests", () => {
   beforeAll(() => {});
 
-  it("should return empty array and status code of 200", async () => {
+  it("1 - should return empty array and status code of 200", async () => {
     setDB();
     const res = await request.get(SETTINGS.PATH.VIDEOS).expect(200);
-    console.log(res.body);
+
     expect(res.body.length).toBe(0);
   });
 
-  it("shouldn't return empty array and status code of 200", async () => {
+  it("2 - shouldn't return empty array and status code of 200", async () => {
     setDB(dataset1);
     const res = await request.get(SETTINGS.PATH.VIDEOS).expect(200);
-    console.log(res.body);
+
     expect(res.body.length).toBe(1);
   });
 
-  it("should return video by ID and status code of 200", async () => {
+  it("3 - should return video by ID and status code of 200", async () => {
     setDB(dataset1);
 
     const foundVideo = db.videos[0];
 
     const res = await request
       .get(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
-      .send()
+      .send(foundVideo)
       .expect(200);
 
     expect(res.body.id).toEqual(foundVideo.id);
-    console.log(`videoId id ${foundVideo.id}`);
-    console.log(res.body);
   });
 
-  it("shouldn't return video if ID not found and status code of 404", async () => {
+  it("4 - shouldn't return video if ID not found and status code of 404", async () => {
     setDB(dataset1);
 
     const notExistingVideoId = "171155323290255";
@@ -49,7 +48,7 @@ describe("/videos tests", () => {
       .expect(404);
   });
 
-  it("should create & return new video with status code 201", async () => {
+  it("5 - should create & return new video with status code 201", async () => {
     setDB();
 
     const newVideo: InputVideoType = {
@@ -70,10 +69,9 @@ describe("/videos tests", () => {
     expect(res.body.availableResolutions).toEqual(
       newVideo.availableResolutions
     );
-    console.log(res.body);
   });
 
-  it("shouldn't create new video with incorrect input & return status code 400", async () => {
+  it("6 - shouldn't create new video with incorrect input & return status code 400", async () => {
     setDB();
 
     let errors: OutputErrorsType = {
@@ -121,18 +119,98 @@ describe("/videos tests", () => {
 
     console.log(errors);
   });
-  // it("should delete video by ID and return status code of 204", async () => {
-  //   setDB(dataset1);
 
-  //   const foundVideo = db.videos[0];
+  it("7 - should delete video by ID and return status code of 204", async () => {
+    setDB(dataset1);
 
-  //   const res = await request
-  //     .delete(`${SETTINGS.PATH.VIDEOS}/${foundVideo.id}`)
-  //     .send()
-  //     .expect(200);
+    const video = db.videos[0];
 
-  //   expect(res.body.id).toEqual(foundVideo.id);
-  //   console.log(`videoId id ${foundVideo.id}`);
-  //   console.log(res.body);
-  // });
+    const res = await request
+      .delete(`${SETTINGS.PATH.VIDEOS}/${video.id}`)
+      .expect(204);
+  });
+
+  it("8 - shouldn't delete video if ID not found and return status code of 404", async () => {
+    setDB(dataset1);
+
+    const notExistingVideoId = "171155323290255";
+
+    const res = await request
+      .delete(`${SETTINGS.PATH.VIDEOS}/${notExistingVideoId}`)
+      .expect(404);
+  });
+
+  it("9 - should update video by id & return new video with status code 204", async () => {
+    setDB(dataset1);
+    const videoToUpdate = db.videos[0];
+    console.log(videoToUpdate.id);
+    const dataToUpdate = { ...videoToUpdate, title: "REST API" };
+
+    const res = await request
+      .put(`${SETTINGS.PATH.VIDEOS}/${videoToUpdate.id}`)
+      .send(dataToUpdate)
+      .expect(204);
+  });
+
+  it("10 - shouldn't update video if id not found & return status code 404", async () => {
+    setDB(dataset1);
+    const notExistingVideoId = "171155323290255";
+
+    const res = await request
+      .put(`${SETTINGS.PATH.VIDEOS}/${notExistingVideoId}`)
+      .expect(404);
+  });
+
+  it("11 - shouldn't update video with incorrect input & return status code 400", async () => {
+    setDB();
+
+    let errors: OutputErrorsType = {
+      errorsMessages: [],
+    };
+
+    const testCases = [
+      {
+        data: { title: "A".repeat(41) },
+        expectedError: { message: "max length 40 characters", field: "title" },
+      },
+      {
+        data: { title: "A".repeat(41) },
+        expectedError: { message: "max length 40 characters", field: "author" },
+      },
+      {
+        data: { minAgeRestriction: 0 },
+        expectedError: {
+          message: "the age restriction should be between 1 and 18",
+          field: "minAgeRestriction",
+        },
+      },
+      {
+        data: { minAgeRestriction: 19 },
+        expectedError: {
+          message: "the age restriction should be between 1 and 18",
+          field: "minAgeRestriction",
+        },
+      },
+      {
+        data: { availableResolutions: [] },
+        expectedError: {
+          message: "at least one resolution should be added",
+          field: "availableResolutions",
+        },
+      },
+    ];
+
+    for (const testCase of testCases) {
+      await request.post(SETTINGS.PATH.VIDEOS).send(testCase.data).expect(400);
+
+      errors.errorsMessages.push(testCase.expectedError);
+    }
+
+    const res = await request
+      .post(SETTINGS.PATH.VIDEOS)
+      .send(errors)
+      .expect(400);
+
+    console.log(errors);
+  });
 });

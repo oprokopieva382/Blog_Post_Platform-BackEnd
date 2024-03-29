@@ -11,4 +11,4 @@ videosRouter.get("/", getVideosController)
 videosRouter.get("/:id", getByIdVideoController);
 videosRouter.post("/", createVideoController);
 videosRouter.put("/:id", updateVideoController);
-videosRouter.delete("/id", deleteVideoController);
+videosRouter.delete("/:id", deleteVideoController);
