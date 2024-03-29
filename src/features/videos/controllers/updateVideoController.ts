@@ -26,7 +26,7 @@ export const updateVideoController = (
 
   if (
     !videoToUpdateExist.author ||
-    videoToUpdateExist.author.length === 0 ||
+    videoToUpdateExist.author.length === 0 || 
     req.body.author.length > 40
   ) {
     errors.errorsMessages.push({
