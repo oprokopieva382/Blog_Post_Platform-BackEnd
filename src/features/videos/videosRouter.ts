@@ -9,3 +9,6 @@ videosRouter.get("/:id", videosController.getById(db));
 videosRouter.delete("/:id", videosController.deleteById(db));
 videosRouter.post("/", videosController.create(db));
 videosRouter.put("/:id", videosController.update(db));
+
+
+

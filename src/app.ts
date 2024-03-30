@@ -1,6 +1,7 @@
 import express from "express";
 import { SETTINGS } from "./settings";
 import { videosRouter } from "./features/videos/videosRouter";
+import { db } from "./db/db";
 
 export const app = express();
 
