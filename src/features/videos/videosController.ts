@@ -1,10 +1,12 @@
 import { Response, Request } from "express";
-import { Resolutions, Video } from "./input-output-types/output-video-types";
+import { Video } from "./input-output-types/output-video-types";
 import { DBType } from "../../db/db";
 import { ParamType } from ".";
 import { APIErrorResult } from "./input-output-types/output-errors-type";
 import { CreateVideoInputModel } from "./models/CreateVideoInputModel";
 import { UpdateVideoInputModel } from "./models/UpdateVideoInputModel";
+import { createValidation } from "../../utils/createValidation";
+import { updateValidation } from "../../utils/updateValidation";
 
 export const videosController = {
   getAll: (db: DBType) => {
@@ -46,43 +48,7 @@ export const videosController = {
       req: Request<{}, {}, CreateVideoInputModel>,
       res: Response<Video | APIErrorResult>
     ) => {
-      let errors: APIErrorResult = {
-        errorsMessages: [],
-      };
-
-      if (!req.body.author) {
-        errors.errorsMessages.push({
-          message: "author field is required",
-          field: "author",
-        });
-      }
-
-      if (!req.body.title) {
-        errors.errorsMessages.push({
-          message: "title field is required",
-          field: "title",
-        });
-      }
-
-      const invalidResolutions = req.body.availableResolutions.filter(
-        (resolution) =>
-          !Object.values(Resolutions).includes(resolution as Resolutions)
-      );
-
-      if (invalidResolutions.length > 0) {
-        errors.errorsMessages.push({
-          message:
-            "available resolutions can only contain values of 'P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'",
-          field: "availableResolutions",
-        });
-      }
-
-      if (!req.body.availableResolutions) {
-        errors.errorsMessages.push({
-          message: "at least one resolution should be added",
-          field: "availableResolutions",
-        });
-      }
+      const errors = createValidation(req.body);
 
       if (errors.errorsMessages.length > 0) {
         res.status(400).json(errors);
@@ -114,59 +80,13 @@ export const videosController = {
         (v) => v.id === +req.params.id
       );
 
-      let errors: APIErrorResult = {
-        errorsMessages: [],
-      };
-
       if (!videoToUpdateExist) {
         res.sendStatus(404);
         return;
       }
 
-      if (
-        !videoToUpdateExist.author ||
-        (req.body.author && req.body.author.length > 40)
-      ) {
-        errors.errorsMessages.push({
-          message: req.body.author
-            ? "max length 40 characters"
-            : "author field is required",
-          field: "author",
-        });
-      }
-
-      if (
-        !videoToUpdateExist.title ||
-        (req.body.title && req.body.title.length > 40)
-      ) {
-        errors.errorsMessages.push({
-          message: req.body.title
-            ? "max length 40 characters"
-            : "title field is required",
-          field: "title",
-        });
-      }
-
-      if (
-        req.body.availableResolutions &&
-        req.body.availableResolutions.length === 0
-      ) {
-        errors.errorsMessages.push({
-          message: "at least one resolution should be added",
-          field: "availableResolutions",
-        });
-      }
-
-      if (
-        req.body.minAgeRestriction &&
-        (req.body.minAgeRestriction > 18 || req.body.minAgeRestriction < 1)
-      ) {
-        errors.errorsMessages.push({
-          message: "the age restriction should be between 1 and 18",
-          field: "minAgeRestriction",
-        });
-      }
-
+      const errors = updateValidation(req.body);
+      
       if (errors.errorsMessages.length > 0) {
         res.status(400).json(errors);
         return;
