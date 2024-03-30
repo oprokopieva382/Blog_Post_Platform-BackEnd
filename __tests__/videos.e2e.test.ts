@@ -91,17 +91,10 @@ describe("/videos tests", () => {
         },
       },
       {
-        data: { minAgeRestriction: 0 },
+        data: { availableResolutions: [] },
         expectedError: {
-          message: "the age restriction should be between 1 and 18",
-          field: "minAgeRestriction",
-        },
-      },
-      {
-        data: { minAgeRestriction: 19 },
-        expectedError: {
-          message: "the age restriction should be between 1 and 18",
-          field: "minAgeRestriction",
+          message: "at least one resolution should be added",
+          field: "availableResolutions",
         },
       },
     ];

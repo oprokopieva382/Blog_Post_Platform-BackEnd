@@ -3,6 +3,7 @@ import { InputVideoType, OutputVideoType } from "./input-output-types/video-type
 import { DBType } from "../../db/db";
 import { ParamType } from ".";
 import { OutputErrorsType } from "./input-output-types/output-errors-type";
+import { CreateVideoInputModel } from "./models/CreateVideoInputModel";
 
 export const videosController = {
   getAll: (db: DBType) => {
@@ -47,7 +48,7 @@ export const videosController = {
 
   create: (db: DBType) => {
     return (
-      req: Request<{}, {}, InputVideoType>,
+      req: Request<{}, {}, CreateVideoInputModel>,
       res: Response<OutputVideoType | OutputErrorsType>
     ) => {
       let errors: OutputErrorsType = {
@@ -67,29 +68,34 @@ export const videosController = {
           field: "title",
         });
       }
-      if (
-        req.body.minAgeRestriction &&
-        req.body.minAgeRestriction > 18 &&
-        req.body.minAgeRestriction < 1
-      ) {
+      if(!req.body.availableResolutions) {
         errors.errorsMessages.push({
-          message: "the age restriction should be between 1 and 18",
-          field: "minAgeRestriction",
+          message: "at least one resolution should be added",
+          field: "availableResolutions",
         });
       }
+      // if (
+      //   req.body.minAgeRestriction &&
+      //   req.body.minAgeRestriction > 18 &&
+      //   req.body.minAgeRestriction < 1
+      // ) {
+      //   errors.errorsMessages.push({
+      //     message: "the age restriction should be between 1 and 18",
+      //     field: "minAgeRestriction",
+      //   });
+      // }
 
       if (errors.errorsMessages.length > 0) {
         res.status(400).json(errors);
         return;
       }
+      console.log(errors)
 
       const newVideo = {
         id: Math.floor(Date.now() + Math.random() * 1000000),
-        title: req.body.title,
-        author: req.body.author,
-        availableResolutions: req.body.availableResolutions,
-        canBeDownloaded: req.body.canBeDownloaded ?? false,
-        minAgeRestriction: req.body.minAgeRestriction ?? null,
+        ...req.body,
+        canBeDownloaded: false,
+        minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: new Date(
           Date.now() + 24 * 60 * 60 * 1000
