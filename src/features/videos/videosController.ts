@@ -86,7 +86,7 @@ export const videosController = {
         ).toISOString(),
       };
 
-      db.videos.push(newVideo);
+      db.videos.unshift(newVideo);
       res.status(201).json(newVideo);
     };
   },
