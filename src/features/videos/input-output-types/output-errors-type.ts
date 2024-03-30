@@ -1,8 +1,8 @@
-export type OutputErrorsType = {
-  errorsMessages: Error[]
+export type APIErrorResult = {
+  errorsMessages: FieldError[];
 };
 
-type Error = {
-    message: string
-    field: string
-}
+type FieldError = {
+  message: string;
+  field: string;
+};

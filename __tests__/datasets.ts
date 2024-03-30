@@ -1,6 +1,6 @@
-import {DBType} from "../src/db/db"
-import {VideoDbType} from "../src/db/video-db-type"
-import { Resolutions } from "../src/features/videos/input-output-types/video-types";
+import { DBType } from "../src/db/db";
+import { VideoDbType } from "../src/db/video-db-type";
+import { Resolutions } from "../src/features/videos/input-output-types/output-video-types";
 
 export const video1: VideoDbType = {
   id: Math.floor(Date.now() + Math.random() * 1000000),

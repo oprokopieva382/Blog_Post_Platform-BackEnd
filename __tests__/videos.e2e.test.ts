@@ -1,12 +1,10 @@
 import { request } from "./test-helpers";
 import { SETTINGS } from "../src/settings";
 import { db, setDB } from "../src/db/db";
-import {
-  InputVideoType,
-  Resolutions,
-} from "../src/features/videos/input-output-types/video-types";
+import { Resolutions } from "../src/features/videos/input-output-types/output-video-types";
 import { dataset1 } from "./datasets";
-import { OutputErrorsType } from "../src/features/videos/input-output-types/output-errors-type";
+import { APIErrorResult } from "../src/features/videos/input-output-types/output-errors-type";
+import { CreateVideoInputModel } from "../src/features/videos/models/CreateVideoInputModel";
 
 describe("/videos tests", () => {
   beforeAll(() => {});
@@ -51,15 +49,10 @@ describe("/videos tests", () => {
   it("5 - should create & return new video with status code 201", async () => {
     setDB();
 
-    const newVideo: InputVideoType = {
-      id: Math.floor(Date.now() + Math.random() * 1000000),
+    const newVideo: CreateVideoInputModel = {
       title: "rest api",
       author: "code mosh",
       availableResolutions: [Resolutions.P144],
-      canBeDownloaded: false,
-      minAgeRestriction: null,
-      createdAt: new Date().toISOString(),
-      publicationDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     };
 
     const res = await request
@@ -74,7 +67,7 @@ describe("/videos tests", () => {
   it("6 - shouldn't create new video with incorrect input & return status code 400", async () => {
     setDB();
 
-    let errors: OutputErrorsType = {
+    let errors: APIErrorResult = {
       errorsMessages: [],
     };
 
@@ -91,17 +84,10 @@ describe("/videos tests", () => {
         },
       },
       {
-        data: { minAgeRestriction: 0 },
+        data: { availableResolutions: [] },
         expectedError: {
-          message: "the age restriction should be between 1 and 18",
-          field: "minAgeRestriction",
-        },
-      },
-      {
-        data: { minAgeRestriction: 19 },
-        expectedError: {
-          message: "the age restriction should be between 1 and 18",
-          field: "minAgeRestriction",
+          message: "at least one resolution should be added",
+          field: "availableResolutions",
         },
       },
     ];
@@ -143,7 +129,6 @@ describe("/videos tests", () => {
   it("9 - should update video by id & return new video with status code 204", async () => {
     setDB(dataset1);
     const videoToUpdate = db.videos[0];
-    console.log(videoToUpdate.id);
     const dataToUpdate = { ...videoToUpdate, title: "REST API" };
 
     const res = await request
@@ -164,7 +149,7 @@ describe("/videos tests", () => {
   it("11 - shouldn't update video with incorrect input & return status code 400", async () => {
     setDB();
 
-    let errors: OutputErrorsType = {
+    let errors: APIErrorResult = {
       errorsMessages: [],
     };
 

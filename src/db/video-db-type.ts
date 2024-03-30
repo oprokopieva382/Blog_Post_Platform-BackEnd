@@ -1,4 +1,4 @@
-import { Resolutions } from "../features/videos/input-output-types/video-types";
+import { Resolutions } from "../features/videos/input-output-types/output-video-types";
 
 export type VideoDbType = {
   id: number;
