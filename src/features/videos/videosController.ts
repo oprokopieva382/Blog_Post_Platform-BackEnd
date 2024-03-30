@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { Video } from "./input-output-types/output-video-types";
+import { Resolutions, Video } from "./input-output-types/output-video-types";
 import { DBType } from "../../db/db";
 import { ParamType } from ".";
 import { APIErrorResult } from "./input-output-types/output-errors-type";
@@ -63,6 +63,19 @@ export const videosController = {
           field: "title",
         });
       }
+
+      const validResolutions = Object.keys(Resolutions);
+      const invalidResolutions = req.body.availableResolutions.filter(
+        (resolution) => !validResolutions.includes(resolution)
+      );
+      if (invalidResolutions) {
+        errors.errorsMessages.push({
+          message:
+            "available resolutions can only contain values of 'P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'",
+          field: "availableResolutions",
+        });
+      }
+
       if (!req.body.availableResolutions) {
         errors.errorsMessages.push({
           message: "at least one resolution should be added",
