@@ -1,22 +1,20 @@
 import { Response, Request } from "express";
-import { InputVideoType, OutputVideoType } from "./input-output-types/video-types";
+import { Video } from "./input-output-types/output-video-types";
 import { DBType } from "../../db/db";
 import { ParamType } from ".";
-import { OutputErrorsType } from "./input-output-types/output-errors-type";
+import { APIErrorResult } from "./input-output-types/output-errors-type";
 import { CreateVideoInputModel } from "./models/CreateVideoInputModel";
+import { UpdateVideoInputModel } from "./models/UpdateVideoInputModel";
 
 export const videosController = {
   getAll: (db: DBType) => {
-    return (req: Request, res: Response<OutputVideoType[]>) => {
+    return (req: Request, res: Response<Video[]>) => {
       res.status(200).json(db.videos);
     };
   },
 
   getById: (db: DBType) => {
-    return (
-      req: Request<ParamType>,
-      res: Response<OutputVideoType[] | OutputErrorsType>
-    ) => {
+    return (req: Request<ParamType>, res: Response<Video | APIErrorResult>) => {
       const foundVideo = db.videos.find((v) => v.id === +req.params.id);
 
       if (!foundVideo) {
@@ -29,10 +27,7 @@ export const videosController = {
   },
 
   deleteById: (db: DBType) => {
-    return (
-      req: Request<ParamType>,
-      res: Response<void | OutputErrorsType>
-    ) => {
+    return (req: Request<ParamType>, res: Response<void | APIErrorResult>) => {
       const videoToDelete = db.videos.find((v) => v.id === +req.params.id);
 
       if (!videoToDelete) {
@@ -49,9 +44,9 @@ export const videosController = {
   create: (db: DBType) => {
     return (
       req: Request<{}, {}, CreateVideoInputModel>,
-      res: Response<OutputVideoType | OutputErrorsType>
+      res: Response<Video | APIErrorResult>
     ) => {
-      let errors: OutputErrorsType = {
+      let errors: APIErrorResult = {
         errorsMessages: [],
       };
 
@@ -68,28 +63,17 @@ export const videosController = {
           field: "title",
         });
       }
-      if(!req.body.availableResolutions) {
+      if (!req.body.availableResolutions) {
         errors.errorsMessages.push({
           message: "at least one resolution should be added",
           field: "availableResolutions",
         });
       }
-      // if (
-      //   req.body.minAgeRestriction &&
-      //   req.body.minAgeRestriction > 18 &&
-      //   req.body.minAgeRestriction < 1
-      // ) {
-      //   errors.errorsMessages.push({
-      //     message: "the age restriction should be between 1 and 18",
-      //     field: "minAgeRestriction",
-      //   });
-      // }
 
       if (errors.errorsMessages.length > 0) {
         res.status(400).json(errors);
         return;
       }
-      console.log(errors)
 
       const newVideo = {
         id: Math.floor(Date.now() + Math.random() * 1000000),
@@ -109,14 +93,14 @@ export const videosController = {
 
   update: (db: DBType) => {
     return (
-      req: Request<ParamType, {}, InputVideoType>,
-      res: Response<OutputVideoType | OutputErrorsType>
+      req: Request<ParamType, {}, UpdateVideoInputModel>,
+      res: Response<Video | APIErrorResult>
     ) => {
-      const videoToUpdateExist: OutputVideoType = db.videos.find(
+      const videoToUpdateExist: Video = db.videos.find(
         (v) => v.id === +req.params.id
       );
 
-      let errors: OutputErrorsType = {
+      let errors: APIErrorResult = {
         errorsMessages: [],
       };
 
@@ -127,8 +111,7 @@ export const videosController = {
 
       if (
         !videoToUpdateExist.author ||
-        videoToUpdateExist.author.length === 0 ||
-        req.body.author.length > 40
+        (req.body.author && req.body.author.length > 40)
       ) {
         errors.errorsMessages.push({
           message: req.body.author
@@ -140,8 +123,7 @@ export const videosController = {
 
       if (
         !videoToUpdateExist.title ||
-        videoToUpdateExist.title.length === 0 ||
-        req.body.title.length > 40
+        (req.body.title && req.body.title.length > 40)
       ) {
         errors.errorsMessages.push({
           message: req.body.title
@@ -151,7 +133,10 @@ export const videosController = {
         });
       }
 
-      if (req.body.availableResolutions?.length === 0) {
+      if (
+        req.body.availableResolutions &&
+        req.body.availableResolutions.length === 0
+      ) {
         errors.errorsMessages.push({
           message: "at least one resolution should be added",
           field: "availableResolutions",
@@ -172,12 +157,12 @@ export const videosController = {
         res.status(400).json(errors);
         return;
       }
-
+      console.log(errors);
       db.videos = db.videos.map((v) =>
         v.id === +req.params.id ? { ...v, ...req.body } : v
       );
 
       res.sendStatus(204);
     };
-  }
+  },
 };

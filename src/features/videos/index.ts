@@ -1,10 +1,10 @@
-import { Request, Response } from "express"
-import { OutputErrorsType } from './input-output-types/output-errors-type';
-import { Resolutions } from "./input-output-types/video-types";
+import { Request, Response } from "express";
+import { APIErrorResult } from "./input-output-types/output-errors-type";
+import { Resolutions } from "./input-output-types/output-video-types";
 
 export type ParamType = {
-    id: string
-}
+  id: string;
+};
 
 export type BodyType = {
   id?: number;
@@ -14,7 +14,10 @@ export type BodyType = {
 };
 
 export type QueryType = {
-    search?: string
-}
+  search?: string;
+};
 
-export const ControllerType = (req: Request<ParamType, {}, BodyType, QueryType>, res: Response<void | OutputErrorsType>) => {}
+export const ControllerType = (
+  req: Request<ParamType, {}, BodyType, QueryType>,
+  res: Response<void | APIErrorResult>
+) => {};
