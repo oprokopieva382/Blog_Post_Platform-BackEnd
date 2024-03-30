@@ -64,11 +64,12 @@ export const videosController = {
         });
       }
 
-      const validResolutions = Object.keys(Resolutions);
       const invalidResolutions = req.body.availableResolutions.filter(
-        (resolution) => !validResolutions.includes(resolution)
+        (resolution) =>
+          !Object.values(Resolutions).includes(resolution as Resolutions)
       );
-      if (invalidResolutions) {
+
+      if (invalidResolutions.length > 0) {
         errors.errorsMessages.push({
           message:
             "available resolutions can only contain values of 'P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'",
