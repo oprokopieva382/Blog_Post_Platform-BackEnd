@@ -16,6 +16,13 @@ export const updateValidation = (data: Video) => {
     });
   }
 
+   if (!data.title) {
+     errors.errorsMessages.push({
+       message: "title field is required",
+       field: "title",
+     });
+   }
+
   if (data.title && data.title.length > 40) {
     errors.errorsMessages.push({
       message: "max length 40 characters",
