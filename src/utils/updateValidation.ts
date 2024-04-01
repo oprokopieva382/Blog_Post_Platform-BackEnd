@@ -58,13 +58,6 @@ export const updateValidation = (data: Video) => {
     });
   }
 
-  if (data.publicationDate && typeof data.publicationDate !== "string") {
-    errors.errorsMessages.push({
-      message: "publication date must be string type",
-      field: "publicationDate",
-    });
-  }
-
   if (data.author && typeof data.author !== "string") {
     errors.errorsMessages.push({
       message: "author field must be string type",
