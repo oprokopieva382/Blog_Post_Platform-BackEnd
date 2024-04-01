@@ -9,6 +9,13 @@ export const updateValidation = (data: Video) => {
     errorsMessages: [],
   };
 
+if (!data.title) {
+  errors.errorsMessages.push({
+    message: "title field is required",
+    field: "title",
+  });
+}
+
   if (data.author && data.author.length > 40) {
     errors.errorsMessages.push({
       message: "max length 40 characters",
