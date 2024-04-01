@@ -22,13 +22,6 @@ export const createValidation = (data: Video) => {
       field: "title",
     });
   }
-  
-  if (!data.author) {
-    errors.errorsMessages.push({
-      message: "author field is required",
-      field: "author",
-    });
-  }
 
   if (!data.author) {
     errors.errorsMessages.push({
