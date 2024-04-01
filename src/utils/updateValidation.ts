@@ -1,5 +1,8 @@
 import { APIErrorResult } from "../features/videos/input-output-types/output-errors-type";
-import { Video } from "../features/videos/input-output-types/output-video-types";
+import {
+  Resolutions,
+  Video,
+} from "../features/videos/input-output-types/output-video-types";
 
 export const updateValidation = (data: Video) => {
   let errors: APIErrorResult = {
@@ -27,6 +30,13 @@ export const updateValidation = (data: Video) => {
     });
   }
 
+if (data.minAgeRestriction && typeof data.minAgeRestriction !== "number") {
+  errors.errorsMessages.push({
+    message: "min age restriction field should be a number or null if no age restriction",
+    field: "minAgeRestriction",
+  });
+}
+
   if (
     data.minAgeRestriction &&
     (data.minAgeRestriction > 18 || data.minAgeRestriction < 1)
@@ -43,6 +53,42 @@ export const updateValidation = (data: Video) => {
       field: "publicationDate",
     });
   }
+
+  if (data.author && typeof data.author !== "string") {
+    errors.errorsMessages.push({
+      message: "author field must be string type",
+      field: "author",
+    });
+  }
+
+   if (data.canBeDownloaded && typeof data.canBeDownloaded !== "boolean") {
+     errors.errorsMessages.push({
+       message: "can be downloaded field must be boolean type",
+       field: "canBeDownloaded",
+     });
+   }
+
+  const invalidResolutions =
+    data.availableResolutions?.filter(
+      (resolution) =>
+        !Object.values(Resolutions).includes(resolution as Resolutions)
+    ) ?? [];
+
+  if (invalidResolutions.length > 0) {
+    errors.errorsMessages.push({
+      message:
+        "available resolutions can only contain values of 'P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'",
+      field: "availableResolutions",
+    });
+  }
+
+
+   if (data.publicationDate && typeof data.publicationDate !== "string") {
+     errors.errorsMessages.push({
+       message: "publication date field must be string type",
+       field: "publicationDate",
+     });
+   }
 
   if (data.publicationDate) {
     const isoRegex =
