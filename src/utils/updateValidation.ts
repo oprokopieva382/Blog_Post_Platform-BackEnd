@@ -9,7 +9,7 @@ export const updateValidation = (data: Video) => {
     errorsMessages: [],
   };
 
-  if (data.author && data.author.length > 40) {
+  if (data.author && data.author.length > 20) {
     errors.errorsMessages.push({
       message: "max length 40 characters",
       field: "author",
