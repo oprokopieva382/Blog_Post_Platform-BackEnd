@@ -30,9 +30,13 @@ export const updateValidation = (data: Video) => {
     });
   }
 
-if (data.minAgeRestriction && typeof data.minAgeRestriction !== "number") {
+if (
+  data.minAgeRestriction !== null &&
+  typeof data.minAgeRestriction !== "number"
+) {
   errors.errorsMessages.push({
-    message: "min age restriction field should be a number or null if no age restriction",
+    message:
+      "min age restriction field should be a number or null if no age restriction",
     field: "minAgeRestriction",
   });
 }
