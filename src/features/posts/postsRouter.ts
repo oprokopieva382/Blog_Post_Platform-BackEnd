@@ -6,3 +6,5 @@ export const postsRouter = Router();
 
 
 postsRouter.get("/", postsController.getAll());
+postsRouter.get("/:id", postsController.getById());
+postsRouter.post("/", postsController.create());

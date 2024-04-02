@@ -7,9 +7,9 @@ export const postsRepository = {
     return posts;
   },
 
-  getById(id: number) {
-    const foundPost = db.posts.find(p=>p.id === id)
-    return foundPost
+  getByIdPost(id: number) {
+    const foundPost = db.posts.find((p) => p.id === id);
+    return foundPost ? foundPost : null;
   },
 
   createPost(data: PostInputModel) {
@@ -20,10 +20,11 @@ export const postsRepository = {
       shortDescription,
       content,
       blogId,
+      blogName: "blogNameCommingSoon",
     };
 
     db.posts = [...db.posts, newPost];
-    const createdPost = this.getById(newPost.id);
+    const createdPost = this.getByIdPost(newPost.id);
     return createdPost;
   },
 };
