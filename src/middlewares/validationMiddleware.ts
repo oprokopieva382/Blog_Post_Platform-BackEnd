@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import { postsRepository } from "../repositories/posts-repository";
 
-const validateBlogId = async (blogId: number) => {
-  const blog = await postsRepository.getByIdPost(blogId);
+const validateBlogId = async (blogId: string) => {
+  const blog = await postsRepository.getByIdPost(+blogId);
   if (!blog) {
     throw new Error("No blog exists with the provided ID");
   }
@@ -37,9 +37,12 @@ export const validationMiddleware = [
     .isLength({ max: 1000 })
     .withMessage("max length of content 100 characters"),
 
-  body("blogId").custom(async (blogId) => {
-    await validateBlogId(blogId);
-  }),
+  body("blogId")
+    .exists({ checkFalsy: true })
+    .withMessage("blogId field is required")
+    .custom(async (blogId) => {
+      await validateBlogId(blogId);
+    }),
 
   async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req).array({ onlyFirstError: true });
