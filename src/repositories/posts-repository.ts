@@ -29,24 +29,25 @@ export const postsRepository = {
   },
 
   removePost(id: number) {
-    const postToRemoveIndex = db.posts.findIndex((p) => p.id === id);
-    if (postToRemoveIndex === -1) {
-      return;
+    const foundPost = db.posts.find((p) => p.id === id);
+    if (!foundPost) {
+      return null;
     }
-    db.posts.splice(postToRemoveIndex, 1);
-    return postToRemoveIndex;
+
+    const newPostData = db.posts.filter((p) => p.id !== id);
+    db.posts = newPostData;
+    return foundPost;
   },
 
   updatePost(data: PostInputModel, id: number) {
     const postToUpdateIndex = db.posts.findIndex((p) => p.id === id);
 
     if (postToUpdateIndex === -1) {
-      return;
+      return null;
     }
 
     db.posts[postToUpdateIndex] = { ...db.posts[postToUpdateIndex], ...data };
-    const updatedPost = db.posts[postToUpdateIndex];
 
-    return updatedPost;
+    return db.posts[postToUpdateIndex];
   },
 };
