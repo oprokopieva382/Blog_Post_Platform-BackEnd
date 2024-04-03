@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { PostInputModel } from "../../models/PostInputModel";
 import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { blogsRepository } from "../../repositories/blogs-repository";
@@ -51,13 +50,7 @@ export const blogsController = {
       req: Request<{}, {}, BlogInputModel>,
       res: Response<BlogViewModel | APIErrorResult>
     ) => {
-      //const errors = validation(req.body);
       const newBlog = blogsRepository.createBlog(req.body);
-
-      // if (errors.errorsMessages.length > 0) {
-      //   res.status(400).json(errors);
-      //   return;
-      // }
 
       res.status(201).json(newBlog);
     };
