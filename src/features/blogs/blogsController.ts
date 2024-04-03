@@ -32,21 +32,21 @@ export const blogsController = {
     };
   },
 
-  // deleteById: () => {
-  //   return async (
-  //     req: Request<ParamType>,
-  //     res: Response<void | APIErrorResult>
-  //   ) => {
-  //     const postToRemove = postsRepository.removePost(+req.params.id);
- 
-  //     if (!postToRemove) {
-  //       res.status(404);
-  //       return;
-  //     }
+  deleteById: () => {
+    return async (
+      req: Request<ParamType>,
+      res: Response<void | APIErrorResult>
+    ) => {
+      const blogToRemove = blogsRepository.removeBlog(+req.params.id);
 
-  //     res.sendStatus(204);
-  //   };
-  // },
+      if (!blogToRemove) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.sendStatus(204);
+    };
+  },
 
   create: () => {
     return (

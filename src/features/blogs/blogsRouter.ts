@@ -11,7 +11,7 @@ blogsRouter.post(
   "/",
   blogsController.create()
 );
-// blogsRouter.delete("/:id", authMiddleware, postsController.deleteById());
+blogsRouter.delete("/:id", blogsController.deleteById());
 // blogsRouter.put(
 //   "/:id",
 //   authMiddleware,

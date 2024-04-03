@@ -26,16 +26,16 @@ export const blogsRepository = {
     return createdBlog;
   },
 
-  // removePost(id: number) {
-  //   const foundPost = db.blogs.find((p) => p.id === id);
-  //   if (!foundPost) {
-  //     return null;
-  //   }
+  removeBlog(id: number) {
+    const foundBlog = db.blogs.find((b) => b.id === id);
+    if (!foundBlog) {
+      return null;
+    }
 
-  //   const newPostData = db.blogs.filter((p) => p.id !== id);
-  //   db.blogs = newPostData;
-  //   return foundPost;
-  // },
+    const newBlogsData = db.blogs.filter((b) => b.id !== id);
+    db.blogs = newBlogsData;
+    return foundBlog;
+  },
 
   // updatePost(data: PostInputModel, id: number) {
   //   const postToUpdateIndex = db.blogs.findIndex((p) => p.id === id);
