@@ -37,15 +37,15 @@ export const blogsRepository = {
     return foundBlog;
   },
 
-  // updatePost(data: PostInputModel, id: number) {
-  //   const postToUpdateIndex = db.blogs.findIndex((p) => p.id === id);
+  updateBlog(data: BlogInputModel, id: number) {
+    const blogToUpdateIndex = db.blogs.findIndex((b) => b.id === id);
 
-  //   if (postToUpdateIndex === -1) {
-  //     return null;
-  //   }
+    if (blogToUpdateIndex === -1) {
+      return null;
+    }
 
-  //   db.blogs[postToUpdateIndex] = { ...db.blogs[postToUpdateIndex], ...data };
+    db.blogs[blogToUpdateIndex] = { ...db.blogs[blogToUpdateIndex], ...data };
 
-  //   return db.blogs[postToUpdateIndex];
-  // },
+    return db.blogs[blogToUpdateIndex];
+  },
 };

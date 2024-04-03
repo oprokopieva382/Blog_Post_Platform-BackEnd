@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { PostInputModel } from "../../models/PostInputModel";
-import { PostViewModel } from "../../models/PostViewModel";
 import { APIErrorResult } from "../../output-errors-type";
-import { validation } from "../../utils/validation";
 import { ParamType } from ".";
 import { blogsRepository } from "../../repositories/blogs-repository";
 import { BlogInputModel } from "../../models/BlogInputModel";
@@ -51,7 +49,7 @@ export const blogsController = {
   create: () => {
     return (
       req: Request<{}, {}, BlogInputModel>,
-      res: Response<PostViewModel | APIErrorResult>
+      res: Response<BlogViewModel | APIErrorResult>
     ) => {
       //const errors = validation(req.body);
       const newBlog = blogsRepository.createBlog(req.body);
@@ -65,19 +63,19 @@ export const blogsController = {
     };
   },
 
-  // update: () => {
-  //   return (
-  //     req: Request<ParamType, {}, PostInputModel>,
-  //     res: Response<PostViewModel | APIErrorResult>
-  //   ) => {
-  //     const postToUpdate = postsRepository.updatePost(req.body, +req.params.id);
+  update: () => {
+    return (
+      req: Request<ParamType, {}, BlogInputModel>,
+      res: Response<BlogViewModel | APIErrorResult>
+    ) => {
+      const blogToUpdate = blogsRepository.updateBlog(req.body, +req.params.id);
 
-  //     if (!postToUpdate) {
-  //       res.sendStatus(404);
-  //       return;
-  //     }
+      if (!blogToUpdate) {
+        res.sendStatus(404);
+        return;
+      }
 
-  //     res.sendStatus(204);
-  //   };
-  // },
+      res.sendStatus(204);
+    };
+  },
 };
