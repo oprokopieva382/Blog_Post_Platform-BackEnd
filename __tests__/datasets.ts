@@ -1,20 +1,13 @@
-import { DBType } from "../src/db/db";
-import { VideoDbType } from "../src/db/video-db-type";
-import { Resolutions } from "../src/features/videos/input-output-types/output-video-types";
+import { BlogViewModel } from "../src/models/BlogViewModel";
 
-export const video1: VideoDbType = {
-  id: Math.floor(Date.now() + Math.random() * 1000000),
-  title: "MongoDB",
-  author: "UCF",
-  canBeDownloaded: false,
-  minAgeRestriction: null,
-  createdAt: new Date().toISOString(),
-  publicationDate: new Date(
-    new Date().getTime() + 24 * 60 * 60 * 1000
-  ).toISOString(),
-  availableResolutions: [Resolutions.P240],
+export const blog1: BlogViewModel = {
+  id: Math.floor(Date.now() + Math.random() * 1000000).toString(),
+  name: "Callback hell",
+  description: "here is short description for blog of callback hell",
+  websiteUrl:
+    "https://www.geeksforgeeks.org/what-to-understand-callback-and-callback-hell-in-javascript/",
 };
 
-export const dataset1: DBType = {
-  videos: [video1],
+export const dataset1 = {
+  blogs: [blog1],
 };
