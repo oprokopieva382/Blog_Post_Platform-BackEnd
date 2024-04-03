@@ -6,7 +6,7 @@ import { blogsController } from "./blogsController";
 export const blogsRouter = Router();
 
 blogsRouter.get("/", blogsController.getAll());
-// blogsRouter.get("/:id", postsController.getById());
+blogsRouter.get("/:id", blogsController.getById());
 blogsRouter.post(
   "/",
   blogsController.create()

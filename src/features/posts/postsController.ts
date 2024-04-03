@@ -22,7 +22,7 @@ export const postsController = {
       const foundPost = postsRepository.getByIdPost(+req.params.id);
 
       if (!foundPost) {
-        res.status(404);
+        res.sendStatus(404);
         return;
       }
 
@@ -36,9 +36,9 @@ export const postsController = {
       res: Response<void | APIErrorResult>
     ) => {
       const postToRemove = postsRepository.removePost(+req.params.id);
- 
+
       if (!postToRemove) {
-        res.status(404);
+        res.sendStatus(404);
         return;
       }
 

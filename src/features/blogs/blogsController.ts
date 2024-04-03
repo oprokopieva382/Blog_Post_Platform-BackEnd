@@ -6,6 +6,7 @@ import { validation } from "../../utils/validation";
 import { ParamType } from ".";
 import { blogsRepository } from "../../repositories/blogs-repository";
 import { BlogInputModel } from "../../models/BlogInputModel";
+import { BlogViewModel } from "../../models/BlogViewModel";
 
 export const blogsController = {
   getAll: () => {
@@ -15,21 +16,21 @@ export const blogsController = {
     };
   },
 
-  // getById: () => {
-  //   return (
-  //     req: Request<ParamType>,
-  //     res: Response<PostViewModel | APIErrorResult>
-  //   ) => {
-  //     const foundPost = postsRepository.getByIdPost(+req.params.id);
+  getById: () => {
+    return (
+      req: Request<ParamType>,
+      res: Response<BlogViewModel | APIErrorResult>
+    ) => {
+      const foundBlog = blogsRepository.getByIdBlog(+req.params.id);
 
-  //     if (!foundPost) {
-  //       res.status(404);
-  //       return;
-  //     }
+      if (!foundBlog) {
+        res.sendStatus(404);
+        return;
+      }
 
-  //     res.status(200).json(foundPost);
-  //   };
-  // },
+      res.status(200).json(foundBlog);
+    };
+  },
 
   // deleteById: () => {
   //   return async (
