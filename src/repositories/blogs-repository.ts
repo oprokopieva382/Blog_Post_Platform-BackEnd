@@ -1,4 +1,5 @@
 import { db } from "../db/db";
+import { BlogInputModel } from "../models/BlogInputModel";
 
 export const blogsRepository = {
   getAllBlogs() {
@@ -6,26 +7,24 @@ export const blogsRepository = {
     return blogs;
   },
 
-  // getByIdPost(id: number) {
-  //   const foundPost = db.blogs.find((p) => p.id === id);
-  //   return foundPost ? foundPost : null;
-  // },
+  getByIdBlog(id: number) {
+    const foundBlog = db.blogs.find((b) => b.id === id);
+    return foundBlog ? foundBlog : null;
+  },
 
-  // createPost(data: PostInputModel) {
-  //   const { title, shortDescription, content, blogId } = data;
-  //   const newPost = {
-  //     id: Math.floor(Date.now() + Math.random() * 1000000),
-  //     title,
-  //     shortDescription,
-  //     content,
-  //     blogId,
-  //     blogName: "blogNameCommingSoon",
-  //   };
+  createBlog(data: BlogInputModel) {
+    const { name, description, websiteUrl } = data;
+    const newBlog = {
+      id: Math.floor(Date.now() + Math.random() * 1000000),
+      name,
+      description,
+      websiteUrl,
+    };
 
-  //   db.blogs = [...db.blogs, newPost];
-  //   const createdPost = this.getByIdPost(newPost.id);
-  //   return createdPost;
-  // },
+    db.blogs = [...db.blogs, newBlog];
+    const createdBlog = this.getByIdBlog(newBlog.id);
+    return createdBlog;
+  },
 
   // removePost(id: number) {
   //   const foundPost = db.blogs.find((p) => p.id === id);

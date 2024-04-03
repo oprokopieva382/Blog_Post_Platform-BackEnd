@@ -7,12 +7,10 @@ export const blogsRouter = Router();
 
 blogsRouter.get("/", blogsController.getAll());
 // blogsRouter.get("/:id", postsController.getById());
-// blogsRouter.post(
-//   "/",
-//   authMiddleware,
-//   postValidationMiddleware,
-//   postsController.create()
-// );
+blogsRouter.post(
+  "/",
+  blogsController.create()
+);
 // blogsRouter.delete("/:id", authMiddleware, postsController.deleteById());
 // blogsRouter.put(
 //   "/:id",

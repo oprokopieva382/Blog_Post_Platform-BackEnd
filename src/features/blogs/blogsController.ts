@@ -5,6 +5,7 @@ import { APIErrorResult } from "../../output-errors-type";
 import { validation } from "../../utils/validation";
 import { ParamType } from ".";
 import { blogsRepository } from "../../repositories/blogs-repository";
+import { BlogInputModel } from "../../models/BlogInputModel";
 
 export const blogsController = {
   getAll: () => {
@@ -46,22 +47,22 @@ export const blogsController = {
   //   };
   // },
 
-  // create: () => {
-  //   return (
-  //     req: Request<{}, {}, PostInputModel>,
-  //     res: Response<PostViewModel | APIErrorResult>
-  //   ) => {
-  //     const errors = validation(req.body);
-  //     const newPost = postsRepository.createPost(req.body);
+  create: () => {
+    return (
+      req: Request<{}, {}, BlogInputModel>,
+      res: Response<PostViewModel | APIErrorResult>
+    ) => {
+      //const errors = validation(req.body);
+      const newBlog = blogsRepository.createBlog(req.body);
 
-  //     if (errors.errorsMessages.length > 0) {
-  //       res.status(400).json(errors);
-  //       return;
-  //     }
+      // if (errors.errorsMessages.length > 0) {
+      //   res.status(400).json(errors);
+      //   return;
+      // }
 
-  //     res.status(201).json(newPost);
-  //   };
-  // },
+      res.status(201).json(newBlog);
+    };
+  },
 
   // update: () => {
   //   return (
