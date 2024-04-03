@@ -23,9 +23,28 @@ export const postsController = {
 
       if (!foundPost) {
         res.status(404);
+        return;
       }
 
       res.status(200).json(foundPost);
+    };
+  },
+
+  deleteById: () => {
+    return async (
+      req: Request<ParamType>,
+      res: Response<void | APIErrorResult>
+    ) => {
+      const isPostExist = await postsRepository.getByIdPost(+req.params.id);
+      console.log(isPostExist);
+      const postToRemove = postsRepository.removePost(+req.params.id);
+
+      if (!isPostExist) {
+        res.status(404)
+        return;
+      }
+
+      res.sendStatus(204);
     };
   },
 

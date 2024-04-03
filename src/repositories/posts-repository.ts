@@ -27,4 +27,9 @@ export const postsRepository = {
     const createdPost = this.getByIdPost(newPost.id);
     return createdPost;
   },
+
+  removePost(id: number) {
+    const newPostData = db.posts.filter((p) => p.id !== id);
+    db.posts = newPostData;
+  },
 };
