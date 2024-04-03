@@ -35,12 +35,10 @@ export const postsController = {
       req: Request<ParamType>,
       res: Response<void | APIErrorResult>
     ) => {
-      const isPostExist = await postsRepository.getByIdPost(+req.params.id);
-      console.log(isPostExist);
       const postToRemove = postsRepository.removePost(+req.params.id);
 
-      if (!isPostExist) {
-        res.status(404)
+      if (!postToRemove) {
+        res.status(404);
         return;
       }
 
@@ -62,6 +60,22 @@ export const postsController = {
       }
 
       res.status(201).json(newPost);
+    };
+  },
+
+  update: () => {
+    return (
+      req: Request<ParamType, {}, PostInputModel>,
+      res: Response<PostViewModel | APIErrorResult>
+    ) => {
+      const postToUpdate = postsRepository.updatePost(req.body, +req.params.id);
+
+      if (!postToUpdate) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.sendStatus(204);
     };
   },
 };

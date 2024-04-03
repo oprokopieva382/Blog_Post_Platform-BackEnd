@@ -9,3 +9,4 @@ postsRouter.get("/", postsController.getAll());
 postsRouter.get("/:id", postsController.getById());
 postsRouter.post("/", postsController.create());
 postsRouter.delete("/:id", postsController.deleteById());
+postsRouter.put("/:id", postsController.update());
