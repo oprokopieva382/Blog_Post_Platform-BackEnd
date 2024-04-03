@@ -9,7 +9,7 @@ const validateBlogId = async (blogId: string) => {
   }
 };
 
-export const validationMiddleware = [
+export const postValidationMiddleware = [
   body("title")
     .trim()
     .isString()
@@ -53,5 +53,6 @@ export const validationMiddleware = [
       });
     }
     next();
+    return;
   },
 ];
