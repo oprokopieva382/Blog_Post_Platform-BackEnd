@@ -8,7 +8,7 @@ export const putValidationMiddleware = async (
 ) => {
   const allBodyValidation: any[] = [];
 
-  if (req.body.name) {
+ 
     allBodyValidation.push(
       body("name")
         .trim()
@@ -19,9 +19,9 @@ export const putValidationMiddleware = async (
         .isLength({ max: 15 })
         .withMessage("max length of name 15 characters")
     );
-  }
+  
 
-  if (req.body.description) {
+ 
     allBodyValidation.push(
       body("description")
         .trim()
@@ -32,9 +32,8 @@ export const putValidationMiddleware = async (
         .isLength({ max: 100 })
         .withMessage("max length of description 500 characters")
     );
-  }
+  
 
-  if (req.body.websiteUrl) {
     allBodyValidation.push(
       body("websiteUrl")
         .trim()
@@ -56,7 +55,7 @@ export const putValidationMiddleware = async (
         })
         .withMessage("Invalid URL format")
     );
-  }
+  
 
  
   await Promise.all(allBodyValidation.map((item) => item.run(req)));

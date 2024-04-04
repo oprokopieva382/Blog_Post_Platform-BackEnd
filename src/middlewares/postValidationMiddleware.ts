@@ -17,7 +17,7 @@ export const postValidationMiddleware = async (
 ) => {
   const allBodyValidation: any[] = [];
 
-  if (req.body.title) {
+  
     allBodyValidation.push(
       body("title")
         .trim()
@@ -28,9 +28,9 @@ export const postValidationMiddleware = async (
         .isLength({ max: 30 })
         .withMessage("max length of title 30 characters")
     );
-  }
+  
 
-  if (req.body.shortDescription) {
+
     allBodyValidation.push(
       body("shortDescription")
         .trim()
@@ -41,9 +41,9 @@ export const postValidationMiddleware = async (
         .isLength({ max: 100 })
         .withMessage("max length of description 100 characters")
     );
-  }
+  
 
-  if (req.body.content) {
+
     allBodyValidation.push(
       body("content")
         .trim()
@@ -54,9 +54,9 @@ export const postValidationMiddleware = async (
         .isLength({ max: 1000 })
         .withMessage("max length of content 1000 characters")
     );
-  }
+  
 
-  if (req.body.blogId) {
+
     allBodyValidation.push(
       body("blogId")
         .trim()
@@ -66,7 +66,7 @@ export const postValidationMiddleware = async (
           await validateBlogId(blogId);
         })
     );
-  }
+  
 
   await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
