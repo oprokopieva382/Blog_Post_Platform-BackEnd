@@ -18,7 +18,7 @@ export const blogsController = {
       req: Request<ParamType>,
       res: Response<BlogViewModel | APIErrorResult>
     ) => {
-      const foundBlog = blogsRepository.getByIdBlog(+req.params.id);
+      const foundBlog = blogsRepository.getByIdBlog(req.params.id);
 
       if (!foundBlog) {
         res.sendStatus(404);
@@ -61,7 +61,7 @@ export const blogsController = {
       req: Request<ParamType, {}, BlogInputModel>,
       res: Response<BlogViewModel | APIErrorResult>
     ) => {
-      const blogToUpdate = blogsRepository.updateBlog(req.body, +req.params.id);
+      const blogToUpdate = blogsRepository.updateBlog(req.body, req.params.id);
 
       if (!blogToUpdate) {
         res.sendStatus(404);

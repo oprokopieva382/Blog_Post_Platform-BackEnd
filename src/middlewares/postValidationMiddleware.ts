@@ -3,7 +3,7 @@ import { body, validationResult } from "express-validator";
 import { blogsRepository } from "../repositories/blogs-repository";
 
 const validateBlogId = async (blogId: string) => {
-  const blog = await blogsRepository.getByIdBlog(+blogId);
+  const blog = await blogsRepository.getByIdBlog(blogId);
   if (!blog) {
     throw new Error("No blog exists with the provided ID");
   }
