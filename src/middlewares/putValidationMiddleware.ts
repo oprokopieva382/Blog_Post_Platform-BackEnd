@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { FieldValidationError, body, validationResult } from "express-validator";
 
 export const putValidationMiddleware = async (
   req: Request,
@@ -61,11 +61,18 @@ export const putValidationMiddleware = async (
  
   await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
-  const errors = validationResult(req).array({ onlyFirstError: true });
-  //console.log(errors);
-  if (errors.length) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    console.log(errors.array().map((error) => error));
+
+    const errorsFields = errors.array({onlyFirstError: true}) as FieldValidationError[];
     return res.status(400).json({
-      errorsMessages: [{ message: errors[0].msg, field: errors[0].type }],
+      //   errorsMessages: errors.array({ onlyFirstError: true }).map((error) => ({
+      errorsMessages: errorsFields.map((error) => ({
+        message: error.msg,
+        field: error.path,
+      })),
     });
   }
 
