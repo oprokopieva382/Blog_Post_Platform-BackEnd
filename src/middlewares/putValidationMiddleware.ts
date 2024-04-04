@@ -66,7 +66,7 @@ export const putValidationMiddleware = async (
     console.log(errors.array());
     console.log(errors.array().map((error) => error));
 
-    const errorsFields = errors.array() as FieldValidationError[];
+    const errorsFields = errors.array({onlyFirstError: true}) as FieldValidationError[];
     return res.status(400).json({
       //   errorsMessages: errors.array({ onlyFirstError: true }).map((error) => ({
       errorsMessages: errorsFields.map((error) => ({
