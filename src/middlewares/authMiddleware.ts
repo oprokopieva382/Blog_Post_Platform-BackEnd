@@ -9,7 +9,11 @@ export const authMiddleware = (
   const auth = req.headers["authorization"] as string;
 
   if (!auth) {
-    res.status(401).json({});
+    res.status(401).json({
+      errorMessages: {
+        message: "Auth credentials is incorrect",
+      },
+    });
     return;
   }
 
@@ -20,9 +24,13 @@ export const authMiddleware = (
   const encodedAuth = bufDecoded.toString("base64");
 
   if (auth.slice(6) !== encodedAuth || auth.slice(0, 6) !== "Basic ") {
-    res.status(401).json({});
+    res.status(401).json({
+      errorMessages: {
+        message: "Auth credentials is incorrect",
+      },
+    });
     return;
   }
 
-  next()
+  next();
 };
