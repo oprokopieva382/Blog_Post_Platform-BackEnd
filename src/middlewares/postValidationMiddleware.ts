@@ -7,7 +7,7 @@ const validateBlogId = async (blogId: string) => {
   if (!blog) {
     throw new Error("No blog exists with the provided ID");
   }
-  return true
+  return true;
 };
 
 export const postValidationMiddleware = async (
@@ -70,11 +70,17 @@ export const postValidationMiddleware = async (
 
   await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
-  const errors = validationResult(req).array({ onlyFirstError: true });
+  const errors = validationResult(req);
   //console.log(errors);
-  if (errors.length) {
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    console.log(errors.array().map((error) => error));
     return res.status(400).json({
-      errorsMessages: [{ message: errors[0].msg, field: errors[0].type }],
+      //   errorsMessages: errors.array({ onlyFirstError: true }).map((error) => ({
+      errorsMessages: errors.array().map((error) => ({
+        message: error.msg,
+        field: error.type,
+      })),
     });
   }
 
