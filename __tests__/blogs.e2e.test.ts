@@ -56,7 +56,6 @@ describe("/blogs test", () => {
   it("6 - shouldn't create new blog with no auth & status code 401", async () => {
     const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, "utf8");
     const incorrectCodedAuth = buff2.toString("base64") + "a";
-    console.log(incorrectCodedAuth);
 
     const res = await request
       .post(SETTINGS.PATH.BLOGS)
@@ -67,7 +66,6 @@ describe("/blogs test", () => {
   it("7 - shouldn't create blog with incorrect input value & status code 400", async () => {
     const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, "utf8");
     const codedAuth = buff2.toString("base64");
-    console.log(codedAuth);
 
     const incorrectInputValue = {
       name: "Namelonggggggggggg",
@@ -80,4 +78,31 @@ describe("/blogs test", () => {
       .expect(400);
   });
 
+  it("8 - should update blog by id with auth & return status code 204", async () => {
+    const blogToUpdate = db.blogs[0];
+
+    const dataToUpdate = { ...blogToUpdate, name: "Memo" };
+    const id = blogToUpdate.id;
+
+    const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, "utf8");
+    const codedAuth = buff2.toString("base64");
+
+    const res = await request
+      .put(`${SETTINGS.PATH.BLOGS}/${id}`)
+      .set({ Authorization: "Basic " + codedAuth })
+      .send(dataToUpdate)
+      .expect(204);
+  });
+
+  it("9 - should delete blog by id with auth & return status code 204", async () => {
+    const blogToDeleteId = db.blogs[0].id;
+
+    const buff2 = Buffer.from(SETTINGS.ADMIN_AUTH, "utf8");
+    const codedAuth = buff2.toString("base64");
+
+    const res = await request
+      .put(`${SETTINGS.PATH.BLOGS}/${blogToDeleteId}`)
+      .set({ Authorization: "Basic " + codedAuth })
+      .expect(204);
+  });
 });

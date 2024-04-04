@@ -1,7 +1,7 @@
 import { BlogViewModel } from "../src/models/BlogViewModel";
 
-export const blog1: BlogViewModel = {
-  id: Math.floor(Date.now() + Math.random() * 1000000).toString(),
+export const blog1 = {
+  id: 123456789,
   name: "Callback hell",
   description: "here is short description for blog of callback hell",
   websiteUrl:

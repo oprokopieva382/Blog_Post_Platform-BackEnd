@@ -62,7 +62,7 @@ export const putValidationMiddleware = async (
   await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
   const errors = validationResult(req).array({ onlyFirstError: true });
-  console.log(errors);
+  //console.log(errors);
   if (errors.length) {
     return res.status(400).json({
       errorsMessages: [{ message: errors[0].msg, field: errors[0].type }],
