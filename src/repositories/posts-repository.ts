@@ -14,7 +14,8 @@ export const postsRepository = {
 
   createPost(data: PostInputModel) {
     const { title, shortDescription, content, blogId } = data;
-    const newPost = {
+
+      const newPost = {
       id: Math.floor(Date.now() + Math.random() * 1000000),
       title,
       shortDescription,

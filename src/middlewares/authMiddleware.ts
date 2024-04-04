@@ -7,7 +7,6 @@ export const authMiddleware = (
   next: NextFunction
 ) => {
   const auth = req.headers["authorization"] as string;
-  console.log(auth);
 
   if (!auth) {
     res.status(401).json({});

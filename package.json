@@ -8,11 +8,12 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "yarn nodemon --inspect dist/index.js",
-    "test": "jest -i --detectOpenHandles --no-cache --watchAll"
+    "test": "jest -i --detectOpenHandles --no-cache --watchAll --testPathPattern=__tests__/blogs.e2e.test.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "express": "^4.19.1"
+    "express": "^4.19.1",
+    "express-validator": "^7.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
