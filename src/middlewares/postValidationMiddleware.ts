@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { FieldValidationError, body, validationResult } from "express-validator";
 import { blogsRepository } from "../repositories/blogs-repository";
 
 const validateBlogId = async (blogId: string) => {
@@ -70,16 +70,18 @@ export const postValidationMiddleware = async (
 
   await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
-  const errors = validationResult(req);
+  const errors = validationResult(req)
   //console.log(errors);
   if (!errors.isEmpty()) {
     console.log(errors.array());
     console.log(errors.array().map((error) => error));
+
+    const errorsFields = errors.array() as FieldValidationError[];
     return res.status(400).json({
       //   errorsMessages: errors.array({ onlyFirstError: true }).map((error) => ({
-      errorsMessages: errors.array().map((error) => ({
+      errorsMessages: errorsFields.map((error) => ({
         message: error.msg,
-        field: error.type,
+        field: error.path,
       })),
     });
   }
