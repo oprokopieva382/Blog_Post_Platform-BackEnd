@@ -7,7 +7,7 @@ export const blogsRepository = {
     return blogs;
   },
 
-  getByIdBlog(id: number) {
+  getByIdBlog(id: string) {
     const foundBlog = db.blogs.find((b) => b.id === id);
     return foundBlog ? foundBlog : null;
   },
@@ -15,7 +15,7 @@ export const blogsRepository = {
   createBlog(data: BlogInputModel) {
     const { name, description, websiteUrl } = data;
     const newBlog = {
-      id: Math.floor(Date.now() + Math.random() * 1000000),
+      id: Math.floor(Date.now() + Math.random() * 1000000).toString(),
       name,
       description,
       websiteUrl,
@@ -37,7 +37,7 @@ export const blogsRepository = {
     return foundBlog;
   },
 
-  updateBlog(data: BlogInputModel, id: number) {
+  updateBlog(data: BlogInputModel, id: string) {
     const blogToUpdateIndex = db.blogs.findIndex((b) => b.id === id);
 
     if (blogToUpdateIndex === -1) {
