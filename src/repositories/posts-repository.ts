@@ -7,7 +7,7 @@ export const postsRepository = {
     return posts;
   },
 
-  getByIdPost(id: number) {
+  getByIdPost(id: string) {
     const foundPost = db.posts.find((p) => p.id === id);
     return foundPost ? foundPost : null;
   },
@@ -15,8 +15,8 @@ export const postsRepository = {
   createPost(data: PostInputModel) {
     const { title, shortDescription, content, blogId } = data;
 
-      const newPost = {
-      id: Math.floor(Date.now() + Math.random() * 1000000),
+    const newPost = {
+      id: Math.floor(Date.now() + Math.random() * 1000000).toString(),
       title,
       shortDescription,
       content,
@@ -40,7 +40,7 @@ export const postsRepository = {
     return foundPost;
   },
 
-  updatePost(data: PostInputModel, id: number) {
+  updatePost(data: PostInputModel, id: string) {
     const postToUpdateIndex = db.posts.findIndex((p) => p.id === id);
 
     if (postToUpdateIndex === -1) {

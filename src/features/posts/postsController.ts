@@ -18,7 +18,7 @@ export const postsController = {
       req: Request<ParamType>,
       res: Response<PostViewModel | APIErrorResult>
     ) => {
-      const foundPost = postsRepository.getByIdPost(+req.params.id);
+      const foundPost = postsRepository.getByIdPost(req.params.id);
 
       if (!foundPost) {
         res.sendStatus(404);
@@ -61,7 +61,7 @@ export const postsController = {
       req: Request<ParamType, {}, PostInputModel>,
       res: Response<PostViewModel | APIErrorResult>
     ) => {
-      const postToUpdate = postsRepository.updatePost(req.body, +req.params.id);
+      const postToUpdate = postsRepository.updatePost(req.body, req.params.id);
 
       if (!postToUpdate) {
         res.sendStatus(404);
