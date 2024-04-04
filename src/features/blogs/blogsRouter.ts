@@ -13,7 +13,7 @@ blogsRouter.post(
   putValidationMiddleware,
   blogsController.create()
 );
-blogsRouter.delete("/:id", blogsController.deleteById());
+blogsRouter.delete("/:id", authMiddleware, blogsController.deleteById());
 blogsRouter.put(
   "/:id",
   authMiddleware,
