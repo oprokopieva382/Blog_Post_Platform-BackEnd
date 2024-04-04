@@ -21,8 +21,7 @@ export const putValidationMiddleware = async (
     );
   
 
- 
-    allBodyValidation.push(
+     allBodyValidation.push(
       body("description")
         .trim()
         .isString()

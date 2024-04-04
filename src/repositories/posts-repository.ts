@@ -1,5 +1,8 @@
 import { db } from "../db/db";
 import { PostInputModel } from "../models/PostInputModel";
+import { PostViewModel } from "../models/PostViewModel";
+import { APIErrorResult } from "../output-errors-type";
+import { blogsRepository } from "./blogs-repository";
 
 export const postsRepository = {
   getAllPosts() {
@@ -15,13 +18,18 @@ export const postsRepository = {
   createPost(data: PostInputModel) {
     const { title, shortDescription, content, blogId } = data;
 
-    const newPost = {
+    const isBlogExist = db.blogs.find((b) => b.id === blogId);
+    if (!isBlogExist) {
+      return null;
+    }
+
+    const newPost: PostViewModel = {
       id: Math.floor(Date.now() + Math.random() * 1000000).toString(),
       title,
       shortDescription,
       content,
       blogId,
-      blogName: "blogNameCommingSoon",
+      blogName: isBlogExist.name,
     };
 
     db.posts = [...db.posts, newPost];

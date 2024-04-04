@@ -52,6 +52,11 @@ export const postsController = {
     ) => {
       const newPost = postsRepository.createPost(req.body);
 
+      if (!newPost) {
+        res.sendStatus(404);
+        return;
+      }
+
       res.status(201).json(newPost);
     };
   },
