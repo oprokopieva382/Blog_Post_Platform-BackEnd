@@ -34,7 +34,7 @@ export const postsController = {
       req: Request<ParamType>,
       res: Response<void | APIErrorResult>
     ) => {
-      const postToRemove = postsRepository.removePost(+req.params.id);
+      const postToRemove = postsRepository.removePost(req.params.id);
 
       if (!postToRemove) {
         res.sendStatus(404);

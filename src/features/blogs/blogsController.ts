@@ -34,7 +34,7 @@ export const blogsController = {
       req: Request<ParamType>,
       res: Response<void | APIErrorResult>
     ) => {
-      const blogToRemove = blogsRepository.removeBlog(+req.params.id);
+      const blogToRemove = blogsRepository.removeBlog(req.params.id);
 
       if (!blogToRemove) {
         res.sendStatus(404);

@@ -26,7 +26,7 @@ export const blogsRepository = {
     return createdBlog;
   },
 
-  removeBlog(id: number) {
+  removeBlog(id: string) {
     const foundBlog = db.blogs.find((b) => b.id === id);
     if (!foundBlog) {
       return null;
