@@ -1,5 +1,3 @@
-import { BlogViewModel } from "../src/models/BlogViewModel";
-
 export const blog1 = {
   id: 123456789,
   name: "Callback hell",

@@ -7,7 +7,6 @@ export const SETTINGS = {
   PORT: process.env.PORT || 3004,
   ADMIN_AUTH: "admin:qwerty",
   PATH: {
-    VIDEOS: "/videos",
     TESTING: "/testing",
     POSTS: "/posts",
     BLOGS: "/blogs",
