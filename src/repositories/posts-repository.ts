@@ -29,7 +29,7 @@ export const postsRepository = {
     return createdPost;
   },
 
-  removePost(id: number) {
+  removePost(id: string) {
     const foundPost = db.posts.find((p) => p.id === id);
     if (!foundPost) {
       return null;
