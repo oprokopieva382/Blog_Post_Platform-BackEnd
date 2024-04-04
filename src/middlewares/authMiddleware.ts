@@ -18,6 +18,7 @@ export const authMiddleware = (
 
   const bufDecoded = Buffer.from(SETTINGS.ADMIN_AUTH, "utf8");
   const encodedAuth = bufDecoded.toString("base64");
+   console.log(encodedAuth);
 
   if (auth.slice(6) !== encodedAuth || auth.slice(0, 6) !== "Basic ") {
     res.status(401).json({});
