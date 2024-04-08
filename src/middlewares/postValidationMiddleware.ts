@@ -71,17 +71,16 @@ export const postValidationMiddleware = async (
   await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
   const errors = validationResult(req)
-  //console.log(errors);
+
   if (!errors.isEmpty()) {
-    console.log(errors.array());
-    console.log(errors.array().map((error) => error));
+    //console.log(errors.array());
+    //console.log(errors.array().map((error) => error));
 
     const errorsFields = errors.array({
       onlyFirstError: true,
     }) as FieldValidationError[];
     return res.status(400).json({
-      //   errorsMessages: errors.array({ onlyFirstError: true }).map((error) => ({
-      errorsMessages: errorsFields.map((error) => ({
+        errorsMessages: errorsFields.map((error) => ({
         message: error.msg,
         field: error.path,
       })),

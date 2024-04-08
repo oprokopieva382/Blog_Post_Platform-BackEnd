@@ -1,8 +1,6 @@
 import { db } from "../db/db";
 import { PostInputModel } from "../models/PostInputModel";
 import { PostViewModel } from "../models/PostViewModel";
-import { APIErrorResult } from "../output-errors-type";
-import { blogsRepository } from "./blogs-repository";
 
 export const postsRepository = {
   getAllPosts() {
