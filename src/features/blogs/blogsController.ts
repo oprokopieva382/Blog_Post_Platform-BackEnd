@@ -33,10 +33,7 @@ export const blogsController = {
     }
   },
 
-  deleteById: async (
-    req: Request,
-    res: Response<void | APIErrorResult>
-  ) => {
+  deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
       const blogToRemove = blogsRepository.removeBlog(req.params.id);
 
@@ -48,6 +45,25 @@ export const blogsController = {
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in fetching delete blog by ID:", error);
+      res.status(500);
+    }
+  },
+
+  create: async (
+    req: Request<{}, {}, BlogInputModel>,
+    res: Response<BlogViewModel | APIErrorResult>
+  ) => {
+    try {
+      const newBlog = await blogsRepository.createBlog(req.body);
+
+      if (!newBlog) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.status(201).json(newBlog);
+    } catch (error) {
+      console.error("Error in fetching create blog by ID:", error);
       res.status(500);
     }
   },

@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { blogsCollection } from "../cloud_DB/mongo_db_atlas";
 import { BlogDBType } from "../cloud_DB/mongo_db_types";
 import { BlogViewModel } from "../models/BlogViewModel";
+import { BlogInputModel } from "../models/BlogInputModel";
 
 export const blogsRepository = {
   async getAllBlogs(): Promise<BlogViewModel[]> {
@@ -29,6 +30,14 @@ export const blogsRepository = {
     }
 
     return mapBlogDBToView(blogToDelete);
+  },
+  
+  async createBlog(data: BlogInputModel) {
+    const newBlog = await blogsCollection.insertOne({_id: new ObjectId(), ...data});
+    const insertedId = newBlog.insertedId;
+
+    const createdBlog = this.getByIdBlog(insertedId.toString());
+    return createdBlog;
   },
 };
 
