@@ -5,18 +5,20 @@ import { blogValidationMiddleware } from "../../middlewares/blogValidationMiddle
 
 export const blogsRouter = Router();
 
-blogsRouter.get("/", blogsController.getAll());
-blogsRouter.get("/:id", blogsController.getById());
-blogsRouter.post(
-  "/",
-  authMiddleware,
-  blogValidationMiddleware,
-  blogsController.create()
-);
-blogsRouter.delete("/:id", authMiddleware, blogsController.deleteById());
-blogsRouter.put(
-  "/:id",
-  authMiddleware,
-  blogValidationMiddleware,
-  blogsController.update()
-);
+blogsRouter.get("/", async (req, res) => {
+  await blogsController.getAll(req, res);
+});
+// blogsRouter.get("/:id", blogsController.getById());
+// blogsRouter.post(
+//   "/",
+//   authMiddleware,
+//   blogValidationMiddleware,
+//   blogsController.create()
+// );
+// blogsRouter.delete("/:id", authMiddleware, blogsController.deleteById());
+// blogsRouter.put(
+//   "/:id",
+//   authMiddleware,
+//   blogValidationMiddleware,
+//   blogsController.update()
+// );

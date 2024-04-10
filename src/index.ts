@@ -1,10 +1,9 @@
 import { app } from "./app";
-import { runMongoDB } from "./cloud_DB/mongo_db_atlas";
+import { ConnectMongoDB } from "./cloud_DB/mongo_db_atlas";
 import { SETTINGS } from "./settings";
 
-
-const runBackEnd = async () => {
-  const mongoDBConnected = await runMongoDB();
+const startServer = async () => {
+  const mongoDBConnected = await ConnectMongoDB();
   try {
     if (!mongoDBConnected) {
       console.log("Failed to connect to MongoDB Atlas");
@@ -19,4 +18,4 @@ const runBackEnd = async () => {
   }
 };
 
-runBackEnd();
+startServer();
