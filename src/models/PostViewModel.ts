@@ -6,6 +6,7 @@ export type PostViewModel = {
    * Post content (required field)
    * Post to blogId joint (required field)
    * Post to blogName joint (required field)
+   * Post createdAt (date-time string)
    */
   id: string;
   title: string;
@@ -13,4 +14,5 @@ export type PostViewModel = {
   content: string;
   blogId: string;
   blogName: string;
+  createdAt?: string;
 };
