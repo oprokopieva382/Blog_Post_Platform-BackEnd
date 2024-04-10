@@ -19,6 +19,17 @@ export const blogsRepository = {
     }
     return mapBlogDBToView(foundBlog);
   },
+
+  async removeBlog(id: string) {
+    const blogToDelete = await blogsCollection.findOneAndDelete({
+      _id: new ObjectId(id),
+    });
+    if (!blogToDelete) {
+      return null;
+    }
+
+    return mapBlogDBToView(blogToDelete);
+  },
 };
 
 export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {

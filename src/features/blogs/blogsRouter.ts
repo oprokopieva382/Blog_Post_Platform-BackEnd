@@ -11,13 +11,15 @@ blogsRouter.get("/", async (req, res) => {
 blogsRouter.get("/:id", async (req, res) => {
   await blogsController.getById(req, res);
 });
+blogsRouter.delete("/:id", authMiddleware, async (req, res) => {
+  blogsController.deleteById(req, res);
+});
 // blogsRouter.post(
 //   "/",
 //   authMiddleware,
 //   blogValidationMiddleware,
 //   blogsController.create()
 // );
-// blogsRouter.delete("/:id", authMiddleware, blogsController.deleteById());
 // blogsRouter.put(
 //   "/:id",
 //   authMiddleware,

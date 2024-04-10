@@ -20,7 +20,7 @@ export const blogsController = {
   getById: async (req: Request, res: Response) => {
     try {
       const foundBlog = await blogsRepository.getByIdBlog(req.params.id);
-      
+
       if (!foundBlog) {
         res.sendStatus(404);
         return;
@@ -32,23 +32,26 @@ export const blogsController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  deleteById: async (
+    req: Request,
+    res: Response<void | APIErrorResult>
+  ) => {
+    try {
+      const blogToRemove = blogsRepository.removeBlog(req.params.id);
+
+      if (!blogToRemove) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in fetching delete blog by ID:", error);
+      res.status(500);
+    }
+  },
 };
-
-// deleteById: () => {
-//   return async (
-//     req: Request<ParamType>,
-//     res: Response<void | APIErrorResult>
-//   ) => {
-//     const blogToRemove = blogsRepository.removeBlog(req.params.id);
-
-//     if (!blogToRemove) {
-//       res.sendStatus(404);
-//       return;
-//     }
-
-//     res.sendStatus(204);
-//   };
-// },
 
 // create: () => {
 //   return (
