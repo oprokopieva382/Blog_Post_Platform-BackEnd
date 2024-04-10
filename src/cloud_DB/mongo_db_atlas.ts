@@ -13,7 +13,7 @@ export const runMongoDB = async () => {
     console.log("Connected to MongoDB Atlas");
     return true;
   } catch (error) {
-    console.info(error);
+    console.log(error);
     await client.close();
     return false;
   }
