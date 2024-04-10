@@ -19,9 +19,8 @@ export const blogsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
+      const foundBlog = await blogsRepository.getByIdBlog(req.params.id);
       
-      const foundBlog = blogsRepository.getByIdBlog(req.params.id);
-
       if (!foundBlog) {
         res.sendStatus(404);
         return;
@@ -34,22 +33,6 @@ export const blogsController = {
     }
   },
 };
-
-// getById: () => {
-//   return (
-//     req: Request<ParamType>,
-//     res: Response<BlogViewModel | APIErrorResult>
-//   ) => {
-//     const foundBlog = blogsRepository.getByIdBlog(req.params.id);
-
-//     if (!foundBlog) {
-//       res.sendStatus(404);
-//       return;
-//     }
-
-//     res.status(200).json(foundBlog);
-//   };
-// },
 
 // deleteById: () => {
 //   return async (

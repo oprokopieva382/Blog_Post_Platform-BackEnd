@@ -7,7 +7,6 @@ export const blogsRepository = {
   async getAllBlogs(): Promise<BlogViewModel[]> {
     const blogs: BlogDBType[] = await blogsCollection.find().toArray();
     const blogsToView: BlogViewModel[] = blogs.map(mapBlogDBToView);
-    console.log(blogsToView);
     return blogsToView;
   },
 
@@ -29,7 +28,7 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,
-    createdAt: blog.createdAt || "",
+    createdAt: new Date().toISOString(),
     isMembership: blog.isMembership || true,
   };
 };
