@@ -1,10 +1,14 @@
-import {config} from "dotenv"
+import { config } from "dotenv";
 //imports values from .env file in process.env
-config()
+config();
 
 export const SETTINGS = {
   //for updating comforts here all hardcoded values
   PORT: process.env.PORT || 3004,
+  MONGO_DB_ATLAS: process.env.MONGO_DB_ATLAS || "",
+  DB_NAME: "BLOGS_COLLECTION" || "POSTS_COLLECTION",
+  BLOGS_COLLECTION: process.env.BLOGS_COLLECTION || "",
+  POSTS_COLLECTION: process.env.POSTS_COLLECTION || "",
   ADMIN_AUTH: "admin:qwerty",
   PATH: {
     TESTING: "/testing",
