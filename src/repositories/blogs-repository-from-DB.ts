@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { blogsCollection } from "../cloud_DB/mongo_db_atlas";
 import { BlogDBType } from "../cloud_DB/mongo_db_types";
 import { BlogViewModel } from "../models/BlogViewModel";
@@ -5,19 +6,30 @@ import { BlogViewModel } from "../models/BlogViewModel";
 export const blogsRepository = {
   async getAllBlogs(): Promise<BlogViewModel[]> {
     const blogs: BlogDBType[] = await blogsCollection.find().toArray();
-    const blogsToView: BlogViewModel[] = blogs.map(mapBlogDBToViewModel);
+    const blogsToView: BlogViewModel[] = blogs.map(mapBlogDBToView);
+    console.log(blogsToView);
     return blogsToView;
+  },
+
+  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
+    const foundBlog = await blogsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    if (!foundBlog) {
+      return null;
+    }
+    return mapBlogDBToView(foundBlog);
   },
 };
 
-export const mapBlogDBToViewModel = (blog: BlogDBType): BlogViewModel => {
+export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
   return {
     // Convert ObjectId to string
-    id: blog._id.toHexString(),
+    id: blog._id.toString(),
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,
-    createdAt: blog.createdAt,
-    isMembership: blog.isMembership,
+    createdAt: blog.createdAt || "",
+    isMembership: blog.isMembership || true,
   };
 };

@@ -8,7 +8,9 @@ export const blogsRouter = Router();
 blogsRouter.get("/", async (req, res) => {
   await blogsController.getAll(req, res);
 });
-// blogsRouter.get("/:id", blogsController.getById());
+blogsRouter.get("/:id", async (req, res) => {
+  await blogsController.getById(req, res);
+});
 // blogsRouter.post(
 //   "/",
 //   authMiddleware,
