@@ -5,18 +5,21 @@ import { postValidationMiddleware } from "../../middlewares/postValidationMiddle
 
 export const postsRouter = Router();
 
-postsRouter.get("/", postsController.getAll());
-postsRouter.get("/:id", postsController.getById());
-postsRouter.post(
+postsRouter.get(
   "/",
-  authMiddleware,
-  postValidationMiddleware,
-  postsController.create()
+  async (req, res) => await postsController.getAll(req, res)
 );
-postsRouter.delete("/:id", authMiddleware, postsController.deleteById());
-postsRouter.put(
-  "/:id",
-  authMiddleware,
-  postValidationMiddleware,
-  postsController.update()
-);
+// postsRouter.get("/:id", postsController.getById());
+// postsRouter.post(
+//   "/",
+//   authMiddleware,
+//   postValidationMiddleware,
+//   postsController.create()
+// );
+// postsRouter.delete("/:id", authMiddleware, postsController.deleteById());
+// postsRouter.put(
+//   "/:id",
+//   authMiddleware,
+//   postValidationMiddleware,
+//   postsController.update()
+// );
