@@ -1,60 +1,91 @@
-import { db } from "../db/db";
-import { PostInputModel } from "../models/PostInputModel";
+import { ObjectId } from "mongodb";
+import { postsCollection } from "../cloud_DB/mongo_db_atlas";
+import { PostDBType } from "../cloud_DB/mongo_db_types";
 import { PostViewModel } from "../models/PostViewModel";
+import { PostInputModel } from "../models/PostInputModel";
+import { blogsRepository } from "./blogs-repository";
 
 export const postsRepository = {
-  getAllPosts() {
-    const posts = db.posts;
-    return posts;
+  async getAllPosts(): Promise<PostViewModel[]> {
+    const posts: PostDBType[] = await postsCollection.find().toArray();
+    const postsToView: PostViewModel[] = posts.map(mapPostDBToView);
+    return postsToView;
   },
 
-  getByIdPost(id: string) {
-    const foundPost = db.posts.find((p) => p.id === id);
-    return foundPost ? foundPost : null;
+  async getByIdPost(id: string): Promise<PostViewModel | null> {
+    const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
+    if (!foundPost) {
+      return null;
+    }
+    return mapPostDBToView(foundPost);
   },
 
-  createPost(data: PostInputModel) {
+  async createPost(data: PostInputModel) {
     const { title, shortDescription, content, blogId } = data;
 
-    const isBlogExist = db.blogs.find((b) => b.id === blogId);
+    const isBlogExist = await blogsRepository.getByIdBlog(blogId);
     if (!isBlogExist) {
       return null;
     }
 
-    const newPost: PostViewModel = {
-      id: Math.floor(Date.now() + Math.random() * 1000000).toString(),
+    const newPost = await postsCollection.insertOne({
+      _id: new ObjectId(),
       title,
       shortDescription,
       content,
-      blogId,
+      blogId: new ObjectId(blogId),
       blogName: isBlogExist.name,
-    };
+    });
+    const insertedId = newPost.insertedId;
 
-    db.posts = [...db.posts, newPost];
-    const createdPost = this.getByIdPost(newPost.id);
+    const createdPost = this.getByIdPost(insertedId.toString());
     return createdPost;
   },
 
-  removePost(id: string) {
-    const foundPost = db.posts.find((p) => p.id === id);
+  async removePost(id: string) {
+    const foundPost = await postsCollection.findOneAndDelete({
+      _id: new ObjectId(id),
+    });
     if (!foundPost) {
       return null;
     }
 
-    const newPostData = db.posts.filter((p) => p.id !== id);
-    db.posts = newPostData;
-    return foundPost;
+    return mapPostDBToView(foundPost);
   },
 
-  updatePost(data: PostInputModel, id: string) {
-    const postToUpdateIndex = db.posts.findIndex((p) => p.id === id);
+  async updatePost(data: PostInputModel, id: string) {
+    const { title, shortDescription, content, blogId } = data;
+    await postsCollection.findOneAndUpdate(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        $set: {
+          title,
+          shortDescription,
+          content,
+          blogId: new ObjectId(blogId),
+        },
+      }
+    );
 
-    if (postToUpdateIndex === -1) {
-      return null;
-    }
+    const updatedPost = await postsCollection.findOne({
+      _id: new ObjectId(id),
+    });
 
-    db.posts[postToUpdateIndex] = { ...db.posts[postToUpdateIndex], ...data };
-
-    return db.posts[postToUpdateIndex];
+    return updatedPost;
   },
+};
+
+export const mapPostDBToView = (post: PostDBType): PostViewModel => {
+  return {
+    // Convert ObjectId to string
+    id: post._id.toString(),
+    title: post.title,
+    shortDescription: post.shortDescription,
+    content: post.content,
+    blogId: post.blogId.toString(),
+    blogName: post.blogName,
+    createdAt: new Date().toISOString(),
+  };
 };
