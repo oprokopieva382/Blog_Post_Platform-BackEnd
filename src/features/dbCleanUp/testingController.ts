@@ -1,8 +1,16 @@
 import { Request, Response } from "express";
-import { db } from "../../db/db";
+import {
+  blogsCollection,
+  postsCollection,
+} from "../../cloud_DB/mongo_db_atlas";
 
-export const testingController = (req: Request, res: Response) => {
-  db.blogs = [];
-  db.posts = [];
-  res.sendStatus(204);
+export const testingController = async (req: Request, res: Response) => {
+  try {
+    await blogsCollection.deleteMany({});
+    await postsCollection.deleteMany({});
+    res.sendStatus(204);
+  } catch (error) {
+    console.error("Error in fetching delete all data:", error);
+    res.status(500);
+  }
 };
