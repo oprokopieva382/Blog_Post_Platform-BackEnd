@@ -1,6 +1,6 @@
 ## Blog Posts Platform Backend
 
-This repository contains the backend implementation for a blog posts platform. The backend is responsible for managing blog posts, user authentication, and other related functionalities. It provides RESTful APIs for creating, reading, updating, and deleting blog posts, as well as managing user authentication and authorization. Built using Express.js and MongoDB, this backend serves as the foundation for the entire blog posts platform.
+This repository contains the backend implementation for a blog posts platform. The backend is responsible for managing blog posts, user authentication, and other related functionalities. It provides RESTful APIs for creating, reading, updating, and deleting blog posts, as well as managing user authentication and authorization. This backend serves as the foundation for the entire blog posts platform.
 
 ## Main Used Tools
 📌JS
