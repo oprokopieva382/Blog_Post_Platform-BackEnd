@@ -63,35 +63,29 @@ export const blogsController = {
 
       res.status(201).json(newBlog);
     } catch (error) {
-      console.error("Error in fetching create blog by ID:", error);
+      console.error("Error in fetching create blog:", error);
+      res.status(500);
+    }
+  },
+  update: async (
+    req: Request<ParamType, {}, BlogInputModel>,
+    res: Response<BlogViewModel | APIErrorResult>
+  ) => {
+    try {
+      const blogToUpdate = await blogsRepository.updateBlog(
+        req.body,
+        req.params.id
+      );
+
+      if (!blogToUpdate) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in fetching update blog by ID:", error);
       res.status(500);
     }
   },
 };
-
-// create: () => {
-//   return (
-//     req: Request<{}, {}, BlogInputModel>,
-//     res: Response<BlogViewModel | APIErrorResult>
-//   ) => {
-//     const newBlog = blogsRepository.createBlog(req.body);
-
-//     res.status(201).json(newBlog);
-//   };
-// },
-
-// update: () => {
-//   return (
-//     req: Request<ParamType, {}, BlogInputModel>,
-//     res: Response<BlogViewModel | APIErrorResult>
-//   ) => {
-//     const blogToUpdate = blogsRepository.updateBlog(req.body, req.params.id);
-
-//     if (!blogToUpdate) {
-//       res.sendStatus(404);
-//       return;
-//     }
-
-//     res.sendStatus(204);
-//   };
-// },

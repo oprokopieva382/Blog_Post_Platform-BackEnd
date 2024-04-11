@@ -31,13 +31,29 @@ export const blogsRepository = {
 
     return mapBlogDBToView(blogToDelete);
   },
-  
+
   async createBlog(data: BlogInputModel) {
-    const newBlog = await blogsCollection.insertOne({_id: new ObjectId(), ...data});
+    const newBlog = await blogsCollection.insertOne({
+      _id: new ObjectId(),
+      ...data,
+    });
     const insertedId = newBlog.insertedId;
 
     const createdBlog = this.getByIdBlog(insertedId.toString());
     return createdBlog;
+  },
+
+  async updateBlog(data: BlogInputModel, id: string) {
+    const { name, description, websiteUrl } = data;
+    await blogsCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { name, description, websiteUrl } }
+    );
+    const updatedBlog = await blogsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+
+    return updatedBlog;
   },
 };
 
