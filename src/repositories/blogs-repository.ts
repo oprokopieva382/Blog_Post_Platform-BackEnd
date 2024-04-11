@@ -1,51 +1,70 @@
-import { db } from "../db/db";
+import { ObjectId } from "mongodb";
+import { blogsCollection } from "../cloud_DB/mongo_db_atlas";
+import { BlogDBType } from "../cloud_DB/mongo_db_types";
+import { BlogViewModel } from "../models/BlogViewModel";
 import { BlogInputModel } from "../models/BlogInputModel";
 
 export const blogsRepository = {
-  getAllBlogs() {
-    const blogs = db.blogs;
-    return blogs;
+  async getAllBlogs(): Promise<BlogViewModel[]> {
+    const blogs: BlogDBType[] = await blogsCollection.find().toArray();
+    const blogsToView: BlogViewModel[] = blogs.map(mapBlogDBToView);
+    return blogsToView;
   },
 
-  getByIdBlog(id: string) {
-    const foundBlog = db.blogs.find((b) => b.id === id);
-    return foundBlog ? foundBlog : null;
-  },
-
-  createBlog(data: BlogInputModel) {
-    const { name, description, websiteUrl } = data;
-    const newBlog = {
-      id: Math.floor(Date.now() + Math.random() * 1000000).toString(),
-      name,
-      description,
-      websiteUrl,
-    };
-
-    db.blogs = [...db.blogs, newBlog];
-    const createdBlog = this.getByIdBlog(newBlog.id);
-    return createdBlog;
-  },
-
-  removeBlog(id: string) {
-    const foundBlog = db.blogs.find((b) => b.id === id);
+  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
+    const foundBlog = await blogsCollection.findOne({
+      _id: new ObjectId(id),
+    });
     if (!foundBlog) {
       return null;
     }
-
-    const newBlogsData = db.blogs.filter((b) => b.id !== id);
-    db.blogs = newBlogsData;
-    return foundBlog;
+    return mapBlogDBToView(foundBlog);
   },
 
-  updateBlog(data: BlogInputModel, id: string) {
-    const blogToUpdateIndex = db.blogs.findIndex((b) => b.id === id);
-
-    if (blogToUpdateIndex === -1) {
+  async removeBlog(id: string) {
+    const blogToDelete = await blogsCollection.findOneAndDelete({
+      _id: new ObjectId(id),
+    });
+    if (!blogToDelete) {
       return null;
     }
 
-    db.blogs[blogToUpdateIndex] = { ...db.blogs[blogToUpdateIndex], ...data };
-
-    return db.blogs[blogToUpdateIndex];
+    return mapBlogDBToView(blogToDelete);
   },
+
+  async createBlog(data: BlogInputModel) {
+    const newBlog = await blogsCollection.insertOne({
+      _id: new ObjectId(),
+      ...data,
+    });
+    const insertedId = newBlog.insertedId;
+
+    const createdBlog = this.getByIdBlog(insertedId.toString());
+    return createdBlog;
+  },
+
+  async updateBlog(data: BlogInputModel, id: string) {
+    const { name, description, websiteUrl } = data;
+    await blogsCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { name, description, websiteUrl } }
+    );
+    const updatedBlog = await blogsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+
+    return updatedBlog;
+  },
+};
+
+export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
+  return {
+    // Convert ObjectId to string
+    id: blog._id.toString(),
+    name: blog.name,
+    description: blog.description,
+    websiteUrl: blog.websiteUrl,
+    createdAt: new Date().toISOString(),
+    isMembership: blog.isMembership || true,
+  };
 };
