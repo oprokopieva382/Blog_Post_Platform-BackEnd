@@ -19,7 +19,11 @@ postsRouter.post(
   postValidationMiddleware,
   async (req, res) => await postsController.create(req, res)
 );
-// postsRouter.delete("/:id", authMiddleware, postsController.deleteById());
+postsRouter.delete(
+  "/:id",
+  authMiddleware,
+  async (req, res) => await postsController.deleteById(req, res)
+);
 // postsRouter.put(
 //   "/:id",
 //   authMiddleware,

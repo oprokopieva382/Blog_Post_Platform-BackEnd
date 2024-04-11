@@ -50,23 +50,23 @@ export const postsController = {
       res.status(500);
     }
   },
+
+  deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
+    try {
+      const postToRemove = postsRepository.removePost(req.params.id);
+
+      if (!postToRemove) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in fetching delete post by ID:", error);
+      res.status(500);
+    }
+  },
 };
-
-// deleteById: () => {
-//   return async (
-//     req: Request<ParamType>,
-//     res: Response<void | APIErrorResult>
-//   ) => {
-//     const postToRemove = postsRepository.removePost(req.params.id);
-
-//     if (!postToRemove) {
-//       res.sendStatus(404);
-//       return;
-//     }
-
-//     res.sendStatus(204);
-//   };
-// },
 
 // update: () => {
 //   return (

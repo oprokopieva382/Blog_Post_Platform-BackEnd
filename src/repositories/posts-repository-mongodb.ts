@@ -42,6 +42,17 @@ export const postsRepository = {
     const createdPost = this.getByIdPost(insertedId.toString());
     return createdPost;
   },
+
+  async removePost(id: string) {
+    const foundPost = await postsCollection.findOneAndDelete({
+      _id: new ObjectId(id),
+    });
+    if (!foundPost) {
+      return null;
+    }
+
+    return mapPostDBToView(foundPost);
+  },
 };
 
 export const mapPostDBToView = (post: PostDBType): PostViewModel => {
