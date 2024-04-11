@@ -53,7 +53,7 @@ export const postsController = {
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
-      const postToRemove = postsRepository.removePost(req.params.id);
+      const postToRemove = await postsRepository.removePost(req.params.id);
 
       if (!postToRemove) {
         res.sendStatus(404);
