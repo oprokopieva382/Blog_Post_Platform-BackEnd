@@ -66,20 +66,23 @@ export const postsController = {
       res.status(500);
     }
   },
+
+  update: async (
+    req: Request<ParamType, {}, PostInputModel>,
+    res: Response<PostViewModel | APIErrorResult>
+  ) => {
+    try {
+      const postToUpdate = await postsRepository.updatePost(req.body, req.params.id);
+
+      if (!postToUpdate) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in fetching update post by ID:", error);
+      res.status(500);
+    }
+  },
 };
-
-// update: () => {
-//   return (
-//     req: Request<ParamType, {}, PostInputModel>,
-//     res: Response<PostViewModel | APIErrorResult>
-//   ) => {
-//     const postToUpdate = postsRepository.updatePost(req.body, req.params.id);
-
-//     if (!postToUpdate) {
-//       res.sendStatus(404);
-//       return;
-//     }
-
-//     res.sendStatus(204);
-//   };
-// },

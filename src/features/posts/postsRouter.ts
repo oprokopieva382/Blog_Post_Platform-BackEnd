@@ -1,7 +1,11 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import { postsController } from "./postsController";
 import { authMiddleware } from "../../middlewares/authMiddleware";
 import { postValidationMiddleware } from "../../middlewares/postValidationMiddleware";
+import { ParamType } from ".";
+import { PostInputModel } from "../../models/PostInputModel";
+import { PostViewModel } from "../../models/PostViewModel";
+import { APIErrorResult } from "../../output-errors-type";
 
 export const postsRouter = Router();
 
@@ -24,9 +28,12 @@ postsRouter.delete(
   authMiddleware,
   async (req, res) => await postsController.deleteById(req, res)
 );
-// postsRouter.put(
-//   "/:id",
-//   authMiddleware,
-//   postValidationMiddleware,
-//   postsController.update()
-// );
+postsRouter.put(
+  "/:id",
+  authMiddleware,
+  postValidationMiddleware,
+  async (
+    req: Request<ParamType, {}, PostInputModel>,
+    res: Response<PostViewModel | APIErrorResult>
+  ) => await postsController.update(req, res)
+);

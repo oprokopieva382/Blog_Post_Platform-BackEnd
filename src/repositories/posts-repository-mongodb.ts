@@ -53,6 +53,29 @@ export const postsRepository = {
 
     return mapPostDBToView(foundPost);
   },
+
+  async updatePost(data: PostInputModel, id: string) {
+    const { title, shortDescription, content, blogId } = data;
+    await postsCollection.findOneAndUpdate(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        $set: {
+          title,
+          shortDescription,
+          content,
+          blogId: new ObjectId(blogId),
+        },
+      }
+    );
+
+    const updatedPost = await postsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+
+    return updatedPost;
+  },
 };
 
 export const mapPostDBToView = (post: PostDBType): PostViewModel => {
