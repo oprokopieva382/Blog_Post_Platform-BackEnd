@@ -33,7 +33,7 @@ export const blogsController = {
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
-      const blogToRemove = blogsRepository.removeBlog(req.params.id);
+      const blogToRemove = await blogsRepository.removeBlog(req.params.id);
 
       if (!blogToRemove) {
         res.sendStatus(404);
