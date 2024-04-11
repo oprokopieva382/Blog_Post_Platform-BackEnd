@@ -86,6 +86,6 @@ export const mapPostDBToView = (post: PostDBType): PostViewModel => {
     content: post.content,
     blogId: post.blogId.toString(),
     blogName: post.blogName,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date().toString(),
   };
 };
