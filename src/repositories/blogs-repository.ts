@@ -65,6 +65,6 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
     description: blog.description,
     websiteUrl: blog.websiteUrl,
     createdAt: new Date().toISOString(),
-    isMembership: blog.isMembership || true,
+    isMembership:  false,
   };
 };
