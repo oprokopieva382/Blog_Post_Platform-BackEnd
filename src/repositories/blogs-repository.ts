@@ -35,6 +35,7 @@ export const blogsRepository = {
   async createBlog(data: BlogInputModel) {
     const newBlog = await blogsCollection.insertOne({
       _id: new ObjectId(),
+      createdAt: new Date().toISOString(),
       ...data,
     });
     const insertedId = newBlog.insertedId;
@@ -64,7 +65,7 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,
-    createdAt: new Date().toString(),
+    createdAt: blog.createdAt,
     isMembership:  false,
   };
 };

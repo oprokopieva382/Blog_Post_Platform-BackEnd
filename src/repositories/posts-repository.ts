@@ -35,6 +35,7 @@ export const postsRepository = {
       content,
       blogId: new ObjectId(blogId),
       blogName: isBlogExist.name,
+      createdAt: new Date().toISOString(),
     });
     const insertedId = newPost.insertedId;
 
@@ -86,6 +87,6 @@ export const mapPostDBToView = (post: PostDBType): PostViewModel => {
     content: post.content,
     blogId: post.blogId.toString(),
     blogName: post.blogName,
-    createdAt: new Date().toString(),
+    createdAt: post.createdAt,
   };
 };
