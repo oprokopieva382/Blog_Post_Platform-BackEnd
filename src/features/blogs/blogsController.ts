@@ -11,7 +11,8 @@ export const blogsController = {
       const blogs = await blogsRepository.getAllBlogs();
       res.status(200).json(blogs);
     } catch (error) {
-     
+      console.error("Error in fetching all blogs:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 
