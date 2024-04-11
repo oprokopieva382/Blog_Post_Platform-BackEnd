@@ -3,7 +3,7 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { BlogInputModel } from "../../models/BlogInputModel";
 import { BlogViewModel } from "../../models/BlogViewModel";
-import { blogsRepository } from "../../repositories/blogs-repository-from-DB";
+import { blogsRepository } from "../../repositories/blogs-repository";
 import { ObjectId } from "mongodb";
 
 export const blogsController = {
