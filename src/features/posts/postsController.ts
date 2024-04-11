@@ -11,27 +11,27 @@ export const postsController = {
       const posts = await postsRepository.getAllPosts();
       res.status(200).json(posts);
     } catch (error) {
-       console.error("Error in fetching all posts:", error);
-       res.status(500).json({ error: "Internal server error" });
+      console.error("Error in fetching all posts:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 
+  getById: async (req: Request, res: Response) => {
+    try {
+      const foundPost = await postsRepository.getByIdPost(req.params.id);
+
+      if (!foundPost) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.status(200).json(foundPost);
+    } catch (error) {
+      console.error("Error in fetching post by ID:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
 };
-// getById: () => {
-//   return (
-//     req: Request<ParamType>,
-//     res: Response<PostViewModel | APIErrorResult>
-//   ) => {
-//     const foundPost = postsRepository.getByIdPost(req.params.id);
-
-//     if (!foundPost) {
-//       res.sendStatus(404);
-//       return;
-//     }
-
-//     res.status(200).json(foundPost);
-//   };
-// },
 
 // deleteById: () => {
 //   return async (

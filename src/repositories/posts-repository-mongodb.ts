@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { postsCollection } from "../cloud_DB/mongo_db_atlas";
 import { PostDBType } from "../cloud_DB/mongo_db_types";
 import { PostViewModel } from "../models/PostViewModel";
@@ -7,6 +8,14 @@ export const postsRepository = {
     const posts: PostDBType[] = await postsCollection.find().toArray();
     const postsToView: PostViewModel[] = posts.map(mapPostDBToView);
     return postsToView;
+  },
+
+  async getByIdPost(id: string): Promise<PostViewModel | null> {
+    const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
+    if (!foundPost) {
+      return null;
+    }
+    return mapPostDBToView(foundPost);
   },
 };
 

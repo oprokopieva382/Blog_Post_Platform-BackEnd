@@ -9,7 +9,10 @@ postsRouter.get(
   "/",
   async (req, res) => await postsController.getAll(req, res)
 );
-// postsRouter.get("/:id", postsController.getById());
+postsRouter.get(
+  "/:id",
+  async (req, res) => await postsController.getById(req, res)
+);
 // postsRouter.post(
 //   "/",
 //   authMiddleware,
