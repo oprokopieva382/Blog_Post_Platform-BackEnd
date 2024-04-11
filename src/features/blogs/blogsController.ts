@@ -4,7 +4,6 @@ import { ParamType } from ".";
 import { BlogInputModel } from "../../models/BlogInputModel";
 import { BlogViewModel } from "../../models/BlogViewModel";
 import { blogsRepository } from "../../repositories/blogs-repository";
-import { ObjectId } from "mongodb";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
@@ -12,8 +11,7 @@ export const blogsController = {
       const blogs = await blogsRepository.getAllBlogs();
       res.status(200).json(blogs);
     } catch (error) {
-      console.error("Error in fetching all blogs:", error);
-      res.status(500).json({ error: "Internal server error" });
+     
     }
   },
 
