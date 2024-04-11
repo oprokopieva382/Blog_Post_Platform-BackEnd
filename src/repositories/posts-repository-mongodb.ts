@@ -1,7 +1,10 @@
 import { ObjectId } from "mongodb";
-import { postsCollection } from "../cloud_DB/mongo_db_atlas";
+import { blogsCollection, postsCollection } from "../cloud_DB/mongo_db_atlas";
 import { PostDBType } from "../cloud_DB/mongo_db_types";
 import { PostViewModel } from "../models/PostViewModel";
+import { PostInputModel } from "../models/PostInputModel";
+import { blogsController } from "../features/blogs/blogsController";
+import { blogsRepository } from "./blogs-repository";
 
 export const postsRepository = {
   async getAllPosts(): Promise<PostViewModel[]> {
@@ -16,6 +19,28 @@ export const postsRepository = {
       return null;
     }
     return mapPostDBToView(foundPost);
+  },
+
+  async createPost(data: PostInputModel) {
+    const { title, shortDescription, content, blogId } = data;
+
+    const isBlogExist = await blogsRepository.getByIdBlog(blogId);
+    if (!isBlogExist) {
+      return null;
+    }
+
+    const newPost = await postsCollection.insertOne({
+      _id: new ObjectId(),
+      title,
+      shortDescription,
+      content,
+      blogId: new ObjectId(blogId),
+      blogName: isBlogExist.name,
+    });
+    const insertedId = newPost.insertedId;
+
+    const createdPost = this.getByIdPost(insertedId.toString());
+    return createdPost;
   },
 };
 

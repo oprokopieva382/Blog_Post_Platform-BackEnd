@@ -31,6 +31,25 @@ export const postsController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
+  create: async (
+    req: Request<{}, {}, PostInputModel>,
+    res: Response<PostViewModel | APIErrorResult>
+  ) => {
+    try {
+      const newPost = await postsRepository.createPost(req.body);
+
+      if (!newPost) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.status(201).json(newPost);
+    } catch (error) {
+      console.error("Error in fetching create post:", error);
+      res.status(500);
+    }
+  },
 };
 
 // deleteById: () => {
@@ -46,22 +65,6 @@ export const postsController = {
 //     }
 
 //     res.sendStatus(204);
-//   };
-// },
-
-// create: () => {
-//   return (
-//     req: Request<{}, {}, PostInputModel>,
-//     res: Response<PostViewModel | APIErrorResult>
-//   ) => {
-//     const newPost = postsRepository.createPost(req.body);
-
-//     if (!newPost) {
-//       res.sendStatus(404);
-//       return;
-//     }
-
-//     res.status(201).json(newPost);
 //   };
 // },
 

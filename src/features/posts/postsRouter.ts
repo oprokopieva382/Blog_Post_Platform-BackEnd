@@ -13,12 +13,12 @@ postsRouter.get(
   "/:id",
   async (req, res) => await postsController.getById(req, res)
 );
-// postsRouter.post(
-//   "/",
-//   authMiddleware,
-//   postValidationMiddleware,
-//   postsController.create()
-// );
+postsRouter.post(
+  "/",
+  authMiddleware,
+  postValidationMiddleware,
+  async (req, res) => await postsController.create(req, res)
+);
 // postsRouter.delete("/:id", authMiddleware, postsController.deleteById());
 // postsRouter.put(
 //   "/:id",
