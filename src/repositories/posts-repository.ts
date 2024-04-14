@@ -1,9 +1,7 @@
 import { ObjectId } from "mongodb";
-import { postsCollection } from "../cloud_DB/mongo_db_atlas";
-import { PostDBType } from "../cloud_DB/mongo_db_types";
-import { PostViewModel } from "../models/PostViewModel";
-import { PostInputModel } from "../models/PostInputModel";
+import { PostInputModel, PostViewModel } from "../models";
 import { blogsRepository } from "./blogs-repository";
+import { PostDBType, postsCollection } from "../cloud_DB";
 
 export const postsRepository = {
   async getAllPosts(): Promise<PostViewModel[]> {
