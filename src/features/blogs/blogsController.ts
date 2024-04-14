@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
-import { BlogInputModel } from "../../models/BlogInputModel";
-import { BlogViewModel } from "../../models/BlogViewModel";
 import { blogsRepository } from "../../repositories/blogs-repository";
+import { BlogInputModel, BlogViewModel } from "../../models";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {

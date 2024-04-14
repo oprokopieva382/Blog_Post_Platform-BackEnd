@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { PostInputModel } from "../../models/PostInputModel";
-import { PostViewModel } from "../../models/PostViewModel";
 import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { postsRepository } from "../../repositories/posts-repository";
+import { PostInputModel, PostViewModel } from "../../models";
 
 export const postsController = {
   getAll: async (req: Request, res: Response) => {

@@ -1,43 +1,25 @@
-import { Request, Response, Router } from "express";
-import { authMiddleware } from "../../middlewares/authMiddleware";
+import { Router } from "express";
 import { blogsController } from "./blogsController";
-import { blogValidationMiddleware } from "../../middlewares/blogValidationMiddleware";
-import { ParamType } from ".";
-import { BlogInputModel } from "../../models/BlogInputModel";
-import { BlogViewModel } from "../../models/BlogViewModel";
-import { APIErrorResult } from "../../output-errors-type";
+import { authMiddleware, blogValidationMiddleware } from "../../middlewares";
 
 export const blogsRouter = Router();
 
-blogsRouter.get(
-  "/",
-  async (req, res) => await blogsController.getAll(req, res)
-);
+blogsRouter.get("/", blogsController.getAll);
 
-blogsRouter.get(
-  "/:id",
-  async (req, res) => await blogsController.getById(req, res)
-);
+blogsRouter.get("/:id", blogsController.getById);
 
-blogsRouter.delete(
-  "/:id",
-  authMiddleware,
-  async (req, res) => await blogsController.deleteById(req, res)
-);
+blogsRouter.delete("/:id", authMiddleware, blogsController.deleteById);
 
 blogsRouter.post(
   "/",
   authMiddleware,
   blogValidationMiddleware,
-  async (req, res) => await blogsController.create(req, res)
+  blogsController.create
 );
 
 blogsRouter.put(
   "/:id",
   authMiddleware,
   blogValidationMiddleware,
-  async (
-    req: Request<ParamType, {}, BlogInputModel>,
-    res: Response<BlogViewModel | APIErrorResult>
-  ) => await blogsController.update(req, res)
+  blogsController.update
 );

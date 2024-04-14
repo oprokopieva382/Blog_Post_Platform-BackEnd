@@ -1,8 +1,6 @@
 import { ObjectId } from "mongodb";
-import { blogsCollection } from "../cloud_DB/mongo_db_atlas";
-import { BlogDBType } from "../cloud_DB/mongo_db_types";
-import { BlogViewModel } from "../models/BlogViewModel";
-import { BlogInputModel } from "../models/BlogInputModel";
+import { BlogInputModel, BlogViewModel } from "../models";
+import { BlogDBType, blogsCollection } from "../cloud_DB";
 
 export const blogsRepository = {
   async getAllBlogs(): Promise<BlogViewModel[]> {
