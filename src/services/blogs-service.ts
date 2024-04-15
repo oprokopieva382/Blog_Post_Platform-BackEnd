@@ -20,18 +20,23 @@ export const blogsService = {
     return blogToDelete ? mapBlogDBToView(blogToDelete) : null;
   },
 
-    async createBlog(data: BlogInputModel) {
-      const newBlog = {
-        _id: new ObjectId(),
-        createdAt: new Date().toISOString(),
-        ...data,
-      };
-      const createdBlog = await blogsRepository.createBlog(newBlog);
-      const insertedId = createdBlog.insertedId;
+  async createBlog(data: BlogInputModel) {
+    const newBlog = {
+      _id: new ObjectId(),
+      createdAt: new Date().toISOString(),
+      ...data,
+    };
+    const createdBlog = await blogsRepository.createBlog(newBlog);
+    const insertedId = createdBlog.insertedId;
 
-      const createdBlogExist = this.getByIdBlog(insertedId.toString());
-      return createdBlogExist;
-    },
+    const createdBlogExist = this.getByIdBlog(insertedId.toString());
+    return createdBlogExist;
+  },
+
+  async updateBlog(data: BlogInputModel, id: string) {
+    const updatedBlog = await blogsRepository.updateBlog(data, id);
+    return updatedBlog;
+  },
 };
 
 export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
@@ -45,18 +50,3 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
     isMembership: false,
   };
 };
-
-
-
-//   async updateBlog(data: BlogInputModel, id: string) {
-//     const { name, description, websiteUrl } = data;
-//     await blogsCollection.findOneAndUpdate(
-//       { _id: new ObjectId(id) },
-//       { $set: { name, description, websiteUrl } }
-//     );
-//     const updatedBlog = await blogsCollection.findOne({
-//       _id: new ObjectId(id),
-//     });
-
-//     return updatedBlog;
-//   },

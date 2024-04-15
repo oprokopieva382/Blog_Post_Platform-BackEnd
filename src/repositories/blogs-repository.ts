@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { BlogInputModel, BlogViewModel } from "../models";
+import { BlogInputModel } from "../models";
 import { BlogDBType, blogsCollection } from "../cloud_DB";
 
 export const blogsRepository = {
@@ -39,16 +39,4 @@ export const blogsRepository = {
 
     return updatedBlog;
   },
-};
-
-export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
-  return {
-    // Convert ObjectId to string
-    id: blog._id.toString(),
-    name: blog.name,
-    description: blog.description,
-    websiteUrl: blog.websiteUrl,
-    createdAt: blog.createdAt,
-    isMembership: false,
-  };
 };

@@ -72,7 +72,7 @@ export const blogsController = {
     res: Response<BlogViewModel | APIErrorResult>
   ) => {
     try {
-      const blogToUpdate = await blogsRepository.updateBlog(
+      const blogToUpdate = await blogsService.updateBlog(
         req.body,
         req.params.id
       );
