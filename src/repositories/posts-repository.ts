@@ -26,11 +26,10 @@ export const postsRepository = {
     return createdPost;
   },
 
-  async updatePost(data: PostInputModel, id: string) {
+  async updatePost(data: PostInputModel, id: string, blogName: string) {
     const { title, shortDescription, content, blogId } = data;
-    const isBlogExist = await blogsRepository.getByIdBlog(blogId);
 
-    await postsCollection.findOneAndUpdate(
+    const updatedPost = await postsCollection.findOneAndUpdate(
       {
         _id: new ObjectId(id),
       },
@@ -40,14 +39,10 @@ export const postsRepository = {
           shortDescription,
           content,
           blogId: new ObjectId(blogId),
-          blogName: isBlogExist?.name,
+          blogName,
         },
       }
     );
-
-    const updatedPost = await postsCollection.findOne({
-      _id: new ObjectId(id),
-    });
 
     return updatedPost;
   },

@@ -1,5 +1,5 @@
 import { PostInputModel, PostViewModel } from "../models";
-import { PostDBType} from "../cloud_DB";
+import { PostDBType } from "../cloud_DB";
 import { blogsRepository, postsRepository } from "../repositories";
 import { ObjectId } from "mongodb";
 
@@ -44,6 +44,18 @@ export const postsService = {
     const createdPostExist = this.getByIdPost(insertedId.toString());
     return createdPostExist;
   },
+
+  async updatePost(data: PostInputModel, id: string) {
+    const isBlogExist = await blogsRepository.getByIdBlog(data.blogId);
+
+    if (!isBlogExist) {
+      return null;
+    }
+    await postsRepository.updatePost(data, id, isBlogExist.name);
+
+    const updatedPost = await postsRepository.getByIdPost(id)
+    return updatedPost;
+  },
 };
 
 export const mapPostDBToView = (post: PostDBType): PostViewModel => {
@@ -58,34 +70,3 @@ export const mapPostDBToView = (post: PostDBType): PostViewModel => {
     createdAt: post.createdAt,
   };
 };
-
-
-
- 
-
-  // async updatePost(data: PostInputModel, id: string) {
-  //   const { title, shortDescription, content, blogId } = data;
-  //   const isBlogExist = await blogsRepository.getByIdBlog(blogId);
-
-  //   await postsCollection.findOneAndUpdate(
-  //     {
-  //       _id: new ObjectId(id),
-  //     },
-  //     {
-  //       $set: {
-  //         title,
-  //         shortDescription,
-  //         content,
-  //         blogId: new ObjectId(blogId),
-  //         blogName: isBlogExist?.name,
-  //       },
-  //     }
-  //   );
-
-  //   const updatedPost = await postsCollection.findOne({
-  //     _id: new ObjectId(id),
-  //   });
-
-  //   return updatedPost;
-  // },
-

@@ -72,7 +72,10 @@ export const postsController = {
     res: Response<PostViewModel | APIErrorResult>
   ) => {
     try {
-      const postToUpdate = await postsRepository.updatePost(req.body, req.params.id);
+      const postToUpdate = await postsService.updatePost(
+        req.body,
+        req.params.id
+      );
 
       if (!postToUpdate) {
         res.sendStatus(404);
