@@ -58,7 +58,7 @@ export const postsService = {
   },
 };
 
-export const mapPostDBToView = (post: PostDBType): PostViewModel => {
+const mapPostDBToView = (post: PostDBType): PostViewModel => {
   return {
     // Convert ObjectId to string
     id: post._id.toString(),

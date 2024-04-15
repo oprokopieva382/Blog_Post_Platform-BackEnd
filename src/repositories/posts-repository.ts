@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
 import { PostInputModel, PostViewModel } from "../models";
-import { blogsRepository } from "./blogs-repository";
 import { PostDBType, postsCollection } from "../cloud_DB";
 
 export const postsRepository = {
@@ -46,17 +45,4 @@ export const postsRepository = {
 
     return updatedPost;
   },
-};
-
-export const mapPostDBToView = (post: PostDBType): PostViewModel => {
-  return {
-    // Convert ObjectId to string
-    id: post._id.toString(),
-    title: post.title,
-    shortDescription: post.shortDescription,
-    content: post.content,
-    blogId: post.blogId.toString(),
-    blogName: post.blogName,
-    createdAt: post.createdAt,
-  };
 };
