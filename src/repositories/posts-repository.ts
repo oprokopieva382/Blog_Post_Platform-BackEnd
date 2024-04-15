@@ -9,12 +9,16 @@ export const postsRepository = {
     return posts;
   },
 
-  async getByIdPost(id: string): Promise<PostViewModel | null> {
+  async getByIdPost(id: string): Promise<PostDBType | null> {
     const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
-    if (!foundPost) {
-      return null;
-    }
-    return mapPostDBToView(foundPost);
+    return foundPost;
+  },
+
+  async removePost(id: string) {
+    const foundPost = await postsCollection.findOneAndDelete({
+      _id: new ObjectId(id),
+    });
+    return foundPost;
   },
 
   async createPost(data: PostInputModel) {
@@ -38,17 +42,6 @@ export const postsRepository = {
 
     const createdPost = this.getByIdPost(insertedId.toString());
     return createdPost;
-  },
-
-  async removePost(id: string) {
-    const foundPost = await postsCollection.findOneAndDelete({
-      _id: new ObjectId(id),
-    });
-    if (!foundPost) {
-      return null;
-    }
-
-    return mapPostDBToView(foundPost);
   },
 
   async updatePost(data: PostInputModel, id: string) {

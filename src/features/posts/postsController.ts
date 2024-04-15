@@ -18,7 +18,7 @@ export const postsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundPost = await postsRepository.getByIdPost(req.params.id);
+      const foundPost = await postsService.getByIdPost(req.params.id);
 
       if (!foundPost) {
         res.sendStatus(404);
@@ -32,28 +32,28 @@ export const postsController = {
     }
   },
 
-  create: async (
-    req: Request<{}, {}, PostInputModel>,
-    res: Response<PostViewModel | APIErrorResult>
-  ) => {
-    try {
-      const newPost = await postsRepository.createPost(req.body);
+  // create: async (
+  //   req: Request<{}, {}, PostInputModel>,
+  //   res: Response<PostViewModel | APIErrorResult>
+  // ) => {
+  //   try {
+  //     const newPost = await postsRepository.createPost(req.body);
 
-      if (!newPost) {
-        res.sendStatus(404);
-        return;
-      }
+  //     if (!newPost) {
+  //       res.sendStatus(404);
+  //       return;
+  //     }
 
-      res.status(201).json(newPost);
-    } catch (error) {
-      console.error("Error in fetching create post:", error);
-      res.status(500);
-    }
-  },
+  //     res.status(201).json(newPost);
+  //   } catch (error) {
+  //     console.error("Error in fetching create post:", error);
+  //     res.status(500);
+  //   }
+  // },
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
-      const postToRemove = await postsRepository.removePost(req.params.id);
+      const postToRemove = await postsService.removePost(req.params.id);
 
       if (!postToRemove) {
         res.sendStatus(404);

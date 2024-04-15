@@ -8,6 +8,16 @@ export const postsService = {
     const postsToView: PostViewModel[] = posts.map(mapPostDBToView);
     return postsToView;
   },
+
+  async getByIdPost(id: string): Promise<PostViewModel | null> {
+    const foundPost = await postsRepository.getByIdPost(id);
+    return foundPost ? mapPostDBToView(foundPost) : null;
+  },
+
+  async removePost(id: string) {
+    const foundPost = await postsRepository.removePost(id)
+    return foundPost ? mapPostDBToView(foundPost) : null;
+  },
 };
 
 export const mapPostDBToView = (post: PostDBType): PostViewModel => {
@@ -23,15 +33,7 @@ export const mapPostDBToView = (post: PostDBType): PostViewModel => {
   };
 };
 
-  // async getByIdPost(id: string): Promise<PostViewModel | null> {
-  //   const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
-  //   if (!foundPost) {
-  //     return null;
-  //   }
-  //   return mapPostDBToView(foundPost);
-  // },
-
-  // async createPost(data: PostInputModel) {
+   // async createPost(data: PostInputModel) {
   //   const { title, shortDescription, content, blogId } = data;
 
   //   const isBlogExist = await blogsRepository.getByIdBlog(blogId);
@@ -54,16 +56,7 @@ export const mapPostDBToView = (post: PostDBType): PostViewModel => {
   //   return createdPost;
   // },
 
-  // async removePost(id: string) {
-  //   const foundPost = await postsCollection.findOneAndDelete({
-  //     _id: new ObjectId(id),
-  //   });
-  //   if (!foundPost) {
-  //     return null;
-  //   }
-
-  //   return mapPostDBToView(foundPost);
-  // },
+ 
 
   // async updatePost(data: PostInputModel, id: string) {
   //   const { title, shortDescription, content, blogId } = data;
