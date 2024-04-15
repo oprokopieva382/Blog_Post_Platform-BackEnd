@@ -4,10 +4,9 @@ import { blogsRepository } from "./blogs-repository";
 import { PostDBType, postsCollection } from "../cloud_DB";
 
 export const postsRepository = {
-  async getAllPosts(): Promise<PostViewModel[]> {
+  async getAllPosts(): Promise<PostDBType[]> {
     const posts: PostDBType[] = await postsCollection.find().toArray();
-    const postsToView: PostViewModel[] = posts.map(mapPostDBToView);
-    return postsToView;
+    return posts;
   },
 
   async getByIdPost(id: string): Promise<PostViewModel | null> {

@@ -3,11 +3,12 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { postsRepository } from "../../repositories/posts-repository";
 import { PostInputModel, PostViewModel } from "../../models";
+import { postsService } from "../../services";
 
 export const postsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const posts = await postsRepository.getAllPosts();
+      const posts = await postsService.getAllPosts();
       res.status(200).json(posts);
     } catch (error) {
       console.error("Error in fetching all posts:", error);

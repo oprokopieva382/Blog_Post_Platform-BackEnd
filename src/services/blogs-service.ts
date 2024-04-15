@@ -39,7 +39,7 @@ export const blogsService = {
   },
 };
 
-export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
+const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
   return {
     // Convert ObjectId to string
     id: blog._id.toString(),
