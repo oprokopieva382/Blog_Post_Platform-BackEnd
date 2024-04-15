@@ -12,18 +12,14 @@ export const blogsRepository = {
     const foundBlog = await blogsCollection.findOne({
       _id: new ObjectId(id),
     });
-     return foundBlog;
+    return foundBlog;
   },
 
   async removeBlog(id: string) {
     const blogToDelete = await blogsCollection.findOneAndDelete({
       _id: new ObjectId(id),
     });
-    if (!blogToDelete) {
-      return null;
-    }
-
-    return mapBlogDBToView(blogToDelete);
+    return blogToDelete;
   },
 
   async createBlog(data: BlogInputModel) {

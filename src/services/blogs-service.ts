@@ -9,9 +9,15 @@ export const blogsService = {
     return blogsToView;
   },
 
-    async getByIdBlog(id: string): Promise<BlogViewModel | null> {
-      const foundBlog = await blogsRepository.getByIdBlog(id);
-      return foundBlog ? mapBlogDBToView(foundBlog): null;
+  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
+    const foundBlog = await blogsRepository.getByIdBlog(id);
+    return foundBlog ? mapBlogDBToView(foundBlog) : null;
+  },
+
+    async removeBlog(id: string) {
+      const blogToDelete = await blogsRepository.removeBlog(id)
+
+      return blogToDelete ? mapBlogDBToView(blogToDelete) : null;
     },
 };
 
@@ -29,16 +35,7 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
 
 
 
-//   async removeBlog(id: string) {
-//     const blogToDelete = await blogsCollection.findOneAndDelete({
-//       _id: new ObjectId(id),
-//     });
-//     if (!blogToDelete) {
-//       return null;
-//     }
 
-//     return mapBlogDBToView(blogToDelete);
-//   },
 
 //   async createBlog(data: BlogInputModel) {
 //     const newBlog = await blogsCollection.insertOne({
