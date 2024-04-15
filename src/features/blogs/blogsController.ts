@@ -3,11 +3,12 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { blogsRepository } from "../../repositories/blogs-repository";
 import { BlogInputModel, BlogViewModel } from "../../models";
+import { blogsService } from "../../services/blogs-service";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const blogs = await blogsRepository.getAllBlogs();
+      const blogs = await blogsService.getAllBlogs();
       res.status(200).json(blogs);
     } catch (error) {
       console.error("Error in fetching all blogs:", error);

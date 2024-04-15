@@ -3,10 +3,9 @@ import { BlogInputModel, BlogViewModel } from "../models";
 import { BlogDBType, blogsCollection } from "../cloud_DB";
 
 export const blogsRepository = {
-  async getAllBlogs(): Promise<BlogViewModel[]> {
+  async getAllBlogs(): Promise<BlogDBType[]> {
     const blogs: BlogDBType[] = await blogsCollection.find().toArray();
-    const blogsToView: BlogViewModel[] = blogs.map(mapBlogDBToView);
-    return blogsToView;
+    return blogs;
   },
 
   async getByIdBlog(id: string): Promise<BlogViewModel | null> {
@@ -64,6 +63,6 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
     description: blog.description,
     websiteUrl: blog.websiteUrl,
     createdAt: blog.createdAt,
-    isMembership:  false,
+    isMembership: false,
   };
 };
