@@ -15,6 +15,11 @@ export const blogsService = {
     return foundBlog ? mapBlogDBToView(foundBlog) : null;
   },
 
+  async getByIdBlogPosts(blogId: string): Promise<BlogViewModel | null> {
+    const foundBlogPosts = await blogsRepository.getByIdBlog(blogId);
+    return foundBlogPosts ? mapBlogDBToView(foundBlogPosts) : null;
+  },
+
   async removeBlog(id: string) {
     const blogToDelete = await blogsRepository.removeBlog(id);
     return blogToDelete ? mapBlogDBToView(blogToDelete) : null;

@@ -7,6 +7,7 @@ export const blogsRouter = Router();
 blogsRouter.get("/", blogsController.getAll);
 
 blogsRouter.get("/:id", blogsController.getById);
+blogsRouter.get("/:blogId/posts", blogsController.getById);
 
 blogsRouter.delete("/:id", authMiddleware, blogsController.deleteById);
 
