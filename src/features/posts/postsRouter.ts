@@ -6,12 +6,12 @@ export const postsRouter = Router();
 
 postsRouter.get("/", postsController.getAll);
 postsRouter.get("/:id", postsController.getById);
-// postsRouter.post(
-//   "/",
-//   authMiddleware,
-//   postValidationMiddleware,
-//   postsController.create
-// );
+postsRouter.post(
+  "/",
+  authMiddleware,
+  postValidationMiddleware,
+  postsController.create
+);
 postsRouter.delete("/:id", authMiddleware, postsController.deleteById);
 postsRouter.put(
   "/:id",

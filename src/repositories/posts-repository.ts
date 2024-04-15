@@ -21,26 +21,8 @@ export const postsRepository = {
     return foundPost;
   },
 
-  async createPost(data: PostInputModel) {
-    const { title, shortDescription, content, blogId } = data;
-
-    const isBlogExist = await blogsRepository.getByIdBlog(blogId);
-    if (!isBlogExist) {
-      return null;
-    }
-
-    const newPost = await postsCollection.insertOne({
-      _id: new ObjectId(),
-      title,
-      shortDescription,
-      content,
-      blogId: new ObjectId(blogId),
-      blogName: isBlogExist.name,
-      createdAt: new Date().toISOString(),
-    });
-    const insertedId = newPost.insertedId;
-
-    const createdPost = this.getByIdPost(insertedId.toString());
+  async createPost(newPost: PostDBType) {
+    const createdPost = await postsCollection.insertOne(newPost);
     return createdPost;
   },
 

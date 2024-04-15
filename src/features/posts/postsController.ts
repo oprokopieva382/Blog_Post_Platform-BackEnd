@@ -32,24 +32,24 @@ export const postsController = {
     }
   },
 
-  // create: async (
-  //   req: Request<{}, {}, PostInputModel>,
-  //   res: Response<PostViewModel | APIErrorResult>
-  // ) => {
-  //   try {
-  //     const newPost = await postsRepository.createPost(req.body);
+  create: async (
+    req: Request<{}, {}, PostInputModel>,
+    res: Response<PostViewModel | APIErrorResult>
+  ) => {
+    try {
+      const newPost = await postsService.createPost(req.body);
 
-  //     if (!newPost) {
-  //       res.sendStatus(404);
-  //       return;
-  //     }
+      if (!newPost) {
+        res.sendStatus(404);
+        return;
+      }
 
-  //     res.status(201).json(newPost);
-  //   } catch (error) {
-  //     console.error("Error in fetching create post:", error);
-  //     res.status(500);
-  //   }
-  // },
+      res.status(201).json(newPost);
+    } catch (error) {
+      console.error("Error in fetching create post:", error);
+      res.status(500);
+    }
+  },
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {

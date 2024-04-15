@@ -1,6 +1,7 @@
-import { PostViewModel } from "../models";
+import { PostInputModel, PostViewModel } from "../models";
 import { PostDBType} from "../cloud_DB";
-import { postsRepository } from "../repositories";
+import { blogsRepository, postsRepository } from "../repositories";
+import { ObjectId } from "mongodb";
 
 export const postsService = {
   async getAllPosts(): Promise<PostViewModel[]> {
@@ -15,8 +16,33 @@ export const postsService = {
   },
 
   async removePost(id: string) {
-    const foundPost = await postsRepository.removePost(id)
+    const foundPost = await postsRepository.removePost(id);
     return foundPost ? mapPostDBToView(foundPost) : null;
+  },
+
+  async createPost(data: PostInputModel) {
+    const { title, shortDescription, content, blogId } = data;
+
+    const isBlogExist = await blogsRepository.getByIdBlog(blogId);
+    if (!isBlogExist) {
+      return null;
+    }
+
+    const newPost = {
+      _id: new ObjectId(),
+      title,
+      shortDescription,
+      content,
+      blogId: new ObjectId(blogId),
+      blogName: isBlogExist.name,
+      createdAt: new Date().toISOString(),
+    };
+
+    const createdPost = await postsRepository.createPost(newPost);
+    const insertedId = createdPost.insertedId;
+
+    const createdPostExist = this.getByIdPost(insertedId.toString());
+    return createdPostExist;
   },
 };
 
@@ -33,28 +59,7 @@ export const mapPostDBToView = (post: PostDBType): PostViewModel => {
   };
 };
 
-   // async createPost(data: PostInputModel) {
-  //   const { title, shortDescription, content, blogId } = data;
 
-  //   const isBlogExist = await blogsRepository.getByIdBlog(blogId);
-  //   if (!isBlogExist) {
-  //     return null;
-  //   }
-
-  //   const newPost = await postsCollection.insertOne({
-  //     _id: new ObjectId(),
-  //     title,
-  //     shortDescription,
-  //     content,
-  //     blogId: new ObjectId(blogId),
-  //     blogName: isBlogExist.name,
-  //     createdAt: new Date().toISOString(),
-  //   });
-  //   const insertedId = newPost.insertedId;
-
-  //   const createdPost = this.getByIdPost(insertedId.toString());
-  //   return createdPost;
-  // },
 
  
 
