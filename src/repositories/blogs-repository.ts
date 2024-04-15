@@ -22,15 +22,8 @@ export const blogsRepository = {
     return blogToDelete;
   },
 
-  async createBlog(data: BlogInputModel) {
-    const newBlog = await blogsCollection.insertOne({
-      _id: new ObjectId(),
-      createdAt: new Date().toISOString(),
-      ...data,
-    });
-    const insertedId = newBlog.insertedId;
-
-    const createdBlog = this.getByIdBlog(insertedId.toString());
+  async createBlog(newBlog: BlogDBType) {
+    const createdBlog = await blogsCollection.insertOne(newBlog);
     return createdBlog;
   },
 

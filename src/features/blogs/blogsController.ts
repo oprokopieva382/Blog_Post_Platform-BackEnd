@@ -48,24 +48,25 @@ export const blogsController = {
     }
   },
 
-  // create: async (
-  //   req: Request<{}, {}, BlogInputModel>,
-  //   res: Response<BlogViewModel | APIErrorResult>
-  // ) => {
-  //   try {
-  //     const newBlog = await blogsRepository.createBlog(req.body);
+  create: async (
+    req: Request<{}, {}, BlogInputModel>,
+    res: Response<BlogViewModel | APIErrorResult>
+  ) => {
+    try {
+      const newBlog = await blogsService.createBlog(req.body);
 
-  //     if (!newBlog) {
-  //       res.sendStatus(404);
-  //       return;
-  //     }
+      if (!newBlog) {
+        res.sendStatus(404);
+        return;
+      }
 
-  //     res.status(201).json(newBlog);
-  //   } catch (error) {
-  //     console.error("Error in fetching create blog:", error);
-  //     res.status(500);
-  //   }
-  // },
+      res.status(201).json(newBlog);
+    } catch (error) {
+      console.error("Error in fetching create blog:", error);
+      res.status(500);
+    }
+  },
+
   update: async (
     req: Request<ParamType, {}, BlogInputModel>,
     res: Response<BlogViewModel | APIErrorResult>

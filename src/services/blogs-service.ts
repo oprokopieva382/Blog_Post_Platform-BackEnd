@@ -1,5 +1,6 @@
+import { ObjectId } from "mongodb";
 import { BlogDBType } from "../cloud_DB";
-import { BlogViewModel } from "../models";
+import { BlogInputModel, BlogViewModel } from "../models";
 import { blogsRepository } from "../repositories";
 
 export const blogsService = {
@@ -14,10 +15,22 @@ export const blogsService = {
     return foundBlog ? mapBlogDBToView(foundBlog) : null;
   },
 
-    async removeBlog(id: string) {
-      const blogToDelete = await blogsRepository.removeBlog(id)
+  async removeBlog(id: string) {
+    const blogToDelete = await blogsRepository.removeBlog(id);
+    return blogToDelete ? mapBlogDBToView(blogToDelete) : null;
+  },
 
-      return blogToDelete ? mapBlogDBToView(blogToDelete) : null;
+    async createBlog(data: BlogInputModel) {
+      const newBlog = {
+        _id: new ObjectId(),
+        createdAt: new Date().toISOString(),
+        ...data,
+      };
+      const createdBlog = await blogsRepository.createBlog(newBlog);
+      const insertedId = createdBlog.insertedId;
+
+      const createdBlogExist = this.getByIdBlog(insertedId.toString());
+      return createdBlogExist;
     },
 };
 
@@ -35,20 +48,6 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
 
 
 
-
-
-//   async createBlog(data: BlogInputModel) {
-//     const newBlog = await blogsCollection.insertOne({
-//       _id: new ObjectId(),
-//       createdAt: new Date().toISOString(),
-//       ...data,
-//     });
-//     const insertedId = newBlog.insertedId;
-
-//     const createdBlog = this.getByIdBlog(insertedId.toString());
-//     return createdBlog;
-//   },
-
 //   async updateBlog(data: BlogInputModel, id: string) {
 //     const { name, description, websiteUrl } = data;
 //     await blogsCollection.findOneAndUpdate(
@@ -61,4 +60,3 @@ export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
 
 //     return updatedBlog;
 //   },
-
