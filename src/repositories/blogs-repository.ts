@@ -8,14 +8,11 @@ export const blogsRepository = {
     return blogs;
   },
 
-  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
+  async getByIdBlog(id: string): Promise<BlogDBType | null> {
     const foundBlog = await blogsCollection.findOne({
       _id: new ObjectId(id),
     });
-    if (!foundBlog) {
-      return null;
-    }
-    return mapBlogDBToView(foundBlog);
+     return foundBlog;
   },
 
   async removeBlog(id: string) {

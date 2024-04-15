@@ -3,7 +3,7 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { blogsRepository } from "../../repositories/blogs-repository";
 import { BlogInputModel, BlogViewModel } from "../../models";
-import { blogsService } from "../../services/blogs-service";
+import { blogsService } from "../../services";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
@@ -18,7 +18,7 @@ export const blogsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundBlog = await blogsRepository.getByIdBlog(req.params.id);
+      const foundBlog = await blogsService.getByIdBlog(req.params.id);
 
       if (!foundBlog) {
         res.sendStatus(404);
@@ -48,24 +48,24 @@ export const blogsController = {
     }
   },
 
-  create: async (
-    req: Request<{}, {}, BlogInputModel>,
-    res: Response<BlogViewModel | APIErrorResult>
-  ) => {
-    try {
-      const newBlog = await blogsRepository.createBlog(req.body);
+  // create: async (
+  //   req: Request<{}, {}, BlogInputModel>,
+  //   res: Response<BlogViewModel | APIErrorResult>
+  // ) => {
+  //   try {
+  //     const newBlog = await blogsRepository.createBlog(req.body);
 
-      if (!newBlog) {
-        res.sendStatus(404);
-        return;
-      }
+  //     if (!newBlog) {
+  //       res.sendStatus(404);
+  //       return;
+  //     }
 
-      res.status(201).json(newBlog);
-    } catch (error) {
-      console.error("Error in fetching create blog:", error);
-      res.status(500);
-    }
-  },
+  //     res.status(201).json(newBlog);
+  //   } catch (error) {
+  //     console.error("Error in fetching create blog:", error);
+  //     res.status(500);
+  //   }
+  // },
   update: async (
     req: Request<ParamType, {}, BlogInputModel>,
     res: Response<BlogViewModel | APIErrorResult>
