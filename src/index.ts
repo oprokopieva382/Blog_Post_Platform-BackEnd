@@ -1,5 +1,5 @@
 import { app } from "./app";
-import { ConnectMongoDB } from "./cloud_DB/mongo_db_atlas";
+import { ConnectMongoDB } from "./cloud_DB";
 import { SETTINGS } from "./settings";
 
 const startServer = async () => {

@@ -54,6 +54,8 @@ export const postsRepository = {
 
   async updatePost(data: PostInputModel, id: string) {
     const { title, shortDescription, content, blogId } = data;
+    const isBlogExist = await blogsRepository.getByIdBlog(blogId);
+
     await postsCollection.findOneAndUpdate(
       {
         _id: new ObjectId(id),
@@ -64,6 +66,7 @@ export const postsRepository = {
           shortDescription,
           content,
           blogId: new ObjectId(blogId),
+          blogName: isBlogExist?.name,
         },
       }
     );
