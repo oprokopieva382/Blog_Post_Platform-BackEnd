@@ -1,6 +1,9 @@
 import { ObjectId } from "mongodb";
 import { BlogDBType } from "../cloud_DB";
-import { BlogInputModel, BlogViewModel } from "../models";
+import {
+  BlogInputModel,
+  BlogViewModel,
+} from "../models";
 import { blogsRepository } from "../repositories";
 
 export const blogsService = {
@@ -13,11 +16,6 @@ export const blogsService = {
   async getByIdBlog(id: string): Promise<BlogViewModel | null> {
     const foundBlog = await blogsRepository.getByIdBlog(id);
     return foundBlog ? mapBlogDBToView(foundBlog) : null;
-  },
-
-  async getByIdBlogPosts(blogId: string): Promise<BlogViewModel | null> {
-    const foundBlogPosts = await blogsRepository.getByIdBlog(blogId);
-    return foundBlogPosts ? mapBlogDBToView(foundBlogPosts) : null;
   },
 
   async removeBlog(id: string) {

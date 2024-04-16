@@ -3,6 +3,7 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { BlogInputModel, BlogViewModel } from "../../models";
 import { blogsService } from "../../services";
+import { blogsQueryRepository } from "../../query_repositories";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
@@ -27,6 +28,23 @@ export const blogsController = {
       res.status(200).json(foundBlog);
     } catch (error) {
       console.error("Error in fetching blog by ID:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  getBlogPosts: async (req: Request, res: Response) => {
+    try {
+       const foundBlogPosts = await blogsQueryRepository.getPostsOfBlog(req.params.blogId, req.query);
+
+       console.log(foundBlogPosts);
+      if (!foundBlogPosts) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.status(200).json(foundBlogPosts);
+    } catch (error) {
+      console.error("Error in fetching posts of specific blog ID:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
