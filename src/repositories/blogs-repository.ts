@@ -1,44 +1,29 @@
 import { ObjectId } from "mongodb";
-import { BlogInputModel, BlogViewModel } from "../models";
+import { BlogInputModel } from "../models";
 import { BlogDBType, blogsCollection } from "../cloud_DB";
 
 export const blogsRepository = {
-  async getAllBlogs(): Promise<BlogViewModel[]> {
+  async getAllBlogs(): Promise<BlogDBType[]> {
     const blogs: BlogDBType[] = await blogsCollection.find().toArray();
-    const blogsToView: BlogViewModel[] = blogs.map(mapBlogDBToView);
-    return blogsToView;
+    return blogs;
   },
 
-  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
+  async getByIdBlog(id: string): Promise<BlogDBType | null> {
     const foundBlog = await blogsCollection.findOne({
       _id: new ObjectId(id),
     });
-    if (!foundBlog) {
-      return null;
-    }
-    return mapBlogDBToView(foundBlog);
+    return foundBlog;
   },
 
   async removeBlog(id: string) {
     const blogToDelete = await blogsCollection.findOneAndDelete({
       _id: new ObjectId(id),
     });
-    if (!blogToDelete) {
-      return null;
-    }
-
-    return mapBlogDBToView(blogToDelete);
+    return blogToDelete;
   },
 
-  async createBlog(data: BlogInputModel) {
-    const newBlog = await blogsCollection.insertOne({
-      _id: new ObjectId(),
-      createdAt: new Date().toISOString(),
-      ...data,
-    });
-    const insertedId = newBlog.insertedId;
-
-    const createdBlog = this.getByIdBlog(insertedId.toString());
+  async createBlog(newBlog: BlogDBType) {
+    const createdBlog = await blogsCollection.insertOne(newBlog);
     return createdBlog;
   },
 
@@ -54,16 +39,4 @@ export const blogsRepository = {
 
     return updatedBlog;
   },
-};
-
-export const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
-  return {
-    // Convert ObjectId to string
-    id: blog._id.toString(),
-    name: blog.name,
-    description: blog.description,
-    websiteUrl: blog.websiteUrl,
-    createdAt: blog.createdAt,
-    isMembership:  false,
-  };
 };

@@ -3,11 +3,12 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { postsRepository } from "../../repositories/posts-repository";
 import { PostInputModel, PostViewModel } from "../../models";
+import { postsService } from "../../services";
 
 export const postsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const posts = await postsRepository.getAllPosts();
+      const posts = await postsService.getAllPosts();
       res.status(200).json(posts);
     } catch (error) {
       console.error("Error in fetching all posts:", error);
@@ -17,7 +18,7 @@ export const postsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundPost = await postsRepository.getByIdPost(req.params.id);
+      const foundPost = await postsService.getByIdPost(req.params.id);
 
       if (!foundPost) {
         res.sendStatus(404);
@@ -36,7 +37,7 @@ export const postsController = {
     res: Response<PostViewModel | APIErrorResult>
   ) => {
     try {
-      const newPost = await postsRepository.createPost(req.body);
+      const newPost = await postsService.createPost(req.body);
 
       if (!newPost) {
         res.sendStatus(404);
@@ -52,7 +53,7 @@ export const postsController = {
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
-      const postToRemove = await postsRepository.removePost(req.params.id);
+      const postToRemove = await postsService.removePost(req.params.id);
 
       if (!postToRemove) {
         res.sendStatus(404);
@@ -71,7 +72,10 @@ export const postsController = {
     res: Response<PostViewModel | APIErrorResult>
   ) => {
     try {
-      const postToUpdate = await postsRepository.updatePost(req.body, req.params.id);
+      const postToUpdate = await postsService.updatePost(
+        req.body,
+        req.params.id
+      );
 
       if (!postToUpdate) {
         res.sendStatus(404);

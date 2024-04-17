@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
-import { blogsRepository } from "../../repositories/blogs-repository";
 import { BlogInputModel, BlogViewModel } from "../../models";
+import { blogsService } from "../../services";
+import { blogsQueryRepository } from "../../query_repositories";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const blogs = await blogsRepository.getAllBlogs();
+      const blogs = await blogsService.getAllBlogs();
       res.status(200).json(blogs);
     } catch (error) {
       console.error("Error in fetching all blogs:", error);
@@ -17,7 +18,7 @@ export const blogsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundBlog = await blogsRepository.getByIdBlog(req.params.id);
+      const foundBlog = await blogsService.getByIdBlog(req.params.id);
 
       if (!foundBlog) {
         res.sendStatus(404);
@@ -31,9 +32,25 @@ export const blogsController = {
     }
   },
 
+  getBlogPosts: async (req: Request, res: Response) => {
+    try {
+       const foundBlogPosts = await blogsQueryRepository.getPostsOfBlog(req.params.blogId, req.query);
+
+      if (!foundBlogPosts) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.status(200).json(foundBlogPosts);
+    } catch (error) {
+      console.error("Error in fetching posts of specific blog ID:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
-      const blogToRemove = await blogsRepository.removeBlog(req.params.id);
+      const blogToRemove = await blogsService.removeBlog(req.params.id);
 
       if (!blogToRemove) {
         res.sendStatus(404);
@@ -52,7 +69,7 @@ export const blogsController = {
     res: Response<BlogViewModel | APIErrorResult>
   ) => {
     try {
-      const newBlog = await blogsRepository.createBlog(req.body);
+      const newBlog = await blogsService.createBlog(req.body);
 
       if (!newBlog) {
         res.sendStatus(404);
@@ -65,12 +82,13 @@ export const blogsController = {
       res.status(500);
     }
   },
+
   update: async (
     req: Request<ParamType, {}, BlogInputModel>,
     res: Response<BlogViewModel | APIErrorResult>
   ) => {
     try {
-      const blogToUpdate = await blogsRepository.updateBlog(
+      const blogToUpdate = await blogsService.updateBlog(
         req.body,
         req.params.id
       );
