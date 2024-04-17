@@ -36,7 +36,6 @@ export const blogsController = {
     try {
        const foundBlogPosts = await blogsQueryRepository.getPostsOfBlog(req.params.blogId, req.query);
 
-       console.log(foundBlogPosts);
       if (!foundBlogPosts) {
         res.sendStatus(404);
         return;

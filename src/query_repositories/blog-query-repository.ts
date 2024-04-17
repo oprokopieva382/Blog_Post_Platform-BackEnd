@@ -8,28 +8,23 @@ export const blogsQueryRepository = {
     blogId: string,
     searchQueries: QueryType
   ): Promise<Paginator<PostViewModel> | null> {
-    //set up search query with default values if needed
-    const query = {
-      pageNumber: searchQueries.pageNumber ? +searchQueries.pageNumber : 1,
-      pageSize:
-        searchQueries.pageSize !== undefined ? +searchQueries.pageSize : 10,
-      sortBy: searchQueries.sortBy ? searchQueries.sortBy : "createdAt",
-      sortDirection: searchQueries.sortDirection
-        ? (searchQueries.sortDirection as SortDirection)
-        : "desc",
-      searchNameTerm: searchQueries.searchNameTerm
-        ? searchQueries.searchNameTerm
-        : null,
-    };
+    
 
+    const query = queryToSearch(searchQueries);
+    const search = query.searchNameTerm ? {title: {$regex: query.searchNameTerm, $options: "i"}} : {}
+
+    console.log(blogId);
+    console.log(query);
     //found posts related blogId
     const foundPosts = await postsCollection
-      .find({ _id: new ObjectId(blogId), ...query })
+      .find({ blogId: new ObjectId(blogId), ...search })
       .toArray();
 
+    console.log(foundPosts);
+
     const totalPostsCount = await postsCollection.countDocuments({
-      _id: new ObjectId(blogId),
-      ...query,
+      blogId: new ObjectId(blogId),
+      ...search,
     });
 
     //prep posts for output as Data Transfer Object
@@ -40,8 +35,7 @@ export const blogsQueryRepository = {
       totalCount: totalPostsCount,
       items: foundPosts.map((post) => mapBlogPostsToView(post)),
     };
-    console.log(postsToView);
-    return postsToView;
+     return postsToView;
   },
 };
 
@@ -56,5 +50,18 @@ const mapBlogPostsToView = (post: PostDBType): PostViewModel => {
     blogId: post.blogId.toString(),
     blogName: post.blogName,
     createdAt: post.createdAt,
+  };
+};
+
+//set up search query with default values if needed
+const queryToSearch = (search: QueryType) => {
+  return {
+    pageNumber: search.pageNumber ? +search.pageNumber : 1,
+    pageSize: search.pageSize !== undefined ? +search.pageSize : 10,
+    sortBy: search.sortBy ? search.sortBy : "createdAt",
+    sortDirection: search.sortDirection
+      ? (search.sortDirection as SortDirection)
+      : "desc",
+    searchNameTerm: search.searchNameTerm ? search.searchNameTerm : null,
   };
 };
