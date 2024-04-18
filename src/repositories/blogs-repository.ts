@@ -5,7 +5,7 @@ import { QueryType } from "../features/blogs";
 
 export const blogsRepository = {
   async getAllBlogs(
-    searchQueryName: any,
+    //searchQueryName: any,
     query: QueryType
   ): Promise<BlogDBType[]> {
     const blogs: BlogDBType[] = await blogsCollection

@@ -25,7 +25,9 @@ export const blogsService = {
       ? { name: { $regex: query.searchNameTerm, $options: "i" } }
       : {};
 
-    const blogs = await blogsRepository.getAllBlogs(search, query);
+    const blogs = await blogsRepository.getAllBlogs(
+      //search, 
+      query);
     if (blogs.length === 0) {
       return null;
     }

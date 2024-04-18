@@ -14,7 +14,7 @@ export const postsService = {
       : {};
 
     const posts: PostDBType[] = await postsRepository.getAllPosts(
-      // search,
+      search,
       query
     );
     if (posts.length === 0) {
