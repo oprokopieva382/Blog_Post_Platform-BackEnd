@@ -104,6 +104,7 @@ export const blogsController = {
         req.params.blogId,
         req.query
       );
+      
       if (!foundBlogPosts) {
         res.sendStatus(404);
         return;
