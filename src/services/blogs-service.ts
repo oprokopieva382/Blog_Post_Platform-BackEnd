@@ -25,12 +25,14 @@ export const blogsService = {
       ? { name: { $regex: query.searchNameTerm, $options: "i" } }
       : {};
 
-    const blogs = await blogsRepository.getAllBlogs(search, query);
+    const blogs = await blogsRepository.getAllBlogs(
+      //search, 
+      query);
     if (blogs.length === 0) {
       return null;
     }
 
-    const totalBlogsCount = await blogsCollection.countDocuments({...search});
+    const totalBlogsCount = await blogsCollection.countDocuments();
 
     //prep blogs for output as Data Transfer Object
     const blogsToView = {
@@ -90,7 +92,7 @@ export const blogsService = {
       return null;
     }
 
-    const totalPostsCount = await postsCollection.countDocuments({...search});
+    const totalPostsCount = await postsCollection.countDocuments();
 
     //prep posts for output as Data Transfer Object
     const postsToView = {

@@ -21,7 +21,7 @@ export const postsService = {
       return null;
     }
 
-    const totalPostsCount = await postsCollection.countDocuments({...search});
+    const totalPostsCount = await postsCollection.countDocuments();
 
     //prep posts for output as Data Transfer Object
     const postsToView = {
