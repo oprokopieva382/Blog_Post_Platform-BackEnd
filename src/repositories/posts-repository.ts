@@ -1,10 +1,18 @@
 import { ObjectId } from "mongodb";
-import { PostInputModel, PostViewModel } from "../models";
+import { PostInputModel } from "../models";
 import { PostDBType, postsCollection } from "../cloud_DB";
+import { QueryType } from "../features/blogs";
 
 export const postsRepository = {
-  async getAllPosts(): Promise<PostDBType[]> {
-    const posts: PostDBType[] = await postsCollection.find().toArray();
+  async getAllPosts(
+    searchQueryTitle: any,
+    query: QueryType
+  ): Promise<PostDBType[]> {
+    const posts: PostDBType[] = await postsCollection
+      .find(searchQueryTitle)
+      .skip((query.pageNumber - 1) * query.pageSize)
+      .limit(query.pageSize)
+      .toArray();
     return posts;
   },
 

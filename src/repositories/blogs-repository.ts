@@ -1,10 +1,19 @@
 import { ObjectId } from "mongodb";
 import { BlogInputModel } from "../models";
-import { BlogDBType, blogsCollection } from "../cloud_DB";
+import { BlogDBType, PostDBType, blogsCollection, postsCollection } from "../cloud_DB";
+import { QueryType } from "../features/blogs";
 
 export const blogsRepository = {
-  async getAllBlogs(): Promise<BlogDBType[]> {
-    const blogs: BlogDBType[] = await blogsCollection.find().toArray();
+  async getAllBlogs(
+    searchQueryName: any,
+    query: QueryType
+  ): Promise<BlogDBType[]> {
+    const blogs: BlogDBType[] = await blogsCollection
+      .find(searchQueryName)
+      .skip((query.pageNumber - 1) * query.pageSize)
+      .limit(query.pageSize)
+      .toArray();
+
     return blogs;
   },
 
@@ -38,5 +47,10 @@ export const blogsRepository = {
     });
 
     return updatedBlog;
+  },
+
+  async createPost(newPost: PostDBType) {
+    const createdPost = await postsCollection.insertOne(newPost);
+    return createdPost;
   },
 };

@@ -1,12 +1,37 @@
-import { PostInputModel, PostViewModel } from "../models";
-import { PostDBType } from "../cloud_DB";
+import { Paginator, PostInputModel, PostViewModel } from "../models";
+import { PostDBType, postsCollection } from "../cloud_DB";
 import { blogsRepository, postsRepository } from "../repositories";
-import { ObjectId } from "mongodb";
+import { ObjectId, SortDirection } from "mongodb";
+import { QueryType } from "../features/blogs";
 
 export const postsService = {
-  async getAllPosts(): Promise<PostViewModel[]> {
-    const posts: PostDBType[] = await postsRepository.getAllPosts();
-    const postsToView: PostViewModel[] = posts.map(mapPostDBToView);
+  async getAllPosts(
+    searchQueries: any
+  ): Promise<Paginator<PostViewModel> | null> {
+    const query = constructSearchQuery(searchQueries);
+    const search = query.searchNameTerm
+      ? { name: { $regex: query.searchNameTerm, $options: "i" } }
+      : {};
+
+    const posts: PostDBType[] = await postsRepository.getAllPosts(
+      search,
+      query
+    );
+    if (posts.length === 0) {
+      return null;
+    }
+
+    const totalPostsCount = await postsCollection.countDocuments();
+
+    //prep posts for output as Data Transfer Object
+    const postsToView = {
+      pagesCount: Math.ceil(totalPostsCount / query.pageSize),
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: totalPostsCount,
+      items: posts.map(mapPostDBToView),
+    };
+
     return postsToView;
   },
 
@@ -53,7 +78,7 @@ export const postsService = {
     }
     await postsRepository.updatePost(data, id, isBlogExist.name);
 
-    const updatedPost = await postsRepository.getByIdPost(id)
+    const updatedPost = await postsRepository.getByIdPost(id);
     return updatedPost;
   },
 };
@@ -68,5 +93,18 @@ const mapPostDBToView = (post: PostDBType): PostViewModel => {
     blogId: post.blogId.toString(),
     blogName: post.blogName,
     createdAt: post.createdAt,
+  };
+};
+
+//set up search query with default values if needed
+const constructSearchQuery = (search: QueryType) => {
+  return {
+    pageNumber: search.pageNumber ? +search.pageNumber : 1,
+    pageSize: search.pageSize !== undefined ? +search.pageSize : 10,
+    sortBy: search.sortBy ? search.sortBy : "createdAt",
+    sortDirection: search.sortDirection
+      ? (search.sortDirection as SortDirection)
+      : "desc",
+    searchNameTerm: search.searchNameTerm ? search.searchNameTerm : null,
   };
 };

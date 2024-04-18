@@ -24,7 +24,7 @@ This repository contains the backend implementation for a blog posts platform. T
 
 ## The Three Layered Architecture
 ✔️ Presentation Layer
-✔️ Business Logic Layer (BL)
+✔️ Business Logic Layer (BLL)
 ✔️ Data Access Layer (DAL)
 
 ## License

@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { blogsController } from "./blogsController";
-import { authMiddleware, blogValidationMiddleware } from "../../middlewares";
+import {
+  authMiddleware,
+  blogPostValidationMiddleware,
+  blogValidationMiddleware,
+} from "../../middlewares";
 
 export const blogsRouter = Router();
 
@@ -16,6 +20,13 @@ blogsRouter.post(
   authMiddleware,
   blogValidationMiddleware,
   blogsController.create
+);
+
+blogsRouter.post(
+  "/:blogId/posts",
+  authMiddleware,
+  blogPostValidationMiddleware,
+  blogsController.createBlogPost
 );
 
 blogsRouter.put(

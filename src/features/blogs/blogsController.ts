@@ -1,14 +1,23 @@
 import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
-import { BlogInputModel, BlogViewModel } from "../../models";
+import {
+  BlogInputModel,
+  BlogViewModel,
+  BlogPostInputModel,
+  PostViewModel,
+} from "../../models";
 import { blogsService } from "../../services";
-import { blogsQueryRepository } from "../../query_repositories";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const blogs = await blogsService.getAllBlogs();
+      const blogs = await blogsService.getAllBlogs(req.query);
+     
+        if (!blogs) {
+          res.sendStatus(404);
+          return;
+        }
       res.status(200).json(blogs);
     } catch (error) {
       console.error("Error in fetching all blogs:", error);
@@ -28,22 +37,6 @@ export const blogsController = {
       res.status(200).json(foundBlog);
     } catch (error) {
       console.error("Error in fetching blog by ID:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  },
-
-  getBlogPosts: async (req: Request, res: Response) => {
-    try {
-       const foundBlogPosts = await blogsQueryRepository.getPostsOfBlog(req.params.blogId, req.query);
-
-      if (!foundBlogPosts) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.status(200).json(foundBlogPosts);
-    } catch (error) {
-      console.error("Error in fetching posts of specific blog ID:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
@@ -101,6 +94,44 @@ export const blogsController = {
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in fetching update blog by ID:", error);
+      res.status(500);
+    }
+  },
+
+  getBlogPosts: async (req: Request, res: Response) => {
+    try {
+      const foundBlogPosts = await blogsService.getPostsOfBlog(
+        req.params.blogId,
+        req.query
+      );
+      if (!foundBlogPosts) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.status(200).json(foundBlogPosts);
+    } catch (error) {
+      console.error("Error in fetching posts of specific blog ID:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  createBlogPost: async (
+    req: Request<{ blogId: string }, {}, BlogPostInputModel>,
+    res: Response<PostViewModel | APIErrorResult>
+  ) => {
+    try {
+      const newPost = await blogsService.createPost(
+        req.params.blogId,
+        req.body
+      );
+      if (!newPost) {
+        res.sendStatus(404);
+        return;
+      }
+      res.status(201).json(newPost);
+    } catch (error) {
+      console.error("Error in fetching create post:", error);
       res.status(500);
     }
   },
