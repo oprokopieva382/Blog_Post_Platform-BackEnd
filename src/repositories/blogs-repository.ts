@@ -1,12 +1,15 @@
 import { ObjectId } from "mongodb";
 import { BlogInputModel } from "../models";
 import { BlogDBType, PostDBType, blogsCollection, postsCollection } from "../cloud_DB";
+import { QueryType } from "../features/blogs";
 
 export const blogsRepository = {
-  async getAllBlogs(search: any, query: any): Promise<BlogDBType[]> {
-     const blogs: BlogDBType[] = await blogsCollection
-
-      .find(search)
+  async getAllBlogs(
+    searchQueryName: any,
+    query: QueryType
+  ): Promise<BlogDBType[]> {
+    const blogs: BlogDBType[] = await blogsCollection
+      .find(searchQueryName)
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .toArray();

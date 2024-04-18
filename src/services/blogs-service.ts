@@ -1,5 +1,5 @@
 import { ObjectId, SortDirection } from "mongodb";
-import { BlogDBType, PostDBType, blogsCollection } from "../cloud_DB";
+import { BlogDBType, PostDBType, blogsCollection, postsCollection } from "../cloud_DB";
 import {
   BlogInputModel,
   BlogPostInputModel,
@@ -13,7 +13,7 @@ import { blogsQueryRepository } from "../query_repositories";
 
 export const blogsService = {
   async getAllBlogs(
-    searchQueries: QueryType
+    searchQueries: any
   ): Promise<Paginator<BlogViewModel> | null> {
     const query = constructSearchQuery(searchQueries);
     const search = query.searchNameTerm
@@ -69,7 +69,7 @@ export const blogsService = {
 
   async getPostsOfBlog(
     blogId: string,
-    searchQueries: QueryType
+    searchQueries: any
   ): Promise<Paginator<PostViewModel> | null> {
     const query = constructSearchQuery(searchQueries);
     const search = query.searchNameTerm
@@ -85,10 +85,7 @@ export const blogsService = {
       return null;
     }
 
-    const totalPostsCount = await blogsQueryRepository.countPosts(
-      blogId,
-      search
-    );
+    const totalPostsCount = await postsCollection.countDocuments()
 
     //prep posts for output as Data Transfer Object
     const postsToView = {
