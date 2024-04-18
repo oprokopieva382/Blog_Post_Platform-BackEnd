@@ -3,8 +3,14 @@ import { BlogInputModel } from "../models";
 import { BlogDBType, PostDBType, blogsCollection, postsCollection } from "../cloud_DB";
 
 export const blogsRepository = {
-  async getAllBlogs(): Promise<BlogDBType[]> {
-    const blogs: BlogDBType[] = await blogsCollection.find().toArray();
+  async getAllBlogs(search: any, query: any): Promise<BlogDBType[]> {
+     const blogs: BlogDBType[] = await blogsCollection
+
+      .find(search)
+      .skip((query.pageNumber - 1) * query.pageSize)
+      .limit(query.pageSize)
+      .toArray();
+
     return blogs;
   },
 

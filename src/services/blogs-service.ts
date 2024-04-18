@@ -1,5 +1,5 @@
 import { ObjectId, SortDirection } from "mongodb";
-import { BlogDBType, PostDBType } from "../cloud_DB";
+import { BlogDBType, PostDBType, blogsCollection } from "../cloud_DB";
 import {
   BlogInputModel,
   BlogPostInputModel,
@@ -12,9 +12,30 @@ import { QueryType } from "../features/blogs";
 import { blogsQueryRepository } from "../query_repositories";
 
 export const blogsService = {
-  async getAllBlogs(): Promise<BlogViewModel[]> {
-    const blogs: BlogDBType[] = await blogsRepository.getAllBlogs();
-    const blogsToView: BlogViewModel[] = blogs.map(mapBlogDBToView);
+  async getAllBlogs(
+    searchQueries: QueryType
+  ): Promise<Paginator<BlogViewModel> | null> {
+    const query = constructSearchQuery(searchQueries);
+    const search = query.searchNameTerm
+      ? { name: { $regex: query.searchNameTerm, $options: "i" } }
+      : {};
+
+    const blogs = await blogsRepository.getAllBlogs(search, query);
+    if (blogs.length === 0) {
+      return null;
+    }
+
+    const totalBlogsCount = await blogsCollection.countDocuments({});
+
+    //prep blogs for output as Data Transfer Object
+    const blogsToView = {
+      pagesCount: Math.ceil(totalBlogsCount / query.pageSize),
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: totalBlogsCount,
+      items: blogs.map(mapBlogDBToView),
+    };
+
     return blogsToView;
   },
 
@@ -57,12 +78,13 @@ export const blogsService = {
 
     const foundPosts = await blogsQueryRepository.getPostsOfBlog(
       blogId,
-      search
+      search,
+      query
     );
     if (foundPosts.length === 0) {
       return null;
     }
-    
+
     const totalPostsCount = await blogsQueryRepository.countPosts(
       blogId,
       search
@@ -80,34 +102,38 @@ export const blogsService = {
     return postsToView;
   },
 
-  async createPost(blogId: string, data: BlogPostInputModel): Promise<PostViewModel | null> {
-   const { title, shortDescription, content } = data;
+  async createPost(
+    blogId: string,
+    data: BlogPostInputModel
+  ): Promise<PostViewModel | null> {
+    const { title, shortDescription, content } = data;
 
-   const isBlogExist = await blogsRepository.getByIdBlog(blogId);
-   if (!isBlogExist) {
-     return null;
-   }
+    const isBlogExist = await blogsRepository.getByIdBlog(blogId);
+    if (!isBlogExist) {
+      return null;
+    }
 
-   const newPost = {
-     _id: new ObjectId(),
-     title,
-     shortDescription,
-     content,
-     blogId: new ObjectId(blogId),
-     blogName: isBlogExist.name,
-     createdAt: new Date().toISOString(),
-   };
+    const newPost = {
+      _id: new ObjectId(),
+      title,
+      shortDescription,
+      content,
+      blogId: new ObjectId(blogId),
+      blogName: isBlogExist.name,
+      createdAt: new Date().toISOString(),
+    };
 
-   const createdPost = await blogsRepository.createPost(newPost);
-   if (createdPost) {
-     const insertedId = createdPost.insertedId;
-     const createdPostExist = await postsRepository.getByIdPost(
-       insertedId.toString()
-     );
-     return createdPostExist ? mapBlogPostsToView(createdPostExist) : null;
-   }
-   return null;
- }};
+    const createdPost = await blogsRepository.createPost(newPost);
+    if (createdPost) {
+      const insertedId = createdPost.insertedId;
+      const createdPostExist = await postsRepository.getByIdPost(
+        insertedId.toString()
+      );
+      return createdPostExist ? mapBlogPostsToView(createdPostExist) : null;
+    }
+    return null;
+  },
+};
 
 const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
   return {

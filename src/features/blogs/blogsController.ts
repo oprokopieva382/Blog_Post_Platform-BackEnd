@@ -12,7 +12,12 @@ import { blogsService } from "../../services";
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const blogs = await blogsService.getAllBlogs();
+      const blogs = await blogsService.getAllBlogs(req.query);
+     
+        if (!blogs) {
+          res.sendStatus(404);
+          return;
+        }
       res.status(200).json(blogs);
     } catch (error) {
       console.error("Error in fetching all blogs:", error);
