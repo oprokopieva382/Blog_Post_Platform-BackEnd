@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { BlogInputModel } from "../models";
-import { BlogDBType, blogsCollection } from "../cloud_DB";
+import { BlogDBType, PostDBType, blogsCollection, postsCollection } from "../cloud_DB";
 
 export const blogsRepository = {
   async getAllBlogs(): Promise<BlogDBType[]> {
@@ -38,5 +38,10 @@ export const blogsRepository = {
     });
 
     return updatedBlog;
+  },
+
+  async createPost(newPost: PostDBType) {
+    const createdPost = await postsCollection.insertOne(newPost);
+    return createdPost;
   },
 };

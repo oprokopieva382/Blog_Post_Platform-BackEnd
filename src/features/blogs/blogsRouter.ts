@@ -18,6 +18,13 @@ blogsRouter.post(
   blogsController.create
 );
 
+blogsRouter.post(
+  "/:blogId/posts",
+  authMiddleware,
+  blogValidationMiddleware,
+  blogsController.createBlogPost
+);
+
 blogsRouter.put(
   "/:id",
   authMiddleware,

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
-import { postsRepository } from "../../repositories/posts-repository";
 import { PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
 
