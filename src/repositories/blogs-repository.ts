@@ -9,7 +9,7 @@ export const blogsRepository = {
     query: QueryType
   ): Promise<BlogDBType[]> {
     const blogs: BlogDBType[] = await blogsCollection
-      .find(searchQueryName)
+      .find()
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .toArray();

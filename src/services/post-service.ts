@@ -14,14 +14,14 @@ export const postsService = {
       : {};
 
     const posts: PostDBType[] = await postsRepository.getAllPosts(
-      search,
+      // search,
       query
     );
     if (posts.length === 0) {
       return null;
     }
 
-    const totalPostsCount = await postsCollection.countDocuments({...search});
+    const totalPostsCount = await postsCollection.countDocuments();
 
     //prep posts for output as Data Transfer Object
     const postsToView = {
