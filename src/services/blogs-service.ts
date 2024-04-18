@@ -36,7 +36,7 @@ export const blogsService = {
 
     //prep blogs for output as Data Transfer Object
     const blogsToView = {
-      pagesCount: Math.ceil(totalBlogsCount -1 / query.pageSize),
+      pagesCount: Math.ceil(totalBlogsCount / query.pageSize),
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalBlogsCount,
@@ -96,7 +96,7 @@ export const blogsService = {
 
     //prep posts for output as Data Transfer Object
     const postsToView = {
-      pagesCount: Math.ceil(totalPostsCount -1 / query.pageSize),
+      pagesCount: Math.ceil(totalPostsCount / query.pageSize),
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
