@@ -52,7 +52,7 @@ export const blogValidationMiddleware = async (
       .withMessage("Invalid URL format")
   );
 
-  await Promise.all(allBodyValidation.map((item) => item.run(req)));
+   await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

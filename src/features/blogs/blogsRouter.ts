@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { blogsController } from "./blogsController";
-import { authMiddleware, blogValidationMiddleware } from "../../middlewares";
+import {
+  authMiddleware,
+  blogPostValidationMiddleware,
+  blogValidationMiddleware,
+} from "../../middlewares";
 
 export const blogsRouter = Router();
 
@@ -21,7 +25,7 @@ blogsRouter.post(
 blogsRouter.post(
   "/:blogId/posts",
   authMiddleware,
-  blogValidationMiddleware,
+  blogPostValidationMiddleware,
   blogsController.createBlogPost
 );
 
