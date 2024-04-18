@@ -30,7 +30,7 @@ export const blogsService = {
       return null;
     }
 
-    const totalBlogsCount = await blogsCollection.countDocuments();
+    const totalBlogsCount = await blogsCollection.countDocuments({...search});
 
     //prep blogs for output as Data Transfer Object
     const blogsToView = {
@@ -90,7 +90,7 @@ export const blogsService = {
       return null;
     }
 
-    const totalPostsCount = await postsCollection.countDocuments();
+    const totalPostsCount = await postsCollection.countDocuments({...search});
 
     //prep posts for output as Data Transfer Object
     const postsToView = {
@@ -100,8 +100,7 @@ export const blogsService = {
       totalCount: totalPostsCount,
       items: foundPosts.map((post) => mapBlogPostsToView(post)),
     };
-    console.log(postsToView);
-    return postsToView;
+     return postsToView;
   },
 
   async createPost(
@@ -126,14 +125,16 @@ export const blogsService = {
     };
 
     const createdPost = await blogsRepository.createPost(newPost);
-    if (createdPost) {
-      const insertedId = createdPost.insertedId;
-      const createdPostExist = await postsRepository.getByIdPost(
-        insertedId.toString()
-      );
-      return createdPostExist ? mapBlogPostsToView(createdPostExist) : null;
+
+    if (!createdPost) {
+      return null;
     }
-    return null;
+
+    const insertedId = createdPost.insertedId;
+    const createdPostExist = await postsRepository.getByIdPost(
+      insertedId.toString()
+    );
+    return createdPostExist ? mapBlogPostsToView(createdPostExist) : null;
   },
 };
 
