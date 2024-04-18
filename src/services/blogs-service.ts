@@ -92,7 +92,10 @@ export const blogsService = {
       return null;
     }
 
-    const totalPostsCount = await postsCollection.countDocuments();
+    const totalPostsCount = await postsCollection.countDocuments({
+      blogId: new ObjectId(blogId),
+      ...search,
+    });
 
     //prep posts for output as Data Transfer Object
     const postsToView = {
