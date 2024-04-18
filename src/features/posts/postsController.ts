@@ -9,10 +9,10 @@ export const postsController = {
     try {
       const posts = await postsService.getAllPosts(req.query);
 
-       if (!posts) {
-         res.sendStatus(404);
-         return;
-       }
+      if (!posts) {
+        res.sendStatus(404);
+        return;
+      }
 
       res.status(200).json(posts);
     } catch (error) {

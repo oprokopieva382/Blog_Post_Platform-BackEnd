@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { PostInputModel, PostViewModel } from "../models";
+import { PostInputModel } from "../models";
 import { PostDBType, postsCollection } from "../cloud_DB";
 import { QueryType } from "../features/blogs";
 

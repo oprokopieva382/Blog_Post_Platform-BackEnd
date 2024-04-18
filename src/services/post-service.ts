@@ -5,7 +5,9 @@ import { ObjectId, SortDirection } from "mongodb";
 import { QueryType } from "../features/blogs";
 
 export const postsService = {
-  async getAllPosts(searchQueries: any): Promise<Paginator<PostViewModel>|null> {
+  async getAllPosts(
+    searchQueries: any
+  ): Promise<Paginator<PostViewModel> | null> {
     const query = constructSearchQuery(searchQueries);
     const search = query.searchNameTerm
       ? { name: { $regex: query.searchNameTerm, $options: "i" } }
@@ -29,7 +31,7 @@ export const postsService = {
       totalCount: totalPostsCount,
       items: posts.map(mapPostDBToView),
     };
- 
+
     return postsToView;
   },
 

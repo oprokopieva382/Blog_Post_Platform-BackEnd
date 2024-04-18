@@ -1,5 +1,10 @@
 import { ObjectId, SortDirection } from "mongodb";
-import { BlogDBType, PostDBType, blogsCollection, postsCollection } from "../cloud_DB";
+import {
+  BlogDBType,
+  PostDBType,
+  blogsCollection,
+  postsCollection,
+} from "../cloud_DB";
 import {
   BlogInputModel,
   BlogPostInputModel,
@@ -85,7 +90,7 @@ export const blogsService = {
       return null;
     }
 
-    const totalPostsCount = await postsCollection.countDocuments()
+    const totalPostsCount = await postsCollection.countDocuments();
 
     //prep posts for output as Data Transfer Object
     const postsToView = {
