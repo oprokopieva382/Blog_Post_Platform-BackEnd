@@ -7,7 +7,13 @@ import { postsService } from "../../services";
 export const postsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const posts = await postsService.getAllPosts();
+      const posts = await postsService.getAllPosts(req.query);
+
+       if (!posts) {
+         res.sendStatus(404);
+         return;
+       }
+
       res.status(200).json(posts);
     } catch (error) {
       console.error("Error in fetching all posts:", error);
