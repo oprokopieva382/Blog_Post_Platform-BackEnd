@@ -9,11 +9,6 @@ import {
 import { blogsRepository, postsRepository } from "../repositories";
 
 export const blogsService = {
-  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
-    const foundBlog = await blogsRepository.getByIdBlog(id);
-    return foundBlog ? mapBlogDBToView(foundBlog) : null;
-  },
-
   async removeBlog(id: string) {
     const blogToDelete = await blogsRepository.removeBlog(id);
     return blogToDelete ? mapBlogDBToView(blogToDelete) : null;
@@ -28,7 +23,7 @@ export const blogsService = {
     const createdBlog = await blogsRepository.createBlog(newBlog);
     const insertedId = createdBlog.insertedId;
 
-    const createdBlogExist = this.getByIdBlog(insertedId.toString());
+    const createdBlogExist = blogsRepository.getByIdBlog(insertedId.toString());
     return createdBlogExist;
   },
 

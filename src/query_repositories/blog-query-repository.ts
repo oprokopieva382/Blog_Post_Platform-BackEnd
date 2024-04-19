@@ -62,6 +62,13 @@ export const blogsQueryRepository = {
     return blogsToView;
   },
 
+  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
+    const foundBlog = await blogsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    return foundBlog ? this._mapBlogsToView(foundBlog) : null;
+  },
+
   _mapBlogsToView(blog: BlogDBType): BlogViewModel {
     return {
       // Convert ObjectId to string

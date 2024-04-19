@@ -10,6 +10,7 @@ import {
 import { blogsService } from "../../services";
 import { blogsQueryRepository } from "../../query_repositories";
 import { queryFilter } from "./utils/queryFilter";
+import { mapBlogDBToView } from "./utils/blogsDBToView";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
@@ -31,7 +32,7 @@ export const blogsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundBlog = await blogsService.getByIdBlog(req.params.id);
+      const foundBlog = await blogsQueryRepository.getByIdBlog(req.params.id);
 
       if (!foundBlog) {
         res.sendStatus(404);
@@ -73,7 +74,7 @@ export const blogsController = {
         return;
       }
 
-      res.status(201).json(newBlog);
+      res.status(201).json(mapBlogDBToView(newBlog));
     } catch (error) {
       console.error("Error in fetching create blog:", error);
       res.status(500);
