@@ -1,19 +1,12 @@
-import { ObjectId, SortDirection } from "mongodb";
-import {
-  BlogDBType,
-  PostDBType,
-  postsCollection,
-} from "../cloud_DB";
+import { ObjectId } from "mongodb";
+import { BlogDBType, PostDBType } from "../cloud_DB";
 import {
   BlogInputModel,
   BlogPostInputModel,
   BlogViewModel,
-  Paginator,
   PostViewModel,
 } from "../models";
 import { blogsRepository, postsRepository } from "../repositories";
-import { QueryType } from "../features/blogs";
-import { blogsQueryRepository } from "../query_repositories";
 
 export const blogsService = {
   async getByIdBlog(id: string): Promise<BlogViewModel | null> {
@@ -42,40 +35,6 @@ export const blogsService = {
   async updateBlog(data: BlogInputModel, id: string) {
     const updatedBlog = await blogsRepository.updateBlog(data, id);
     return updatedBlog;
-  },
-
-  async getPostsOfBlog(
-    blogId: string,
-    searchQueries: any
-  ): Promise<Paginator<PostViewModel> | null> {
-    const query = constructSearchQuery(searchQueries);
-    const search = query.searchNameTerm
-      ? { title: { $regex: query.searchNameTerm, $options: "i" } }
-      : {};
-
-    const foundPosts = await blogsQueryRepository.getPostsOfBlog(
-      blogId,
-      search,
-      query
-    );
-    if (foundPosts.length === 0) {
-      return null;
-    }
-
-    const totalPostsCount = await postsCollection.countDocuments({
-      blogId: new ObjectId(blogId),
-      ...search,
-    });
-
-    //prep posts for output as Data Transfer Object
-    const postsToView = {
-      pagesCount: Math.ceil(totalPostsCount / query.pageSize),
-      page: query.pageNumber,
-      pageSize: query.pageSize,
-      totalCount: totalPostsCount,
-      items: foundPosts.map((post) => mapBlogPostsToView(post)),
-    };
-    return postsToView;
   },
 
   async createPost(
@@ -122,19 +81,6 @@ const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
     websiteUrl: blog.websiteUrl,
     createdAt: blog.createdAt,
     isMembership: false,
-  };
-};
-
-//set up search query with default values if needed
-const constructSearchQuery = (search: QueryType) => {
-  return {
-    pageNumber: search.pageNumber ? +search.pageNumber : 1,
-    pageSize: search.pageSize !== undefined ? +search.pageSize : 10,
-    sortBy: search.sortBy ? search.sortBy : "createdAt",
-    sortDirection: search.sortDirection
-      ? (search.sortDirection as SortDirection)
-      : "desc",
-    searchNameTerm: search.searchNameTerm ? search.searchNameTerm : null,
   };
 };
 

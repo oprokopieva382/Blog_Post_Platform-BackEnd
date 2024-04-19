@@ -1,20 +1,38 @@
 import { ObjectId } from "mongodb";
-import { BlogDBType, blogsCollection, postsCollection } from "../cloud_DB";
+import {
+  BlogDBType,
+  PostDBType,
+  blogsCollection,
+  postsCollection,
+} from "../cloud_DB";
 import { QueryType } from "../features/blogs";
-import { BlogViewModel, Paginator } from "../models";
+import { BlogViewModel, Paginator, PostViewModel } from "../models";
 
 export const blogsQueryRepository = {
   async getPostsOfBlog(
     blogId: string,
-    searchQueryTitle: any,
     query: QueryType
-  ) {
-    return await postsCollection
-      .find({ blogId: new ObjectId(blogId), ...searchQueryTitle })
+  ): Promise<Paginator<PostViewModel>> {
+    const totalPostsCount = await postsCollection.countDocuments({
+      blogId: new ObjectId(blogId),
+    });
+
+    const posts: PostDBType[] = await postsCollection
+      .find({ blogId: new ObjectId(blogId) })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort(query.sortBy, query.sortDirection)
       .toArray();
+
+    const postsToView = {
+      pagesCount: Math.ceil(totalPostsCount / query.pageSize),
+      page: query.pageNumber,
+      pageSize: query.pageSize,
+      totalCount: totalPostsCount,
+      items: posts.map((p) => this._mapBlogPostsToView(p)),
+    };
+
+    return postsToView;
   },
 
   async getAllBlogs(query: QueryType): Promise<Paginator<BlogViewModel>> {
@@ -53,6 +71,19 @@ export const blogsQueryRepository = {
       websiteUrl: blog.websiteUrl,
       createdAt: blog.createdAt,
       isMembership: false,
+    };
+  },
+
+  _mapBlogPostsToView(post: PostDBType): PostViewModel {
+    return {
+      // Convert ObjectId to string
+      id: post._id.toString(),
+      title: post.title,
+      shortDescription: post.shortDescription,
+      content: post.content,
+      blogId: post.blogId.toString(),
+      blogName: post.blogName,
+      createdAt: post.createdAt,
     };
   },
 };

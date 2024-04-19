@@ -104,9 +104,9 @@ export const blogsController = {
 
   getBlogPosts: async (req: Request, res: Response) => {
     try {
-      const foundBlogPosts = await blogsService.getPostsOfBlog(
+      const foundBlogPosts = await blogsQueryRepository.getPostsOfBlog(
         req.params.blogId,
-        req.query
+        queryFilter(req.query)
       );
 
       if (!foundBlogPosts) {
