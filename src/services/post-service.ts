@@ -10,7 +10,7 @@ export const postsService = {
   ): Promise<Paginator<PostViewModel> | null> {
     const query = constructSearchQuery(searchQueries);
     const search = query.searchNameTerm
-      ? { name: { $regex: query.searchNameTerm, $options: "i" } }
+      ? { title: { $regex: query.searchNameTerm, $options: "i" } }
       : {};
 
     const posts: PostDBType[] = await postsRepository.getAllPosts(
