@@ -12,6 +12,7 @@ export const postsRepository = {
       .find(searchQueryTitle)
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
+      .sort(query.sortBy, query.sortDirection)
       .toArray();
     return posts;
   },
