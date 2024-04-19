@@ -8,16 +8,20 @@ import {
   PostViewModel,
 } from "../../models";
 import { blogsService } from "../../services";
+import { blogsQueryRepository } from "../../query_repositories";
+import { queryFilter } from "./utils/queryFilter";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const blogs = await blogsService.getAllBlogs(req.query);
-     
-        if (!blogs) {
-          res.sendStatus(404);
-          return;
-        }
+      const blogs = await blogsQueryRepository.getAllBlogs(
+        queryFilter(req.query)
+      );
+
+      if (!blogs) {
+        res.sendStatus(404);
+        return;
+      }
       res.status(200).json(blogs);
     } catch (error) {
       console.error("Error in fetching all blogs:", error);
@@ -104,7 +108,7 @@ export const blogsController = {
         req.params.blogId,
         req.query
       );
-      
+
       if (!foundBlogPosts) {
         res.sendStatus(404);
         return;

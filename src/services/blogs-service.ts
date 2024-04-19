@@ -2,7 +2,6 @@ import { ObjectId, SortDirection } from "mongodb";
 import {
   BlogDBType,
   PostDBType,
-  blogsCollection,
   postsCollection,
 } from "../cloud_DB";
 import {
@@ -17,35 +16,6 @@ import { QueryType } from "../features/blogs";
 import { blogsQueryRepository } from "../query_repositories";
 
 export const blogsService = {
-  async getAllBlogs(
-    searchQueries: any
-  ): Promise<Paginator<BlogViewModel> | null> {
-    const query = constructSearchQuery(searchQueries);
-    const search = query.searchNameTerm
-      ? { name: { $regex: query.searchNameTerm, $options: "i" } }
-      : {};
-
-    const blogs = await blogsRepository.getAllBlogs(
-      search, 
-      query);
-    if (blogs.length === 0) {
-      return null;
-    }
-
-    const totalBlogsCount = await blogsCollection.countDocuments({...search});
-
-    //prep blogs for output as Data Transfer Object
-    const blogsToView = {
-      pagesCount: Math.ceil(totalBlogsCount / query.pageSize),
-      page: query.pageNumber,
-      pageSize: query.pageSize,
-      totalCount: totalBlogsCount,
-      items: blogs.map(mapBlogDBToView),
-    };
-
-    return blogsToView;
-  },
-
   async getByIdBlog(id: string): Promise<BlogViewModel | null> {
     const foundBlog = await blogsRepository.getByIdBlog(id);
     return foundBlog ? mapBlogDBToView(foundBlog) : null;
@@ -105,7 +75,7 @@ export const blogsService = {
       totalCount: totalPostsCount,
       items: foundPosts.map((post) => mapBlogPostsToView(post)),
     };
-     return postsToView;
+    return postsToView;
   },
 
   async createPost(

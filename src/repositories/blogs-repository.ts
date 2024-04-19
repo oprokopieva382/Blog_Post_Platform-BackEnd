@@ -1,23 +1,8 @@
 import { ObjectId } from "mongodb";
 import { BlogInputModel } from "../models";
 import { BlogDBType, PostDBType, blogsCollection, postsCollection } from "../cloud_DB";
-import { QueryType } from "../features/blogs";
 
 export const blogsRepository = {
-  async getAllBlogs(
-    searchQueryName: any,
-    query: QueryType
-  ): Promise<BlogDBType[]> {
-    const blogs: BlogDBType[] = await blogsCollection
-      .find(searchQueryName)
-      .skip((query.pageNumber - 1) * query.pageSize)
-      .limit(query.pageSize)
-      .sort(query.sortBy, query.sortDirection)
-      .toArray();
-
-    return blogs;
-  },
-
   async getByIdBlog(id: string): Promise<BlogDBType | null> {
     const foundBlog = await blogsCollection.findOne({
       _id: new ObjectId(id),
