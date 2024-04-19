@@ -32,7 +32,7 @@ export const blogsService = {
       return null;
     }
 
-    const totalBlogsCount = await blogsCollection.countDocuments();
+    const totalBlogsCount = await blogsCollection.countDocuments({...search});
 
     //prep blogs for output as Data Transfer Object
     const blogsToView = {
