@@ -4,11 +4,6 @@ import { blogsRepository, postsRepository } from "../repositories";
 import { ObjectId} from "mongodb";
 
 export const postsService = {
-  async getByIdPost(id: string): Promise<PostViewModel | null> {
-    const foundPost = await postsRepository.getByIdPost(id);
-    return foundPost ? mapPostDBToView(foundPost) : null;
-  },
-
   async removePost(id: string) {
     const foundPost = await postsRepository.removePost(id);
     return foundPost ? mapPostDBToView(foundPost) : null;
@@ -35,7 +30,7 @@ export const postsService = {
     const createdPost = await postsRepository.createPost(newPost);
     const insertedId = createdPost.insertedId;
 
-    const createdPostExist = this.getByIdPost(insertedId.toString());
+    const createdPostExist = postsRepository.getByIdPost(insertedId.toString());
     return createdPostExist;
   },
 

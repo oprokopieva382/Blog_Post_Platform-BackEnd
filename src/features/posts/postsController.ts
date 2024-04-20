@@ -5,6 +5,7 @@ import { PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
 import { postsQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
+import { mapPostsToView } from "../../utils/mapDBToView";
 
 export const postsController = {
   getAll: async (req: Request, res: Response) => {
@@ -53,7 +54,7 @@ export const postsController = {
         return;
       }
 
-      res.status(201).json(newPost);
+      res.status(201).json(mapPostsToView(newPost));
     } catch (error) {
       console.error("Error in fetching create post:", error);
       res.status(500);
