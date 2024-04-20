@@ -9,8 +9,8 @@ import {
 } from "../../models";
 import { blogsService } from "../../services";
 import { blogsQueryRepository } from "../../query_repositories";
-import { queryFilter } from "./utils/queryFilter";
-import { mapBlogDBToView, mapBlogPostsToView } from "./utils/blogsDBToView";
+import { queryFilter } from "../../utils/queryFilter";
+import { mapBlogDBToView, mapPostsToView } from "../../utils/mapDBToView";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
@@ -135,7 +135,7 @@ export const blogsController = {
         res.sendStatus(404);
         return;
       }
-      res.status(201).json(mapBlogPostsToView(newPost));
+      res.status(201).json(mapPostsToView(newPost));
     } catch (error) {
       console.error("Error in fetching create post:", error);
       res.status(500);

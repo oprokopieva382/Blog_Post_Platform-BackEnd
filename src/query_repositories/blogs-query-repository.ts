@@ -5,8 +5,8 @@ import {
   blogsCollection,
   postsCollection,
 } from "../cloud_DB";
-import { QueryType } from "../features/blogs";
 import { BlogViewModel, Paginator, PostViewModel } from "../models";
+import { QueryType } from "../query-type";
 
 export const blogsQueryRepository = {
   async getPostsOfBlog(
@@ -29,7 +29,7 @@ export const blogsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => this._mapBlogPostsToView(p)),
+      items: posts.map((p) => this._mapPostsToView(p)),
     };
 
     return postsToView;
@@ -81,7 +81,7 @@ export const blogsQueryRepository = {
     };
   },
 
-  _mapBlogPostsToView(post: PostDBType): PostViewModel {
+  _mapPostsToView(post: PostDBType): PostViewModel {
     return {
       // Convert ObjectId to string
       id: post._id.toString(),

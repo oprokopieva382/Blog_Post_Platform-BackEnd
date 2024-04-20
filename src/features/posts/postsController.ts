@@ -3,11 +3,15 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
+import { postsQueryRepository } from "../../query_repositories";
+import { queryFilter } from "../../utils/queryFilter";
 
 export const postsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const posts = await postsService.getAllPosts(req.query);
+      const posts = await postsQueryRepository.getAllPosts(
+        queryFilter(req.query)
+      );
 
       if (!posts) {
         res.sendStatus(404);

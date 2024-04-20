@@ -1,5 +1,5 @@
-import { BlogDBType, PostDBType } from "../../../cloud_DB";
-import { BlogViewModel, PostViewModel } from "../../../models";
+import { BlogDBType, PostDBType } from "../cloud_DB";
+import { BlogViewModel, PostViewModel } from "../models";
 
 const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
   return {
@@ -13,8 +13,7 @@ const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
   };
 };
 
-
-const mapBlogPostsToView = (post: PostDBType): PostViewModel => {
+const mapPostsToView = (post: PostDBType): PostViewModel => {
   return {
     // Convert ObjectId to string
     id: post._id.toString(),
@@ -27,4 +26,4 @@ const mapBlogPostsToView = (post: PostDBType): PostViewModel => {
   };
 };
 
-export { mapBlogDBToView, mapBlogPostsToView };
+export { mapBlogDBToView, mapPostsToView };
