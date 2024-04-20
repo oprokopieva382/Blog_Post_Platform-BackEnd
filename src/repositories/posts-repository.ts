@@ -24,9 +24,7 @@ export const postsRepository = {
     const { title, shortDescription, content, blogId } = data;
 
     const updatedPost = await postsCollection.findOneAndUpdate(
-      {
-        _id: new ObjectId(id),
-      },
+      { _id: new ObjectId(id) },
       {
         $set: {
           title,

@@ -1,12 +1,11 @@
-import { PostInputModel, PostViewModel } from "../models";
-import { PostDBType } from "../cloud_DB";
+import { PostInputModel} from "../models";
 import { blogsRepository, postsRepository } from "../repositories";
 import { ObjectId} from "mongodb";
 
 export const postsService = {
   async removePost(id: string) {
     const foundPost = await postsRepository.removePost(id);
-    return foundPost ? mapPostDBToView(foundPost) : null;
+    return foundPost
   },
 
   async createPost(data: PostInputModel) {
@@ -45,17 +44,4 @@ export const postsService = {
     const updatedPost = await postsRepository.getByIdPost(id);
     return updatedPost;
   },
-};
-
-const mapPostDBToView = (post: PostDBType): PostViewModel => {
-  return {
-    // Convert ObjectId to string
-    id: post._id.toString(),
-    title: post.title,
-    shortDescription: post.shortDescription,
-    content: post.content,
-    blogId: post.blogId.toString(),
-    blogName: post.blogName,
-    createdAt: post.createdAt,
-  };
 };
