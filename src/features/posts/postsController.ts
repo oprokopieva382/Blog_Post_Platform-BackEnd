@@ -3,11 +3,16 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
+import { postsQueryRepository } from "../../query_repositories";
+import { queryFilter } from "../../utils/queryFilter";
+import { mapPostsToView } from "../../utils/mapDBToView";
 
 export const postsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const posts = await postsService.getAllPosts(req.query);
+      const posts = await postsQueryRepository.getAllPosts(
+        queryFilter(req.query)
+      );
 
       if (!posts) {
         res.sendStatus(404);
@@ -23,7 +28,7 @@ export const postsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundPost = await postsService.getByIdPost(req.params.id);
+      const foundPost = await postsQueryRepository.getByIdPost(req.params.id);
 
       if (!foundPost) {
         res.sendStatus(404);
@@ -49,7 +54,7 @@ export const postsController = {
         return;
       }
 
-      res.status(201).json(newPost);
+      res.status(201).json(mapPostsToView(newPost));
     } catch (error) {
       console.error("Error in fetching create post:", error);
       res.status(500);

@@ -8,16 +8,21 @@ import {
   PostViewModel,
 } from "../../models";
 import { blogsService } from "../../services";
+import { blogsQueryRepository } from "../../query_repositories";
+import { queryFilter } from "../../utils/queryFilter";
+import { mapBlogDBToView, mapPostsToView } from "../../utils/mapDBToView";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response) => {
     try {
-      const blogs = await blogsService.getAllBlogs(req.query);
-     
-        if (!blogs) {
-          res.sendStatus(404);
-          return;
-        }
+      const blogs = await blogsQueryRepository.getAllBlogs(
+        queryFilter(req.query)
+      );
+
+      if (!blogs) {
+        res.sendStatus(404);
+        return;
+      }
       res.status(200).json(blogs);
     } catch (error) {
       console.error("Error in fetching all blogs:", error);
@@ -27,7 +32,7 @@ export const blogsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundBlog = await blogsService.getByIdBlog(req.params.id);
+      const foundBlog = await blogsQueryRepository.getByIdBlog(req.params.id);
 
       if (!foundBlog) {
         res.sendStatus(404);
@@ -69,7 +74,7 @@ export const blogsController = {
         return;
       }
 
-      res.status(201).json(newBlog);
+      res.status(201).json(mapBlogDBToView(newBlog));
     } catch (error) {
       console.error("Error in fetching create blog:", error);
       res.status(500);
@@ -100,12 +105,12 @@ export const blogsController = {
 
   getBlogPosts: async (req: Request, res: Response) => {
     try {
-      const foundBlogPosts = await blogsService.getPostsOfBlog(
+      const foundBlogPosts = await blogsQueryRepository.getPostsOfBlog(
         req.params.blogId,
-        req.query
+        queryFilter(req.query)
       );
-      
-      if (!foundBlogPosts) {
+
+      if (foundBlogPosts.items.length === 0 || !foundBlogPosts) {
         res.sendStatus(404);
         return;
       }
@@ -130,7 +135,7 @@ export const blogsController = {
         res.sendStatus(404);
         return;
       }
-      res.status(201).json(newPost);
+      res.status(201).json(mapPostsToView(newPost));
     } catch (error) {
       console.error("Error in fetching create post:", error);
       res.status(500);
