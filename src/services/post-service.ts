@@ -1,8 +1,7 @@
-import { Paginator, PostInputModel, PostViewModel } from "../models";
-import { PostDBType, postsCollection } from "../cloud_DB";
+import { PostInputModel, PostViewModel } from "../models";
+import { PostDBType } from "../cloud_DB";
 import { blogsRepository, postsRepository } from "../repositories";
-import { ObjectId, SortDirection } from "mongodb";
-import { QueryType } from "../query-type";
+import { ObjectId} from "mongodb";
 
 export const postsService = {
   async getByIdPost(id: string): Promise<PostViewModel | null> {

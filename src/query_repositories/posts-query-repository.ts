@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { PostDBType, postsCollection } from "../cloud_DB";
 import { Paginator, PostViewModel } from "../models";
 import { QueryType } from "../query-type";
@@ -22,6 +23,11 @@ export const postsQueryRepository = {
     };
 
     return postsToView;
+  },
+
+  async getByIdPost(id: string): Promise<PostViewModel | null> {
+    const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
+    return foundPost ? this._mapPostDBToView(foundPost) : null;
   },
 
   _mapPostDBToView(post: PostDBType): PostViewModel {

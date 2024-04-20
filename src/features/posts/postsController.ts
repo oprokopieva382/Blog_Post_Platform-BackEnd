@@ -27,7 +27,7 @@ export const postsController = {
 
   getById: async (req: Request, res: Response) => {
     try {
-      const foundPost = await postsService.getByIdPost(req.params.id);
+      const foundPost = await postsQueryRepository.getByIdPost(req.params.id);
 
       if (!foundPost) {
         res.sendStatus(404);
