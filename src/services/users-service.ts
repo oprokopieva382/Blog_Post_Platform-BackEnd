@@ -4,6 +4,8 @@ import { usersRepository } from "../repositories";
 
 export const usersService = {
   async createUser(data: UserInputModel) {
+    const {login, password, email}= data
+    
     const newUser = {
       _id: new ObjectId(),
       createdAt: new Date().toISOString(),
