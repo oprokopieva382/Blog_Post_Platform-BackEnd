@@ -4,3 +4,6 @@ export { PostInputModel } from "./PostInputModel";
 export { PostViewModel } from "./PostViewModel";
 export { BlogPostInputModel } from "./BlogPostInputModel";
 export { Paginator } from "./Paginator";
+export { LoginInputModel } from "./LoginInputModel";
+export { UserInputModel } from "./UserInputModel";
+export { UserViewModel } from "./UserViewModel";

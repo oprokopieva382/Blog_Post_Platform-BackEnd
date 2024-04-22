@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb"
+import { ObjectId } from "mongodb";
 
 export type BlogDBType = {
   _id: ObjectId;
@@ -17,4 +17,11 @@ export type PostDBType = {
   blogId: ObjectId;
   blogName: string;
   createdAt?: string;
+};
+
+export type UserDBType = {
+  _id: ObjectId;
+  login: string;
+  email: string;
+  createdAt: string;
 };
