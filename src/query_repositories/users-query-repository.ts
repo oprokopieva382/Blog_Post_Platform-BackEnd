@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { UserDBType, blogsCollection } from "../cloud_DB";
+import { UserDBType } from "../cloud_DB";
 import { Paginator, UserViewModel } from "../models";
 import { QueryUserType } from "../query-type";
 import { usersCollection } from "../cloud_DB/mongo_db_atlas";
@@ -13,7 +13,7 @@ export const usersQueryRepository = {
       ? { email: { $regex: query.searchEmailTerm, $options: "i" } }
       : {};
 
-    const totalBlogsCount = await blogsCollection.countDocuments({
+    const totalUsersCount = await usersCollection.countDocuments({
       $or: [searchByLogin, searchByEmail],
     });
 
@@ -25,10 +25,10 @@ export const usersQueryRepository = {
       .toArray();
 
     const usersToView = {
-      pagesCount: Math.ceil(totalBlogsCount / query.pageSize),
+      pagesCount: Math.ceil(totalUsersCount / query.pageSize),
       page: query.pageNumber,
       pageSize: query.pageSize,
-      totalCount: totalBlogsCount,
+      totalCount: totalUsersCount,
       items: users.map((u) => this._mapUsersToView(u)),
     };
 
