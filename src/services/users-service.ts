@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb";
-import { UserInputModel } from "../models";
+import { LoginInputModel, UserInputModel } from "../models";
 import { usersRepository } from "../repositories";
 import { bcryptService } from "./bcrypt-service";
+import { usersCollection } from "../cloud_DB/mongo_db_atlas";
 
 export const usersService = {
   async createUser(data: UserInputModel) {
@@ -28,4 +29,6 @@ export const usersService = {
     const userToDelete = await usersRepository.removeUser(id);
     return userToDelete;
   },
+
+ 
 };
