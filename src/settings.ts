@@ -16,5 +16,6 @@ export const SETTINGS = {
     POSTS: "/posts",
     BLOGS: "/blogs",
     USERS: "/users",
+    AUTH: "/auth"
   },
 };
