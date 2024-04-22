@@ -37,5 +37,19 @@ export const usersController = {
     res.status(201).json(mapUserDBToView(newUser));
   },
 
-  deleteById: () => {},
+  deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
+    try {
+      const userToRemove = await usersService.removeUser(req.params.id);
+
+      if (!userToRemove) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in fetching delete user by ID:", error);
+      res.status(500);
+    }
+  },
 };

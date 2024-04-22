@@ -24,8 +24,8 @@ export const usersService = {
     return createdUserExist;
   },
 
-  //   async removeBlog(id: string) {
-  //     const blogToDelete = await blogsRepository.removeBlog(id);
-  //     return blogToDelete;
-  //   },
+  async removeUser(id: string) {
+    const userToDelete = await usersRepository.removeUser(id);
+    return userToDelete;
+  },
 };

@@ -15,10 +15,10 @@ export const usersRepository = {
     return foundUser;
   },
 
-  //   async removeBlog(id: string) {
-  //     const blogToDelete = await blogsCollection.findOneAndDelete({
-  //       _id: new ObjectId(id),
-  //     });
-  //     return blogToDelete;
-  //   },
+    async removeUser(id: string) {
+      const userToDelete = await usersCollection.findOneAndDelete({
+        _id: new ObjectId(id),
+      });
+      return userToDelete;
+    },
 };
