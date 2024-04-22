@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { usersController } from "./usersController";
+import { authMiddleware } from "../../middlewares";
 
 export const usersRouter = Router();
 
-usersRouter.get("/", usersController.getAll);
-usersRouter.post("/", usersController.create);
-usersRouter.delete("/:id", usersController.deleteById);
+usersRouter.get("/", authMiddleware, usersController.getAll);
+usersRouter.post("/", authMiddleware, usersController.create);
+usersRouter.delete("/:id", authMiddleware, usersController.deleteById);
