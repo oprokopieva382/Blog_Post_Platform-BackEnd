@@ -7,3 +7,12 @@ export type QueryType = {
   sortDirection: SortDirection;
   searchNameTerm: string | null;
 };
+
+export type QueryUserType = {
+  sortBy: string;
+  sortDirection: SortDirection;
+  pageNumber: number;
+  pageSize: number;
+  searchLoginTerm: string | null;
+  searchEmailTerm: string | null;
+};

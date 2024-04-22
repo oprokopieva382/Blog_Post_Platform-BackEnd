@@ -3,12 +3,27 @@ import { UserInputModel, UserViewModel } from "../../models";
 import { APIErrorResult } from "../../output-errors-type";
 import { usersService } from "../../services";
 import { mapUserDBToView } from "../../utils/mapDBToView";
+import { usersQueryRepository } from "../../query_repositories";
+import { userQueryFilter } from "../../utils/queryFilter";
 
 export const usersController = {
   getAll: async (req: Request, res: Response) => {
     try {
-    } catch (error) {}
+      const users = await usersQueryRepository.getAllUsers(
+        userQueryFilter(req.query)
+      );
+
+      if (!users) {
+        res.sendStatus(404);
+        return;
+      }
+      res.status(200).json(users);
+    } catch (error) {
+      console.error("Error in fetching all users:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   },
+
   create: async (
     req: Request<{}, {}, UserInputModel>,
     res: Response<UserViewModel | APIErrorResult>
@@ -21,5 +36,6 @@ export const usersController = {
     }
     res.status(201).json(mapUserDBToView(newUser));
   },
+
   deleteById: () => {},
 };

@@ -7,7 +7,7 @@ export const usersService = {
   async createUser(data: UserInputModel) {
     const { login, password, email } = data;
 
-    const hashedPassword = bcryptService.createHash(password);
+    const hashedPassword = await bcryptService.createHash(password);
 
     const newUser = {
       _id: new ObjectId(),
@@ -16,7 +16,7 @@ export const usersService = {
       email,
       createdAt: new Date().toISOString(),
     };
-    
+
     const createdUser = await usersRepository.createUser(newUser);
     const insertedId = createdUser.insertedId;
 

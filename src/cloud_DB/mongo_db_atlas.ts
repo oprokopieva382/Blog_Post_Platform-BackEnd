@@ -21,7 +21,7 @@ export const ConnectMongoDB = async () => {
 
     blogsCollection = db.collection(SETTINGS.BLOGS_COLLECTION);
     postsCollection = db.collection(SETTINGS.POSTS_COLLECTION);
-    postsCollection = db.collection(SETTINGS.USERS_COLLECTION)
+    usersCollection = db.collection(SETTINGS.USERS_COLLECTION)
 
     return true;
   } catch (error) {
