@@ -16,9 +16,9 @@ export const authService = {
       );
      
       if (!isPasswordCorrect) {
-        return null
+        return 401
       } 
-      
+
       return findUser;
   },
 };

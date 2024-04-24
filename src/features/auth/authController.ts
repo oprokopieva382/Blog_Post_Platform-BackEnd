@@ -9,14 +9,19 @@ export const authController = {
     res: Response<UserViewModel | APIErrorResult>
   ) => {
     try {
-      const isUserExist = await authService.loginUser(req.body);
-      console.log(isUserExist);
+      const authResult = await authService.loginUser(req.body);
+      console.log(authResult);
 
-      if (!isUserExist) {
+      if (!authResult) {
         res.sendStatus(404);
         return;
       }
-    
+
+      if (authResult === 401) {
+        res.sendStatus(401);
+        return;
+      }
+
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in user login:", error);
