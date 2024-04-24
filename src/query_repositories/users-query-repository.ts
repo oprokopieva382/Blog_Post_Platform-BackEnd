@@ -9,12 +9,12 @@ export const usersQueryRepository = {
       ? { login: { $regex: query.searchLoginTerm, $options: "i" } }
       : {};
 
-     const searchByEmail = query.searchEmailTerm
+    const searchByEmail = query.searchEmailTerm
       ? { email: { $regex: query.searchEmailTerm, $options: "i" } }
       : {};
-   
+
     const totalUsersCount = await usersCollection.countDocuments({
-        $and: [{ ...searchByLogin }, { ...searchByEmail }],
+      $and: [{ ...searchByLogin }, { ...searchByEmail }],
     });
 
     const users: UserDBType[] = await usersCollection
