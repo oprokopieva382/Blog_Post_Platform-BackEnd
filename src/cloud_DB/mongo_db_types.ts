@@ -22,6 +22,7 @@ export type PostDBType = {
 export type UserDBType = {
   _id: ObjectId;
   login: string;
+  password: string;
   email: string;
   createdAt: string;
 };

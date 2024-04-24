@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
 import { Paginator, UserViewModel } from "../models";
 import { QueryUserType } from "../query-type";
@@ -9,16 +8,17 @@ export const usersQueryRepository = {
     const searchByLogin = query.searchLoginTerm
       ? { login: { $regex: query.searchLoginTerm, $options: "i" } }
       : {};
-    const searchByEmail = query.searchEmailTerm
+
+     const searchByEmail = query.searchEmailTerm
       ? { email: { $regex: query.searchEmailTerm, $options: "i" } }
       : {};
-
+   
     const totalUsersCount = await usersCollection.countDocuments({
-      $or: [searchByLogin, searchByEmail],
+        $and: [{ ...searchByLogin }, { ...searchByEmail }],
     });
 
     const users: UserDBType[] = await usersCollection
-      .find({ $or: [searchByLogin, searchByEmail] })
+      .find({ $and: [{ ...searchByLogin }, { ...searchByEmail }] })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort(query.sortBy, query.sortDirection)
@@ -33,13 +33,6 @@ export const usersQueryRepository = {
     };
 
     return usersToView;
-  },
-
-  async getByIdUser(id: string): Promise<UserViewModel | null> {
-    const foundUser = await usersCollection.findOne({
-      _id: new ObjectId(id),
-    });
-    return foundUser ? this._mapUsersToView(foundUser) : null;
   },
 
   _mapUsersToView(user: UserDBType): UserViewModel {

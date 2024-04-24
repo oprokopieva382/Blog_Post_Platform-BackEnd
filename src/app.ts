@@ -4,12 +4,14 @@ import { postsRouter } from "./features/posts/postsRouter";
 import { blogsRouter } from "./features/blogs/blogsRouter";
 import { testingRouter } from "./features/dbCleanUp/testingRouter";
 import { usersRouter } from "./features/users/usersRouter";
+import { authRouter } from "./features/auth/authRouter";
 
 export const app = express();
 
 //use middleware to be able have access to body and query of all needed requests
 app.use(express.json());
 app.use(SETTINGS.PATH.TESTING, testingRouter);
+app.use(SETTINGS.PATH.AUTH, authRouter);
 app.use(SETTINGS.PATH.POSTS, postsRouter);
 app.use(SETTINGS.PATH.BLOGS, blogsRouter);
 app.use(SETTINGS.PATH.USERS, usersRouter);

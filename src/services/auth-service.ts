@@ -1,19 +1,24 @@
 import { bcryptService } from ".";
 import { LoginInputModel } from "../models";
-import { usersRepository } from "../repositories";
+import { authRepository } from "../repositories";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
-    // const findUser = await usersRepository.getByLoginOrEmail(data.loginOrEmail);
+    const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
+    
+    if (!findUser) {
+      return null;
+    }
 
-    // if (!findUser) {
-    //   return null;
-    // }
-    // const user = await usersRepository.getByIdUser(findUser._id.toString());
+    const isPasswordCorrect = await bcryptService.testPassword(
+      data.password,
+      findUser.password
+      );
+     
+      if (!isPasswordCorrect) {
+        return 401
+      } 
 
-    // const isPasswordCorrect = await bcryptService.testPassword(
-    //   user.password,
-    //   data.password
-    // );
+      return findUser;
   },
 };
