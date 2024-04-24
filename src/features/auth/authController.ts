@@ -12,12 +12,7 @@ export const authController = {
       const authResult = await authService.loginUser(req.body);
       console.log(authResult);
 
-      if (!authResult) {
-        res.sendStatus(404);
-        return;
-      }
-
-      if (authResult === 401) {
+      if (!authResult || authResult === 401) {
         res.sendStatus(401);
         return;
       }
