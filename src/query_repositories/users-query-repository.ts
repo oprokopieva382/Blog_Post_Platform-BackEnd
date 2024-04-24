@@ -8,16 +8,17 @@ export const usersQueryRepository = {
     const searchByLogin = query.searchLoginTerm
       ? { login: { $regex: query.searchLoginTerm, $options: "i" } }
       : {};
-    const searchByEmail = query.searchEmailTerm
+
+     const searchByEmail = query.searchEmailTerm
       ? { email: { $regex: query.searchEmailTerm, $options: "i" } }
       : {};
-
+   
     const totalUsersCount = await usersCollection.countDocuments({
-      $or: [searchByLogin, searchByEmail],
+        $and: [{ ...searchByLogin }, { ...searchByEmail }],
     });
 
     const users: UserDBType[] = await usersCollection
-      .find({ $or: [searchByLogin, searchByEmail] })
+      .find({ $and: [{ ...searchByLogin }, { ...searchByEmail }] })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort(query.sortBy, query.sortDirection)
