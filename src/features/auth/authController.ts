@@ -10,13 +10,14 @@ export const authController = {
   ) => {
     try {
       const isUserExist = await authService.loginUser(req.body);
+      console.log(isUserExist);
 
-    //   if (!isUserExist) {
-    //     res.sendStatus(404);
-    //     return;
-    //   }
+      if (!isUserExist) {
+        res.sendStatus(404);
+        return;
+      }
     
-      res.status(204);
+      res.sendStatus(204);
     } catch (error) {
       console.error("Error in user login:", error);
       res.status(500);

@@ -15,16 +15,10 @@ export const usersRepository = {
     return foundUser;
   },
 
-  async getByLoginOrEmail(data: string) {
-    return usersCollection.findOne({
-      $or: [{ email: data }, { login: data}],
+  async removeUser(id: string) {
+    const userToDelete = await usersCollection.findOneAndDelete({
+      _id: new ObjectId(id),
     });
+    return userToDelete;
   },
-
-    async removeUser(id: string) {
-      const userToDelete = await usersCollection.findOneAndDelete({
-        _id: new ObjectId(id),
-      });
-      return userToDelete;
-    },
 };
