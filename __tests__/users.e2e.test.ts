@@ -1,42 +1,39 @@
-import { MongoClient } from "mongodb";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import { request } from "./test-helpers";
+import request from "supertest";
 import { SETTINGS } from "../src/settings";
+import { app } from "../src/app";
+import { ConnectMongoDB } from "../src/cloud_DB";
 
 describe("/users test", () => {
-  let server: any;
-  let client: MongoClient;
+  let userId: string;
   beforeAll(async () => {
-    server = await MongoMemoryServer.create();
-    const uri = server.getUri();
-    client = new MongoClient(uri);
-    await client.connect();
+     await ConnectMongoDB();
   });
 
- afterAll(async () => {
-   if (client) {
-     await client.close();
-   }
-   if (server) {
-     await server.stop();
-   }
- });
+  afterAll(async () => {
 
-  describe("create user", () => {
-    it("1 - should create user and return  status code of 201", async () => {
-      const newUser = {
-        login: "testUser",
-        password: "string",
-        email: "test@gmail.com",
-      };
-      const res = await request
-        .post(SETTINGS.PATH.USERS)
-        .send(newUser)
-        //.set({ Authorization: "Basic admin:qwerty" })
-        .auth("admin", "qwerty")
-        .expect(201);
+  });
 
-      //expect(res.body).toBe(newUser);
-    });
+  it("1 - should create user and return  status code of 201", async () => {
+    const newUser = {
+      login: "testUser",
+      password: "string",
+      email: "test@gmail.com",
+    };
+    const expectedResylr = {
+      email: newUser.email,
+      login: newUser.login,
+      createdAt: expect.any(String),
+      id: expect.any(String),
+    };
+    const res = await request(app)
+      .post(SETTINGS.PATH.USERS)
+      .send(newUser)
+      .auth("admin", "qwerty")
+      .expect(201);
+
+    expect(res.body).toEqual(expectedResylr);
+    userId = res.body.id;
+
+    console.log(userId);
   });
 });
