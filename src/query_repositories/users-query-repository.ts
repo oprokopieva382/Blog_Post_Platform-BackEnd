@@ -14,11 +14,11 @@ export const usersQueryRepository = {
       : {};
 
     const totalUsersCount = await usersCollection.countDocuments({
-      $and: [{ ...searchByLogin }, { ...searchByEmail }],
+      $or: [{ ...searchByLogin }, { ...searchByEmail }],
     });
 
     const users: UserDBType[] = await usersCollection
-      .find({ $and: [{ ...searchByLogin }, { ...searchByEmail }] })
+      .find({ $or: [{ ...searchByLogin }, { ...searchByEmail }] })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort(query.sortBy, query.sortDirection)
