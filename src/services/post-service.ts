@@ -1,11 +1,13 @@
-import { PostInputModel} from "../models";
+import { CommentDBType } from "../cloud_DB/mongo_db_types";
+import { PostInputModel } from "../models";
+import { CommentInputModel } from "../models/CommentInputModel";
 import { blogsRepository, postsRepository } from "../repositories";
-import { ObjectId} from "mongodb";
+import { ObjectId } from "mongodb";
 
 export const postsService = {
   async removePost(id: string) {
     const foundPost = await postsRepository.removePost(id);
-    return foundPost
+    return foundPost;
   },
 
   async createPost(data: PostInputModel) {
@@ -43,5 +45,39 @@ export const postsService = {
 
     const updatedPost = await postsRepository.getByIdPost(id);
     return updatedPost;
+  },
+
+  async createPostComment(
+    postId: string,
+    data: CommentInputModel
+  ): Promise<CommentDBType | null> {
+    const { content } = data;
+    const isPostExist = await postsRepository.getByIdPost(postId);
+
+    if (!isPostExist) {
+      return null;
+    }
+
+    const newComment = {
+      _id: new ObjectId(),
+      postId,
+      content,
+      commentatorInfo: {
+        userId: "Bob", //hardcode for new, update with token later
+        userLogin: "testBob", //hardcode for new, update with token later
+      },
+      createdAt: new Date().toISOString(),
+    };
+
+    const createdComment = await postsRepository.createComment(newComment);
+
+    if (!createdComment) {
+      return null;
+    }
+    const insertedId = createdComment.insertedId;
+    const createdCommentExist = await postsRepository.getByIdComment(
+      insertedId.toString()
+    );
+    return createdCommentExist;
   },
 };

@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
-import { PostInputModel, PostViewModel } from "../../models";
+import { CommentViewModel, PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
 import {
   commentsQueryRepository,
   postsQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
-import { mapPostsToView } from "../../utils/mapDBToView";
+import { mapCommentDBToView, mapPostsToView } from "../../utils/mapDBToView";
+import { CommentInputModel } from "../../models/CommentInputModel";
 
 export const postsController = {
   getAll: async (req: Request, res: Response) => {
@@ -118,6 +119,26 @@ export const postsController = {
     } catch (error) {
       console.error("Error in fetching comments of specific post ID:", error);
       res.status(500).json({ error: "Internal server error" });
+    }
+  },
+
+  createPostComment: async (
+    req: Request<{ postId: string }, {}, CommentInputModel>,
+    res: Response<CommentViewModel | APIErrorResult>
+  ) => {
+    try {
+      const newComment = await postsService.createPostComment(
+        req.params.postId,
+        req.body
+      );
+      if (!newComment) {
+        res.sendStatus(404);
+        return;
+      }
+      res.status(201).json(mapCommentDBToView(newComment));
+    } catch (error) {
+      console.error("Error in fetching create comment:", error);
+      res.status(500);
     }
   },
 };
