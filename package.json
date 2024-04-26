@@ -8,7 +8,7 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "yarn nodemon --inspect dist/index.js",
-    "test": "jest -i --detectOpenHandles --no-cache --watchAll --testPathPattern=__tests__/blogs.e2e.test.ts"
+    "test": "jest -i --detectOpenHandles --no-cache --watchAll --testPathPattern=__tests__/users.e2e.test.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -16,6 +16,7 @@
     "express": "^4.19.1",
     "express-validator": "^7.0.1",
     "mongodb": "^6.5.0",
+    "mongodb-memory-server": "^9.2.0",
     "ngrok": "^5.0.0-beta.2"
   },
   "devDependencies": {

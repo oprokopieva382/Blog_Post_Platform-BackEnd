@@ -7,11 +7,11 @@ export const usersQueryRepository = {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
     const searchByLogin = query.searchLoginTerm
       ? { login: { $regex: query.searchLoginTerm, $options: "i" } }
-      : "";
+      : {};
 
     const searchByEmail = query.searchEmailTerm
       ? { email: { $regex: query.searchEmailTerm, $options: "i" } }
-      : "";
+      : {};
 
     const totalUsersCount = await usersCollection.countDocuments({
       $and: [{ ...searchByLogin }, { ...searchByEmail }],
