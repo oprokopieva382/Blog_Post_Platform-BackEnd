@@ -6,23 +6,25 @@ import {
 
 } from "../../models";
 import { ParamType } from ".";
+import { commentsQueryRepository } from "../../query_repositories";
+import { mapCommentDBToView } from "../../utils/mapDBToView";
 
 
 export const commentsController = {
   getById: async (req: Request, res: Response) => {
-    //try {
-    //   const foundBlog = await blogsQueryRepository.getByIdBlog(req.params.id);
+    try {
+      const foundComment = await commentsQueryRepository.getByIdComment(req.params.id);
 
-    //   if (!foundBlog) {
-    //     res.sendStatus(404);
-    //     return;
-    //   }
+      if (!foundComment) {
+        res.sendStatus(404);
+        return;
+      }
 
-    //   res.status(200).json(foundBlog);
-    // } catch (error) {
-    //   console.error("Error in fetching blog by ID:", error);
-    //   res.status(500).json({ error: "Internal server error" });
-    // }
+      res.status(200).json(mapCommentDBToView(foundComment));
+    } catch (error) {
+      console.error("Error in fetching blog by ID:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   },
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {

@@ -63,8 +63,8 @@ export const postsService = {
       postId,
       content,
       commentatorInfo: {
-        userId: "Bob", //hardcode for new, update with token later
-        userLogin: "testBob", //hardcode for new, update with token later
+        userId: "Bob", //hardcode for now, update with token later
+        userLogin: "testBob", //hardcode for now, update with token later
       },
       createdAt: new Date().toISOString(),
     };

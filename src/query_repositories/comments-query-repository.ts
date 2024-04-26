@@ -2,6 +2,7 @@ import { CommentViewModel, Paginator } from "../models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { commentsCollection } from "../cloud_DB/mongo_db_atlas";
 import { QueryCommentsType } from "../query-type";
+import { ObjectId } from "mongodb";
 
 export const commentsQueryRepository = {
   async getCommentsOfPost(
@@ -28,6 +29,13 @@ export const commentsQueryRepository = {
     };
 
     return commentsToView;
+  },
+
+  async getByIdComment(id: string): Promise<CommentDBType | null> {
+    const foundComment = await commentsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    return foundComment;
   },
 
   _mapCommentDBToView(comment: CommentDBType): CommentViewModel {
