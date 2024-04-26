@@ -26,3 +26,14 @@ export type UserDBType = {
   email: string;
   createdAt: string;
 };
+
+export type CommentDBType = {
+  _id: ObjectId;
+  postId: string;
+  content: string;
+  commentatorInfo: {
+    userId: "string";
+    userLogin: "string";
+  };
+  createdAt: string;
+};

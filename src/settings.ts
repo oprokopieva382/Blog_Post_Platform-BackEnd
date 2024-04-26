@@ -10,12 +10,14 @@ export const SETTINGS = {
   BLOGS_COLLECTION: process.env.BLOGS_COLLECTION || "",
   POSTS_COLLECTION: process.env.POSTS_COLLECTION || "",
   USERS_COLLECTION: process.env.USERS_COLLECTION || "",
+  COMMENTS_COLLECTION: process.env.COMMENTS_COLLECTION || "",
   ADMIN_AUTH: "admin:qwerty",
   PATH: {
     TESTING: "/testing",
     POSTS: "/posts",
     BLOGS: "/blogs",
     USERS: "/users",
+    COMMENTS: "/comments",
     AUTH: "/auth"
   },
 };
