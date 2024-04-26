@@ -5,23 +5,29 @@ import { SETTINGS } from "../src/settings";
 
 describe("/users test", () => {
   let server: any;
+  let client: MongoClient;
   beforeAll(async () => {
     server = await MongoMemoryServer.create();
     const uri = server.getUri();
-    const client: MongoClient = new MongoClient(uri);
+    client = new MongoClient(uri);
     await client.connect();
   });
 
-  afterAll(async () => {
-    await server.stop();
-  });
+ afterAll(async () => {
+   if (client) {
+     await client.close();
+   }
+   if (server) {
+     await server.stop();
+   }
+ });
 
   describe("create user", () => {
     it("1 - should create user and return  status code of 201", async () => {
       const newUser = {
-        login: "KGT4HonHV3",
+        login: "testUser",
         password: "string",
-        email: "RL4_55tmylXFE58xGvNvU@gmail.com",
+        email: "test@gmail.com",
       };
       const res = await request
         .post(SETTINGS.PATH.USERS)
