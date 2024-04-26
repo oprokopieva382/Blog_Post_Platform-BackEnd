@@ -1,19 +1,17 @@
 import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
-import {
-  BlogInputModel,
-  BlogViewModel,
-
-} from "../../models";
+import { CommentInputModel, CommentViewModel } from "../../models";
 import { ParamType } from ".";
 import { commentsQueryRepository } from "../../query_repositories";
 import { mapCommentDBToView } from "../../utils/mapDBToView";
-
+import { commentsService } from "../../services";
 
 export const commentsController = {
   getById: async (req: Request, res: Response) => {
     try {
-      const foundComment = await commentsQueryRepository.getByIdComment(req.params.id);
+      const foundComment = await commentsQueryRepository.getByIdComment(
+        req.params.id
+      );
 
       if (!foundComment) {
         res.sendStatus(404);
@@ -22,47 +20,48 @@ export const commentsController = {
 
       res.status(200).json(mapCommentDBToView(foundComment));
     } catch (error) {
-      console.error("Error in fetching blog by ID:", error);
+      console.error("Error in fetching comment by ID:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   },
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
-    // try {
-    //   const blogToRemove = await blogsService.removeBlog(req.params.id);
+    try {
+      const commentToRemove = await commentsService.removeComment(
+        req.params.commentId
+      );
 
-    //   if (!blogToRemove) {
-    //     res.sendStatus(404);
-    //     return;
-    //   }
+      if (!commentToRemove) {
+        res.sendStatus(404);
+        return;
+      }
 
-    //   res.sendStatus(204);
-    // } catch (error) {
-    //   console.error("Error in fetching delete blog by ID:", error);
-    //   res.status(500);
-    // }
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in fetching delete comment by ID:", error);
+      res.status(500);
+    }
   },
 
   update: async (
-    req: Request<ParamType, {}, BlogInputModel>,
-    res: Response<BlogViewModel | APIErrorResult>
+    req: Request<ParamType, {}, CommentInputModel>,
+    res: Response<CommentViewModel | APIErrorResult>
   ) => {
-    // try {
-    //   const blogToUpdate = await blogsService.updateBlog(
-    //     req.body,
-    //     req.params.id
-    //   );
+    try {
+      const commentToUpdate = await commentsService.updateComment(
+        req.body,
+        req.params.id
+      );
 
-    //   if (!blogToUpdate) {
-    //     res.sendStatus(404);
-    //     return;
-    //   }
+      if (!commentToUpdate) {
+        res.sendStatus(404);
+        return;
+      }
 
-    //   res.sendStatus(204);
-    // } catch (error) {
-    //   console.error("Error in fetching update blog by ID:", error);
-    //   res.status(500);
-    // }
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in fetching update comment by ID:", error);
+      res.status(500);
+    }
   },
-
 };
