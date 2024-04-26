@@ -16,3 +16,10 @@ export type QueryUserType = {
   searchLoginTerm: string | null;
   searchEmailTerm: string | null;
 };
+
+export type QueryCommentsType = {
+  sortBy: string;
+  sortDirection: SortDirection;
+  pageNumber: number;
+  pageSize: number;
+};

@@ -3,8 +3,11 @@ import { APIErrorResult } from "../../output-errors-type";
 import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
-import { postsQueryRepository } from "../../query_repositories";
-import { queryFilter } from "../../utils/queryFilter";
+import {
+  commentsQueryRepository,
+  postsQueryRepository,
+} from "../../query_repositories";
+import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { mapPostsToView } from "../../utils/mapDBToView";
 
 export const postsController = {
@@ -96,6 +99,25 @@ export const postsController = {
     } catch (error) {
       console.error("Error in fetching update post by ID:", error);
       res.status(500);
+    }
+  },
+
+  getPostComments: async (req: Request, res: Response) => {
+    try {
+      const foundPostComments = await commentsQueryRepository.getCommentsOfPost(
+        req.params.blogId,
+        commentsQueryFilter(req.query)
+      );
+
+      if (foundPostComments.items.length === 0 || !foundPostComments) {
+        res.sendStatus(404);
+        return;
+      }
+
+      res.status(200).json(foundPostComments);
+    } catch (error) {
+      console.error("Error in fetching comments of specific post ID:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 };

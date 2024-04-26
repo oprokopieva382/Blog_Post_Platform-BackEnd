@@ -19,3 +19,4 @@ postsRouter.put(
   postValidationMiddleware,
   postsController.update
 );
+postsRouter.get("/:postId/comments", )
