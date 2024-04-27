@@ -4,5 +4,5 @@ import { commentsController } from "./commentsController";
 export const commentsRouter = Router();
 
 commentsRouter.get("/:id", commentsController.getById);
-commentsRouter.delete("/:id", commentsController.deleteById);
-commentsRouter.put("/:id", commentsController.update);
+commentsRouter.delete("/:commentId", commentsController.deleteById);
+commentsRouter.put("/:commentId", commentsController.update);

@@ -7,15 +7,15 @@ export const commentsService = {
     return foundComment;
   },
 
-  async updateComment(data: CommentInputModel, id: string) {
-    const isCommentExist = await commentsRepository.getByIdComment(id);
+  async updateComment(data: CommentInputModel, commentId: string) {
+    const isCommentExist = await commentsRepository.getByIdComment(commentId);
 
     if (!isCommentExist) {
       return null;
     }
-    await commentsRepository.updateComment(data, id);
+    await commentsRepository.updateComment(data, commentId);
 
-    const updatedComment = await commentsRepository.getByIdComment(id);
+    const updatedComment = await commentsRepository.getByIdComment(commentId);
     return updatedComment;
   },
 };

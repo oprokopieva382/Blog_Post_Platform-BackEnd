@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
 import { CommentInputModel, CommentViewModel } from "../../models";
-import { ParamType } from ".";
 import { commentsQueryRepository } from "../../query_repositories";
 import { mapCommentDBToView } from "../../utils/mapDBToView";
 import { commentsService } from "../../services";
+import { CommentParamType } from ".";
 
 export const commentsController = {
   getById: async (req: Request, res: Response) => {
@@ -44,13 +44,13 @@ export const commentsController = {
   },
 
   update: async (
-    req: Request<ParamType, {}, CommentInputModel>,
+    req: Request<CommentParamType, {}, CommentInputModel>,
     res: Response<CommentViewModel | APIErrorResult>
   ) => {
     try {
       const commentToUpdate = await commentsService.updateComment(
         req.body,
-        req.params.id
+        req.params.commentId
       );
 
       if (!commentToUpdate) {
