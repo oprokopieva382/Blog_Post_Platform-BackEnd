@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { LoginInputModel, UserViewModel } from "../../models";
 import { APIErrorResult } from "../../output-errors-type";
-import { authService } from "../../services";
+import { authService, jwtService } from "../../services";
+import { mapUserDBToView } from "../../utils/mapDBToView";
 
 export const authController = {
   login: async (
@@ -10,14 +11,16 @@ export const authController = {
   ) => {
     try {
       const authResult = await authService.loginUser(req.body);
-      console.log(authResult);
-
+    
       if (!authResult || authResult === 401) {
         res.sendStatus(401);
         return;
       }
 
-      res.sendStatus(204);
+      const user = mapUserDBToView(authResult);
+      const token = await jwtService.createJWT(user)
+
+      res.sendStatus(200).send(token);
     } catch (error) {
       console.error("Error in user login:", error);
       res.status(500);

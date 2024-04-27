@@ -9,3 +9,4 @@ export { UserInputModel } from "./UserInputModel";
 export { UserViewModel } from "./UserViewModel";
 export { CommentViewModel } from "./CommentViewModel";
 export { CommentInputModel } from "./CommentInputModel";
+export { LoginSuccessViewModel } from "./LoginSuccessViewModel";
