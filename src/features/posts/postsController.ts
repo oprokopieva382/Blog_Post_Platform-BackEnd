@@ -106,7 +106,7 @@ export const postsController = {
   getPostComments: async (req: Request, res: Response) => {
     try {
       const foundPostComments = await commentsQueryRepository.getCommentsOfPost(
-        req.params.blogId,
+        req.params.postId,
         commentsQueryFilter(req.query)
       );
 
