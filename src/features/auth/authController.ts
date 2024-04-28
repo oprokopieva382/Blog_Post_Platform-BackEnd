@@ -21,7 +21,7 @@ export const authController = {
       const user = mapUserDBToView(authResult);
       const token = await jwtService.createJWT(user)
 
-      res.sendStatus(200).send(token);
+      res.status(200).send(token);
     } catch (error) {
       console.error("Error in user login:", error);
       res.status(500);
