@@ -6,11 +6,12 @@ export const SETTINGS = {
   //for updating comforts here all hardcoded values
   PORT: process.env.PORT || 3004,
   MONGO_DB_ATLAS: process.env.MONGO_DB_ATLAS || "",
-  DB_NAME: process.env.BLOG_NAME,
+  DB_NAME: process.env.DB_NAME,
   BLOGS_COLLECTION: process.env.BLOGS_COLLECTION || "",
   POSTS_COLLECTION: process.env.POSTS_COLLECTION || "",
   USERS_COLLECTION: process.env.USERS_COLLECTION || "",
   COMMENTS_COLLECTION: process.env.COMMENTS_COLLECTION || "",
+  JWT_SECRET: process.env.JWT_SECRET || "123",
   ADMIN_AUTH: "admin:qwerty",
   PATH: {
     TESTING: "/testing",

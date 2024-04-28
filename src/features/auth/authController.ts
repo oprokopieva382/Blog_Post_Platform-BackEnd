@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import { LoginInputModel, UserViewModel } from "../../models";
+import { LoginInputModel, LoginSuccessViewModel, UserViewModel } from "../../models";
 import { APIErrorResult } from "../../output-errors-type";
-import { authService, jwtService } from "../../services";
+import { authService} from "../../services";
 import { mapUserDBToView } from "../../utils/mapDBToView";
+import { jwtService } from "../application";
 
 export const authController = {
   login: async (
     req: Request<{}, {}, LoginInputModel>,
-    res: Response<UserViewModel | APIErrorResult>
+    res: Response<LoginSuccessViewModel | APIErrorResult>
   ) => {
     try {
       const authResult = await authService.loginUser(req.body);
