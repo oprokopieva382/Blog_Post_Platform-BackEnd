@@ -1,5 +1,11 @@
 import { BlogDBType, PostDBType, UserDBType } from "../cloud_DB";
-import { BlogViewModel, PostViewModel, UserViewModel } from "../models";
+import { CommentDBType } from "../cloud_DB/mongo_db_types";
+import {
+  BlogViewModel,
+  CommentViewModel,
+  PostViewModel,
+  UserViewModel,
+} from "../models";
 
 const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
   return {
@@ -36,4 +42,17 @@ const mapUserDBToView = (user: UserDBType): UserViewModel => {
   };
 };
 
-export { mapBlogDBToView, mapPostsToView, mapUserDBToView };
+const mapCommentDBToView = (comment: CommentDBType): CommentViewModel => {
+  return {
+    // Convert ObjectId to string
+    id: comment._id.toString(),
+    content: comment.content,
+    commentatorInfo: {
+      userId: comment.commentatorInfo.userId,
+      userLogin: comment.commentatorInfo.userLogin,
+    },
+    createdAt: comment.createdAt,
+  };
+};
+
+export { mapBlogDBToView, mapPostsToView, mapUserDBToView, mapCommentDBToView };

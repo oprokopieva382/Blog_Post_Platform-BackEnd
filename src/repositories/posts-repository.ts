@@ -1,10 +1,14 @@
 import { ObjectId } from "mongodb";
 import { PostInputModel } from "../models";
 import { PostDBType, postsCollection } from "../cloud_DB";
+import { CommentDBType } from "../cloud_DB/mongo_db_types";
+import { commentsCollection } from "./../cloud_DB/mongo_db_atlas";
 
 export const postsRepository = {
-  async getByIdPost(id: string): Promise<PostDBType | null> {
-    const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
+  async getByIdPost(postId: string): Promise<PostDBType | null> {
+    const foundPost = await postsCollection.findOne({
+      _id: new ObjectId(postId),
+    });
     return foundPost;
   },
 
@@ -37,5 +41,17 @@ export const postsRepository = {
     );
 
     return updatedPost;
+  },
+
+  async getByIdComment(id: string): Promise<CommentDBType | null> {
+    const foundComment = await commentsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    return foundComment;
+  },
+
+  async createComment(newComment: CommentDBType) {
+    const createdComment = await commentsCollection.insertOne(newComment);
+    return createdComment;
   },
 };

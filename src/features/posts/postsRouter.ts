@@ -19,3 +19,5 @@ postsRouter.put(
   postValidationMiddleware,
   postsController.update
 );
+postsRouter.get("/:postId/comments", postsController.getPostComments)
+postsRouter.post("/:postId/comments", postsController.createPostComment);
