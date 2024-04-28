@@ -2,6 +2,7 @@ import { UserDBType } from "../cloud_DB";
 import { Paginator, UserViewModel } from "../models";
 import { QueryUserType } from "../query-type";
 import { usersCollection } from "../cloud_DB/mongo_db_atlas";
+import { ObjectId } from "mongodb";
 
 export const usersQueryRepository = {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
@@ -33,6 +34,13 @@ export const usersQueryRepository = {
     };
 
     return usersToView;
+  },
+
+  async getByIdUser(id: string): Promise<UserViewModel | null> {
+    const foundUser = await usersCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    return foundUser ? this._mapUsersToView(foundUser) : null;
   },
 
   _mapUsersToView(user: UserDBType): UserViewModel {
