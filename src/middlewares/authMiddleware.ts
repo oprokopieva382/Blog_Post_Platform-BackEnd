@@ -1,8 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import { SETTINGS } from "../settings";
+import { jwtService } from "../features/application";
+import { usersQueryRepository } from "../query_repositories";
+import { UserViewModel } from "../models";
 
-export const authMiddleware = (
-  req: Request,
+interface CustomRequest extends Request {
+  user: UserViewModel;
+}
+
+export const authUserMiddleware = async (
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -17,13 +23,10 @@ export const authMiddleware = (
     return;
   }
 
-  const bufEncoded = Buffer.from(auth.slice(6), "base64");
-  const decodedAuth = bufEncoded.toString("utf8");
+  const token = req.headers.authorization!.split(" ")[1];
 
-  const bufDecoded = Buffer.from(SETTINGS.ADMIN_AUTH, "utf8");
-  const encodedAuth = bufDecoded.toString("base64");
-
-  if (auth.slice(6) !== encodedAuth || auth.slice(0, 6) !== "Basic ") {
+  const userId = await jwtService.getUserIdByToken(token);
+  if (!userId) {
     res.status(401).json({
       errorMessages: {
         message: "Auth credentials is incorrect",
@@ -32,5 +35,16 @@ export const authMiddleware = (
     return;
   }
 
+   
+  const foundUser = await usersQueryRepository.getByIdUser(userId.toString());
+  if (!foundUser) {
+     res.status(401).json({
+       errorMessages: {
+         message: "Auth credentials is incorrect",
+       },
+     });
+     return;
+  } 
+  req.user = foundUser;
   next();
 };
