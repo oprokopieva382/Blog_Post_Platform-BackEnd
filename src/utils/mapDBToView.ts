@@ -3,6 +3,7 @@ import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import {
   BlogViewModel,
   CommentViewModel,
+  MeViewModel,
   PostViewModel,
   UserViewModel,
 } from "../models";
@@ -55,4 +56,18 @@ const mapCommentDBToView = (comment: CommentDBType): CommentViewModel => {
   };
 };
 
-export { mapBlogDBToView, mapPostsToView, mapUserDBToView, mapCommentDBToView };
+const mapMeToView = (me: UserViewModel): MeViewModel => {
+  return {
+    email: me.email,
+    login: me.login,
+    userId: me.id,
+  };
+};
+
+export {
+  mapBlogDBToView,
+  mapPostsToView,
+  mapUserDBToView,
+  mapCommentDBToView,
+  mapMeToView,
+};

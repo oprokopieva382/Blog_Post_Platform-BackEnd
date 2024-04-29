@@ -1,14 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../features/application";
 import { usersQueryRepository } from "../query_repositories";
-import { UserViewModel } from "../models";
 
-interface CustomRequest extends Request {
-  user: UserViewModel;
-}
 
 export const authMiddleware = async (
-  req: CustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -24,8 +20,8 @@ export const authMiddleware = async (
   }
 
   const token = req.headers.authorization!.split(" ")[1];
-
   const userId = await jwtService.getUserIdByToken(token);
+
   if (!userId) {
     res.status(401).json({
       errorMessages: {
@@ -35,16 +31,12 @@ export const authMiddleware = async (
     return;
   }
 
-   
-  const foundUser = await usersQueryRepository.getByIdUser(userId.toString());
+  const foundUser = await usersQueryRepository.getByIdUser(userId);
   if (!foundUser) {
-     res.status(401).json({
-       errorMessages: {
-         message: "Auth credentials is incorrect",
-       },
-     });
-     return;
-  } 
+    res.sendStatus(401);
+    return;
+  }
+
   req.user = foundUser;
   next();
 };
