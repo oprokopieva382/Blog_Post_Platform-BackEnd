@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { SETTINGS } from "../settings";
 
-export const authMiddleware = (
+export const authAdminMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { blogsController } from "./blogsController";
 import {
-  authMiddleware,
+  authAdminMiddleware,
   blogPostValidationMiddleware,
   blogValidationMiddleware,
 } from "../../middlewares";
@@ -13,25 +13,25 @@ blogsRouter.get("/", blogsController.getAll);
 blogsRouter.get("/:id", blogsController.getById);
 blogsRouter.get("/:blogId/posts", blogsController.getBlogPosts);
 
-blogsRouter.delete("/:id", authMiddleware, blogsController.deleteById);
+blogsRouter.delete("/:id", authAdminMiddleware, blogsController.deleteById);
 
 blogsRouter.post(
   "/",
-  authMiddleware,
+  authAdminMiddleware,
   blogValidationMiddleware,
   blogsController.create
 );
 
 blogsRouter.post(
   "/:blogId/posts",
-  authMiddleware,
+  authAdminMiddleware,
   blogPostValidationMiddleware,
   blogsController.createBlogPost
 );
 
 blogsRouter.put(
   "/:id",
-  authMiddleware,
+  authAdminMiddleware,
   blogValidationMiddleware,
   blogsController.update
 );

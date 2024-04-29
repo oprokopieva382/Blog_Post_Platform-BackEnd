@@ -7,7 +7,7 @@ interface CustomRequest extends Request {
   user: UserViewModel;
 }
 
-export const authUserMiddleware = async (
+export const authMiddleware = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
