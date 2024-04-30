@@ -7,7 +7,7 @@ export const commentsRouter = Router();
 commentsRouter.get("/:id", commentsController.getById);
 commentsRouter.delete(
   "/:commentId",
-  //authMiddleware,
+  authMiddleware,
   commentsController.deleteById
 );
 commentsRouter.put("/:commentId", commentsController.update);

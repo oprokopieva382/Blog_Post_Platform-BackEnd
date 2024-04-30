@@ -8,7 +8,7 @@ postsRouter.get("/", postsController.getAll);
 postsRouter.get("/:id", postsController.getById);
 postsRouter.post(
   "/",
-  authMiddleware,
+  authAdminMiddleware,
   postValidationMiddleware,
   postsController.create
 );
@@ -20,4 +20,7 @@ postsRouter.put(
   postsController.update
 );
 postsRouter.get("/:postId/comments", postsController.getPostComments)
-postsRouter.post("/:postId/comments", postsController.createPostComment);
+postsRouter.post(
+  "/:postId/comments",
+  authMiddleware, postsController.createPostComment
+);

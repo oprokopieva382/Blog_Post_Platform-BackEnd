@@ -52,9 +52,11 @@ export const postsService = {
     data: CommentInputModel,
     user: UserViewModel
   ): Promise<CommentDBType | null> {
+
+    console.log(user)
+    
     const { content } = data;
     const isPostExist = await postsRepository.getByIdPost(postId);
-
     if (!isPostExist) {
       return null;
     }
