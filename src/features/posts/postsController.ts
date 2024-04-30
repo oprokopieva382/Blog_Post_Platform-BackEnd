@@ -129,7 +129,8 @@ export const postsController = {
     try {
       const newComment = await postsService.createPostComment(
         req.params.postId,
-        req.body
+        req.body,
+        req.user
       );
       if (!newComment) {
         res.sendStatus(404);

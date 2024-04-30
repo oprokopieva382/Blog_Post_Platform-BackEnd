@@ -1,5 +1,5 @@
 import { UserViewModel } from "../../models";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { SETTINGS } from "../../settings";
 
 export const jwtService = {
@@ -10,5 +10,14 @@ export const jwtService = {
     return {
       accessToken: token,
     };
+  },
+
+  async getUserIdByToken(token: string) {
+    try {
+      const result = jwt.verify(token, SETTINGS.JWT_SECRET) as JwtPayload; 
+      return result.userId;
+    } catch (error) {
+      return null;
+    }
   },
 };

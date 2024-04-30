@@ -28,8 +28,14 @@ export const commentsController = {
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
       const commentToRemove = await commentsService.removeComment(
-        req.params.commentId
+        req.params.commentId,
+        req.user
       );
+
+      if (commentToRemove === 403) {
+        res.sendStatus(403);
+        return;
+      }
 
       if (!commentToRemove) {
         res.sendStatus(404);
@@ -50,8 +56,14 @@ export const commentsController = {
     try {
       const commentToUpdate = await commentsService.updateComment(
         req.body,
-        req.params.commentId
+        req.params.commentId,
+        req.user
       );
+
+      if (commentToUpdate === 403) {
+        res.sendStatus(403);
+        return;
+      }
 
       if (!commentToUpdate) {
         res.sendStatus(404);
