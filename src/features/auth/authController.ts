@@ -3,7 +3,6 @@ import {
   LoginInputModel,
   LoginSuccessViewModel,
   MeViewModel,
-  UserViewModel,
 } from "../../models";
 import { APIErrorResult } from "../../output-errors-type";
 import { authService } from "../../services";

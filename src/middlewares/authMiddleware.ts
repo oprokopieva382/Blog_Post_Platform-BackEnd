@@ -2,15 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../features/application";
 import { usersQueryRepository } from "../query_repositories";
 
-
 export const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const auth = req.headers["authorization"] as string;
-
-  if (!auth) {
+  
+  if (!req.headers.authorization) {
     res.status(401).json({
       errorMessages: {
         message: "Auth credentials is incorrect",
@@ -19,7 +17,7 @@ export const authMiddleware = async (
     return;
   }
 
-  const token = req.headers.authorization!.split(" ")[1];
+  const token = req.headers.authorization.split(" ")[1];
   const userId = await jwtService.getUserIdByToken(token);
 
   if (!userId) {

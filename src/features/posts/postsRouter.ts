@@ -1,6 +1,6 @@
 import { Router} from "express";
 import { postsController } from "./postsController";
-import { authAdminMiddleware, postValidationMiddleware } from "../../middlewares";
+import { authAdminMiddleware, authMiddleware, postValidationMiddleware } from "../../middlewares";
 
 export const postsRouter = Router();
 
@@ -8,7 +8,7 @@ postsRouter.get("/", postsController.getAll);
 postsRouter.get("/:id", postsController.getById);
 postsRouter.post(
   "/",
-  authAdminMiddleware,
+  authMiddleware,
   postValidationMiddleware,
   postsController.create
 );

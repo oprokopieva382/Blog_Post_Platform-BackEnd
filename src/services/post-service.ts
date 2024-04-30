@@ -1,5 +1,5 @@
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
-import { PostInputModel } from "../models";
+import { PostInputModel, UserViewModel } from "../models";
 import { CommentInputModel } from "../models/CommentInputModel";
 import { blogsRepository, postsRepository } from "../repositories";
 import { ObjectId } from "mongodb";
@@ -49,7 +49,8 @@ export const postsService = {
 
   async createPostComment(
     postId: string,
-    data: CommentInputModel
+    data: CommentInputModel,
+    user: UserViewModel
   ): Promise<CommentDBType | null> {
     const { content } = data;
     const isPostExist = await postsRepository.getByIdPost(postId);
@@ -63,8 +64,8 @@ export const postsService = {
       postId,
       content,
       commentatorInfo: {
-        userId: "Bob", //hardcode for now, update with token later
-        userLogin: "testBob", //hardcode for now, update with token later
+        userId: user.id, 
+        userLogin: user.login, 
       },
       createdAt: new Date().toISOString(),
     };
