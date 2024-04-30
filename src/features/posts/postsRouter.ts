@@ -1,6 +1,11 @@
-import { Router} from "express";
+import { Router } from "express";
 import { postsController } from "./postsController";
-import { authAdminMiddleware, authMiddleware, postValidationMiddleware } from "../../middlewares";
+import {
+  authAdminMiddleware,
+  authMiddleware,
+  commentValidationMiddleware,
+  postValidationMiddleware,
+} from "../../middlewares";
 
 export const postsRouter = Router();
 
@@ -19,8 +24,10 @@ postsRouter.put(
   postValidationMiddleware,
   postsController.update
 );
-postsRouter.get("/:postId/comments", postsController.getPostComments)
+postsRouter.get("/:postId/comments", postsController.getPostComments);
 postsRouter.post(
   "/:postId/comments",
-  authMiddleware, postsController.createPostComment
+  authMiddleware,
+  commentValidationMiddleware,
+  postsController.createPostComment
 );

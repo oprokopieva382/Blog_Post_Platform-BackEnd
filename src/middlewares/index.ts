@@ -4,4 +4,5 @@ export { postValidationMiddleware } from "./postValidationMiddleware";
 export { blogPostValidationMiddleware } from "./blogPostValidationMiddleware";
 export { userValidationMiddleware } from "./userValidationMiddleware";
 export { loginValidationMiddleware } from "./loginValidationMiddleware";
+export { commentValidationMiddleware } from "./commentValidationMiddleware";
 export { authMiddleware } from "./authMiddleware";
