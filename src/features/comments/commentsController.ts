@@ -36,7 +36,7 @@ export const commentsController = {
         res.sendStatus(403);
         return;
       }
-      
+
       if (!commentToRemove) {
         res.sendStatus(404);
         return;
@@ -56,8 +56,14 @@ export const commentsController = {
     try {
       const commentToUpdate = await commentsService.updateComment(
         req.body,
-        req.params.commentId
+        req.params.commentId,
+        req.user
       );
+
+      if (commentToUpdate === 403) {
+        res.sendStatus(403);
+        return;
+      }
 
       if (!commentToUpdate) {
         res.sendStatus(404);

@@ -10,4 +10,4 @@ commentsRouter.delete(
   authMiddleware,
   commentsController.deleteById
 );
-commentsRouter.put("/:commentId", commentsController.update);
+commentsRouter.put("/:commentId", authMiddleware, commentsController.update);
