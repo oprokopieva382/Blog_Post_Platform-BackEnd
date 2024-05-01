@@ -58,7 +58,6 @@ describe("/users test", () => {
   describe("GET USERS", () => {
     it("1 - should get users and return status code 200 and object with pagination", async () => {
       const users = await userManager.createObjectWithPaginationAndUsers(1, 5);
-      console.log(users);
 
       const res = await request(app)
         .get(SETTINGS.PATH.USERS)
@@ -67,6 +66,16 @@ describe("/users test", () => {
         .expect(200);
       expect(users.pagesCount).toBe(4);
       expect(users.items.length).toBe(20);
+    });
+
+    it("2 - shouldn't get users and return status code 401", async () => {
+      const users = await userManager.createObjectWithPaginationAndUsers(1, 5);
+
+      const res = await request(app)
+        .get(SETTINGS.PATH.USERS)
+        .send(users)
+        .auth("adminll", "qwertyll")
+        .expect(401);
     });
   });
 });
