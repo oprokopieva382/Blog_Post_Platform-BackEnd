@@ -20,4 +20,17 @@ export const userManager = {
     }
     return users
   },
+  async createObjectWithPaginationAndUsers(pageNumber: number = 1, pageSize: number = 10) {
+    const users = await this.createUsers(20)
+    const totalUsersCount = users.length
+
+    const paginatorUserView = {
+      pagesCount: Math.ceil(totalUsersCount / pageSize),
+      page: pageNumber,
+      pageSize,
+      totalCount: totalUsersCount,
+      items: users.map((u) => ({ id: Math.random(), ...u })),
+    };
+    return paginatorUserView
+  }
 };
