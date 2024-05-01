@@ -58,20 +58,20 @@ describe("/users test", () => {
 
   describe("GET USERS", () => {
     it("1 - should get users and return status code 200 and object with pagination", async () => {
-      const users = await userManager.createObjectWithPaginationAndUsers(1, 5);
-      //console.log(users);
+      const users = await userManager.usersWithPagination(1, 5);
+      console.log(users);
 
       const res = await request(app)
         .get(SETTINGS.PATH.USERS)
         .send(users)
         .auth("admin", "qwerty")
         .expect(200);
-      expect(users.pagesCount).toBe(4);
-      expect(users.items.length).toBe(20);
+      expect(users.page).toBe(1);
+      expect(users.pageSize).toBe(5);
     });
 
-    it("2 - shouldn't get users and return status code 401", async () => {
-      const users = await userManager.createObjectWithPaginationAndUsers(1, 5);
+    it("2 - shouldn't get users and return status code 401 if unauthorized", async () => {
+      const users = await userManager.getUsers();
 
       const res = await request(app)
         .get(SETTINGS.PATH.USERS)
@@ -79,14 +79,34 @@ describe("/users test", () => {
         .auth("adminll", "qwertyll")
         .expect(401);
     });
+  });
 
-    it("3 - should delete user and return status code 204", async () => {
-      const users = await userManager.createObjectWithPaginationAndUsers(1, 5);
-     
+  describe("DELETE USERS", () => {
+    it("1 - should delete user and return status code 204", async () => {
+      const users = await userManager.getUsers();
+
       const res = await request(app)
-        .delete(`${SETTINGS.PATH.USERS}/${users.items[0].id}`)
+        .delete(`${SETTINGS.PATH.USERS}/${users[0].id}`)
         .auth("admin", "qwerty")
         .expect(204);
+    });
+
+    it("2 - shouldn't delete user and return status code 401 if unauthorized", async () => {
+      const users = await userManager.getUsers();
+
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.USERS}/${users[0].id}`)
+        .auth("admin5662", "qwerty")
+        .expect(401);
+    });
+
+    it("3 - shouldn't delete user and return status code 404 if id is not exist", async () => {
+      const usersId = "662bb47c5ea70648a79f7c10";
+
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.USERS}/${usersId}`)
+        .auth("admin", "qwerty")
+        .expect(404);
     });
   });
 });
