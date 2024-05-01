@@ -55,9 +55,11 @@ describe("/users test", () => {
         .expect(401);
     });
   });
+
   describe("GET USERS", () => {
     it("1 - should get users and return status code 200 and object with pagination", async () => {
       const users = await userManager.createObjectWithPaginationAndUsers(1, 5);
+      //console.log(users);
 
       const res = await request(app)
         .get(SETTINGS.PATH.USERS)
@@ -76,6 +78,15 @@ describe("/users test", () => {
         .send(users)
         .auth("adminll", "qwertyll")
         .expect(401);
+    });
+
+    it("3 - should delete user and return status code 204", async () => {
+      const users = await userManager.createObjectWithPaginationAndUsers(1, 5);
+     
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.USERS}/${users.items[0].id}`)
+        .auth("admin", "qwerty")
+        .expect(204);
     });
   });
 });
