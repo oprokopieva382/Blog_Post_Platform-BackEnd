@@ -2,6 +2,7 @@ import request from "supertest";
 import { SETTINGS } from "../src/settings";
 import { app } from "../src/app";
 import { ConnectMongoDB } from "../src/cloud_DB";
+import { userManager } from './../src/testManager/userManager';
 
 describe("/users test", () => {
   beforeAll(async () => {
@@ -12,11 +13,7 @@ describe("/users test", () => {
 
   describe("CREATE USER", () => {
     it("1 - should create user and return  status code of 201", async () => {
-      const newUser = {
-        login: "testUser",
-        password: "string",
-        email: "test@gmail.com",
-      };
+      const newUser = await userManager.createUser()
 
       const res = await request(app)
         .post(SETTINGS.PATH.USERS)
@@ -49,11 +46,7 @@ describe("/users test", () => {
     });
 
     it("3 - shouldn't create user if unauthorized and return  status code of 401", async () => {
-      const newUser = {
-        login: "testUser",
-        password: "string",
-        email: "test@gmail.com",
-      };
+      const newUser = await userManager.createUser();
 
       const res = await request(app)
         .post(SETTINGS.PATH.USERS)
