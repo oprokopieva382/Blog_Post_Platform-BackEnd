@@ -1,24 +1,28 @@
 import request from "supertest";
 import { SETTINGS } from "../settings";
 import { app } from "../app";
+import { blogManager } from "./blogManager";
+import { blogsCollection } from "../cloud_DB";
 
 export const postManager = {
   async createPost() {
+    const blog = await blogsCollection.find({}).toArray();
     const newPost = {
       title: "Refactor",
       shortDescription: "Learn more about refactor in " + new Date(),
       content: "whole content about refactor",
-      blogId: "662bf8758f1a93a2082eb4ee",
+      blogId: blog[0]._id.toString(),
     };
     return newPost;
   },
 
   async updatePost() {
+    const blog = await blogsCollection.find({}).toArray();
     const postToUpdate = {
       title: "Nest.js",
       shortDescription: "Learn more about Nest.js in " + new Date(),
       content: "whole content about Nest.js",
-      blogId: "662bf8758f1a93a2082eb4ee",
+      blogId: blog[0]._id.toString(),
     };
     return postToUpdate;
   },
@@ -52,8 +56,27 @@ export const postManager = {
       .get(SETTINGS.PATH.POSTS)
       .auth("admin", "qwerty")
       .expect(200);
-    const postId = postsRequest.body.items[0].id;
+      
+      const postId = postsRequest.body.items[0].id;
+      console.log(postId);
 
     return postId;
+  },
+
+  async createComment() {
+    const newComment = {
+      content: "Can you, please, explain how it works?",
+    };
+    return newComment;
+  },
+
+  async createBlog() {
+    const blog = await blogManager.createBlog();
+
+    const res = await request(app)
+      .post(SETTINGS.PATH.BLOGS)
+      .send(blog)
+      .auth("admin", "qwerty")
+      .expect(201);
   },
 };
