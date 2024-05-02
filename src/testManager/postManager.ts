@@ -52,7 +52,7 @@ export const postManager = {
       .get(SETTINGS.PATH.POSTS)
       .auth("admin", "qwerty")
       .expect(200);
-    const postId = postsRequest.body.items[1].id;
+    const postId = postsRequest.body.items[0].id;
 
     return postId;
   },
