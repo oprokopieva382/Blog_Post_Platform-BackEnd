@@ -26,7 +26,7 @@ describe("/blogs test", () => {
       const newBlog = {
         name: "",
         description: "",
-        websiteUrl: ""
+        websiteUrl: "",
       };
 
       const res = await request(app)
@@ -50,96 +50,92 @@ describe("/blogs test", () => {
   });
 
   describe("GET BLOGS", () => {
-    it("1 - should get posts and return status code 200 and object with pagination", async () => {
-      const posts = await postManager.postsWithPagination(1, 5);
+    it("1 - should get blogs and return status code 200 and object with pagination", async () => {
+      const blogs = await blogManager.blogsWithPagination(1, 5);
 
       const res = await request(app)
-        .get(SETTINGS.PATH.POSTS)
-        .send(posts)
+        .get(SETTINGS.PATH.BLOGS)
+        .send(blogs)
         .auth("admin", "qwerty")
         .expect(200);
-      expect(posts.page).toBe(1);
-      expect(posts.pageSize).toBe(5);
+      expect(blogs.page).toBe(1);
+      expect(blogs.pageSize).toBe(5);
     });
   });
 
-//   describe("UPDATE POSTS", () => {
-//     it("1 - should update posts and return status code 204", async () => {
-//       const postId = await postManager.getPostId();
-//       const update = await postManager.updatePost();
-//       const res = await request(app)
-//         .put(`${SETTINGS.PATH.POSTS}/${postId}`)
-//         .send(update)
-//         .auth("admin", "qwerty")
-//         .expect(204);
-//     });
+  describe("UPDATE POST", () => {
+    // it("1 - should update blog and return status code 204", async () => {
+    //   const blogId = await blogManager.getBlogId();
+    //   const update = await blogManager.updateBlog();
+    //   const res = await request(app)
+    //     .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
+    //     .send(update)
+    //     .auth("admin", "qwerty")
+    //     .expect(204);
+    // });
+    it("2 - shouldn't update blog and return  status code of 400", async () => {
+      const blogId = await blogManager.getBlogId();
+      const update = {
+        name: "Promise",
+        description: "do you know promise well?",
+        websiteUrl: "",
+      };
+      const res = await request(app)
+        .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
+        .send(update)
+        .auth("admin", "qwerty")
+        .expect(400);
+      expect(res.body.errorsMessages.length).toBe(1);
+    });
 
-//     it("2 - shouldn't update post and return  status code of 400", async () => {
-//       const postId = await postManager.getPostId();
-//       const update = {
-//         title: "",
-//         shortDescription: "",
-//         content: "",
-//         blogId: "662bf8758f1a93a2082eb4ee",
-//       };
+    it("3 - shouldn't update blog and return status code 401 if unauthorized", async () => {
+      const blogId = await blogManager.getBlogId();
+      const update = await blogManager.updateBlog();
+      const res = await request(app)
+        .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
+        .send(update)
+        .auth("admin00", "qwerty4")
+        .expect(401);
+    });
 
-//       const res = await request(app)
-//         .put(`${SETTINGS.PATH.POSTS}/${postId}`)
-//         .send(update)
-//         .auth("admin", "qwerty")
-//         .expect(400);
+    it("4 - shouldn't update blog and return status code 404 if Id not found", async () => {
+      const blogId = "662bb47c5ea70648a79f7c10";
+      const update = await blogManager.updateBlog();
+      const res = await request(app)
+        .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
+        .send(update)
+        .auth("admin", "qwerty")
+        .expect(404);
+    });
+  });
 
-//       expect(res.body.errorsMessages.length).toBe(3);
-//     });
+  //   describe("DELETE PostS", () => {
+  //     it("1 - should delete post and return status code 204", async () => {
+  //       const posts = await postManager.getPosts();
+  //       console.log(posts);
 
-//     it("3 - shouldn't update posts and return status code 401", async () => {
-//       const postId = await postManager.getPostId();
-//       const update = await postManager.updatePost();
-//       const res = await request(app)
-//         .put(`${SETTINGS.PATH.POSTS}/${postId}`)
-//         .send(update)
-//         .auth("admin00", "qwerty4")
-//         .expect(401);
-//     });
+  //       const res = await request(app)
+  //         .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
+  //         .auth("admin", "qwerty")
+  //         .expect(204);
+  //     });
 
-//     it("4 - shouldn't update posts and return status code 404 if Id not found", async () => {
-//       const postId = "662bb47c5ea70648a79f7c10";
-//       const update = await postManager.updatePost();
-//       const res = await request(app)
-//         .put(`${SETTINGS.PATH.POSTS}/${postId}`)
-//         .send(update)
-//         .auth("admin", "qwerty")
-//         .expect(404);
-//     });
-//   });
+  //     it("2 - shouldn't delete post and return status code 401 if unauthorized", async () => {
+  //       const posts = await postManager.getPosts();
 
-//   describe("DELETE PostS", () => {
-//     it("1 - should delete post and return status code 204", async () => {
-//       const posts = await postManager.getPosts();
-//       console.log(posts);
+  //       const res = await request(app)
+  //         .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
+  //         .auth("admin5662", "qwerty")
+  //         .expect(401);
+  //     });
 
-//       const res = await request(app)
-//         .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
-//         .auth("admin", "qwerty")
-//         .expect(204);
-//     });
+  //     it("3 - shouldn't delete post and return status code 404 if id is not exist", async () => {
+  //       const postsId = "662bb47c5ea70648a79f7c10";
 
-//     it("2 - shouldn't delete post and return status code 401 if unauthorized", async () => {
-//       const posts = await postManager.getPosts();
-
-//       const res = await request(app)
-//         .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
-//         .auth("admin5662", "qwerty")
-//         .expect(401);
-//     });
-
-//     it("3 - shouldn't delete post and return status code 404 if id is not exist", async () => {
-//       const postsId = "662bb47c5ea70648a79f7c10";
-
-//       const res = await request(app)
-//         .delete(`${SETTINGS.PATH.POSTS}/${postsId}`)
-//         .auth("admin", "qwerty")
-//         .expect(404);
-//     });
+  //       const res = await request(app)
+  //         .delete(`${SETTINGS.PATH.POSTS}/${postsId}`)
+  //         .auth("admin", "qwerty")
+  //         .expect(404);
+  //     });
   //});
 });

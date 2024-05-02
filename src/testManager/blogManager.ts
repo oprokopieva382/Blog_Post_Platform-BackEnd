@@ -14,10 +14,9 @@ export const blogManager = {
 
   async updateBlog() {
     const blogToUpdate = {
-      title: "Nest.js",
-      shortDescription: "Learn more about Nest.js in " + new Date(),
-      content: "whole content about Nest.js",
-      blogId: "662bf8758f1a93a2082eb4ee",
+      name: "Promise",
+      description: "do you know promise well?",
+      websiteUrl: "https://google.com",
     };
     return blogToUpdate;
   },
@@ -51,7 +50,7 @@ export const blogManager = {
       .get(SETTINGS.PATH.BLOGS)
       .auth("admin", "qwerty")
       .expect(200);
-    const blogId = blogsRequest.body.items[1].id;
+    const blogId = blogsRequest.body.items[0].id;
 
     return blogId;
   },
