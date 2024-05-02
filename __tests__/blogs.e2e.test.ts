@@ -63,7 +63,7 @@ describe("/blogs test", () => {
     });
   });
 
-  describe("UPDATE POST", () => {
+  describe("UPDATE BLOG", () => {
     // it("1 - should update blog and return status code 204", async () => {
     //   const blogId = await blogManager.getBlogId();
     //   const update = await blogManager.updateBlog();
@@ -109,33 +109,27 @@ describe("/blogs test", () => {
     });
   });
 
-  //   describe("DELETE PostS", () => {
-  //     it("1 - should delete post and return status code 204", async () => {
-  //       const posts = await postManager.getPosts();
-  //       console.log(posts);
-
-  //       const res = await request(app)
-  //         .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
-  //         .auth("admin", "qwerty")
-  //         .expect(204);
-  //     });
-
-  //     it("2 - shouldn't delete post and return status code 401 if unauthorized", async () => {
-  //       const posts = await postManager.getPosts();
-
-  //       const res = await request(app)
-  //         .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
-  //         .auth("admin5662", "qwerty")
-  //         .expect(401);
-  //     });
-
-  //     it("3 - shouldn't delete post and return status code 404 if id is not exist", async () => {
-  //       const postsId = "662bb47c5ea70648a79f7c10";
-
-  //       const res = await request(app)
-  //         .delete(`${SETTINGS.PATH.POSTS}/${postsId}`)
-  //         .auth("admin", "qwerty")
-  //         .expect(404);
-  //     });
-  //});
+  describe("DELETE BLOG", () => {
+    it("1 - should delete blog and return status code 204", async () => {
+      const blogs = await blogManager.getBlogs();
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
+        .auth("admin", "qwerty")
+        .expect(204);
+    });
+    it("2 - shouldn't delete blog and return status code 401 if unauthorized", async () => {
+      const blogs = await blogManager.getBlogs();
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
+        .auth("admin5662", "qwerty")
+        .expect(401);
+    });
+    it("3 - shouldn't delete blog and return status code 404 if id is not exist", async () => {
+      const blogsId = "662bb47c5ea70648a79f7c10";
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blogsId}`)
+        .auth("admin", "qwerty")
+        .expect(404);
+    });
+  });
 });
