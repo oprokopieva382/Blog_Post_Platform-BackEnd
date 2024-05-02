@@ -3,6 +3,7 @@ import { SETTINGS } from "../settings";
 import { app } from "../app";
 import { blogsCollection, postsCollection } from "../cloud_DB";
 import { ObjectId } from "mongodb";
+import { BlogViewModel } from "../models";
 
 export const blogManager = {
   async createBlog() {
@@ -48,11 +49,8 @@ export const blogManager = {
   },
 
   async getBlogId() {
-    const blogsRequest = await request(app)
-      .get(SETTINGS.PATH.BLOGS)
-      .auth("admin", "qwerty")
-      .expect(200);
-    const blogId = blogsRequest.body.items[0].id;
+    const blogsRequest: BlogViewModel[] = await this.getBlogs();
+    const blogId = blogsRequest[0].id;
 
     return blogId;
   },

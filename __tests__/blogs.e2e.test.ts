@@ -3,13 +3,16 @@ import { app } from "../src/app";
 import { SETTINGS } from "../src/settings";
 import { ConnectMongoDB } from "../src/cloud_DB";
 import { blogManager } from "./../src/testManager";
+import { dropCollections } from "../src/testManager/dropCollections";
 
 describe("/blogs test", () => {
   beforeAll(async () => {
     await ConnectMongoDB();
   });
 
-  afterAll(async () => {});
+  afterAll(async () => {
+    await dropCollections();
+  });
 
   describe("CREATE BLOG", () => {
     it("1 - should create blog and return  status code of 201", async () => {
@@ -66,9 +69,7 @@ describe("/blogs test", () => {
   describe("GET BLOG BY ID", () => {
     it("1 - should get blog and return status code 200 and object", async () => {
       const blogId = await blogManager.getBlogId();
-
       const blog = await blogManager.getBlogById(blogId);
-      console.log(blog);
 
       const res = await request(app)
         .get(`${SETTINGS.PATH.BLOGS}/${blogId}`)
@@ -136,116 +137,116 @@ describe("/blogs test", () => {
     });
   });
 
-  it("3 - shouldn't delete blog and return status code 404 if id is not exist", async () => {
-    const blogsId = "662bb47c5ea70648a79f7c10";
-    const res = await request(app)
-      .delete(`${SETTINGS.PATH.BLOGS}/${blogsId}`)
-      .auth("admin", "qwerty")
-      .expect(404);
-  });
-});
+  describe("CREATE BLOG POST", () => {
+    it("should create blog post and return object with status 201", async () => {
+      const blogId = await blogManager.getBlogId();
+      const newPost = await blogManager.createPost();
 
-describe("GET BLOG POSTS", () => {
-  it("should get blog posts and return object with pagination & status 200", async () => {
-    const blogId = await blogManager.getBlogId();
-    const posts = await blogManager.blogPostsWithPagination();
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .send(newPost)
+        .auth("admin", "qwerty")
+        .expect(201);
+    });
 
-    const res = await request(app)
-      .get(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-      .send(posts)
-      .auth("admin", "qwerty")
-      .expect(200);
-  });
+    it("shouldn't create blog post and return status 404 if blogId is not exist", async () => {
+      const blogId = "662bb47c5ea70648a79f7c10";
+      const newPost = await blogManager.createPost();
 
-  it("shouldn't get blog posts and return status 404 if blogId is not exist", async () => {
-    const blogId = "662bb47c5ea70648a79f7c10";
-    const posts = await blogManager.blogPostsWithPagination();
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .send(newPost)
+        .auth("admin", "qwerty")
+        .expect(404);
+    });
 
-    const res = await request(app)
-      .get(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-      .send(posts)
-      .auth("admin", "qwerty")
-      .expect(404);
-  });
-});
+    it("shouldn't create blog post and return object with status 400 if incorrect input values ", async () => {
+      const blogId = await blogManager.getBlogId();
+      const newPost = {
+        title: "Promise",
+        shortDescription: "do you know promise well?",
+        content: "",
+      };
 
-describe("CREATE BLOG POST", () => {
-  it("should create blog post and return object with status 201", async () => {
-    const blogId = await blogManager.getBlogId();
-    const newPost = await blogManager.createPost();
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .send(newPost)
+        .auth("admin", "qwerty")
+        .expect(400);
 
-    const res = await request(app)
-      .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-      .send(newPost)
-      .auth("admin", "qwerty")
-      .expect(201);
-  });
+      expect(res.body.errorsMessages.length).toBe(1);
+    });
 
-  it("shouldn't create blog post and return status 404 if blogId is not exist", async () => {
-    const blogId = "662bb47c5ea70648a79f7c10";
-    const newPost = await blogManager.createPost();
+    it("shouldn't create blog post and return object with status 401 if unauthorized ", async () => {
+      const blogId = await blogManager.getBlogId();
+      const newPost = await blogManager.createPost();
 
-    const res = await request(app)
-      .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-      .send(newPost)
-      .auth("admin", "qwerty")
-      .expect(404);
-  });
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .send(newPost)
+        .auth("admin55", "qwertycc")
+        .expect(401);
+    });
 
-  it("shouldn't create blog post and return object with status 400 if incorrect input values ", async () => {
-    const blogId = await blogManager.getBlogId();
-    const newPost = {
-      title: "Promise",
-      shortDescription: "do you know promise well?",
-      content: "",
-    };
+    it("shouldn't create blog post and return status 404 if blogId is not exist", async () => {
+      const blogId = "662bb47c5ea70648a79f7c10";
+      const newPost = await blogManager.createPost();
 
-    const res = await request(app)
-      .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-      .send(newPost)
-      .auth("admin", "qwerty")
-      .expect(400);
-
-    expect(res.body.errorsMessages.length).toBe(1);
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .send(newPost)
+        .auth("admin", "qwerty")
+        .expect(404);
+    });
   });
 
-  it("shouldn't create blog post and return object with status 401 if unauthorized ", async () => {
-    const blogId = await blogManager.getBlogId();
-    const newPost = await blogManager.createPost();
+  describe("GET BLOG POSTS", () => {
+    it("should get blog posts and return object with pagination & status 200", async () => {
+      const blogId = await blogManager.getBlogId();
+      const posts = await blogManager.blogPostsWithPagination();
 
-    const res = await request(app)
-      .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-      .send(newPost)
-      .auth("admin55", "qwertycc")
-      .expect(401);
+      const res = await request(app)
+        .get(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .send(posts)
+        .auth("admin", "qwerty")
+        .expect(200);
+    });
+
+    it("shouldn't get blog posts and return status 404 if blogId is not exist", async () => {
+      const blogId = "662bb47c5ea70648a79f7c10";
+      const posts = await blogManager.blogPostsWithPagination();
+
+      const res = await request(app)
+        .get(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .send(posts)
+        .auth("admin", "qwerty")
+        .expect(404);
+    });
   });
 
-  it("shouldn't create blog post and return status 404 if blogId is not exist", async () => {
-    const blogId = "662bb47c5ea70648a79f7c10";
-    const newPost = await blogManager.createPost();
+  describe("DELETE BLOG", () => {
+    it("1 - shouldn't delete blog and return status code 401 if unauthorized", async () => {
+      const blogs = await blogManager.getBlogs();
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
+        .auth("admin5662", "qwerty")
+        .expect(401);
+    });
 
-    const res = await request(app)
-      .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-      .send(newPost)
-      .auth("admin", "qwerty")
-      .expect(404);
-  });
-});
+    it("2 - shouldn't delete blog and return status code 404 if id is not exist", async () => {
+      const blogsId = "662bb47c5ea70648a79f7c10";
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blogsId}`)
+        .auth("admin", "qwerty")
+        .expect(404);
+    });
 
-describe("DELETE BLOG", () => {
-  it("1 - should delete blog and return status code 204", async () => {
-    const blogs = await blogManager.getBlogs();
-    const res = await request(app)
-      .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
-      .auth("admin", "qwerty")
-      .expect(204);
-  });
-
-  it("2 - shouldn't delete blog and return status code 401 if unauthorized", async () => {
-    const blogs = await blogManager.getBlogs();
-    const res = await request(app)
-      .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
-      .auth("admin5662", "qwerty")
-      .expect(401);
+    it("3 - should delete blog and return status code 204", async () => {
+      const blogs = await blogManager.getBlogs();
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
+        .auth("admin", "qwerty")
+        .expect(204);
+    });
   });
 });

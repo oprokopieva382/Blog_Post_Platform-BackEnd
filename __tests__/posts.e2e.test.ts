@@ -3,13 +3,16 @@ import { SETTINGS } from "../src/settings";
 import { app } from "../src/app";
 import { ConnectMongoDB } from "../src/cloud_DB";
 import { postManager } from "./../src/testManager";
+import { dropCollections } from "./../src/testManager/dropCollections";
 
 describe("/posts test", () => {
   beforeAll(async () => {
     await ConnectMongoDB();
   });
 
-  afterAll(async () => {});
+  afterAll(async () => {
+    await dropCollections();
+  });
 
   describe("CREATE POST", () => {
     it("1 - should create post and return  status code of 201", async () => {
@@ -114,22 +117,12 @@ describe("/posts test", () => {
     });
   });
 
-  describe("DELETE PostS", () => {
-    it("1 - should delete post and return status code 204", async () => {
-      const posts = await postManager.getPosts();
-      console.log(posts);
-
-      const res = await request(app)
-        .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
-        .auth("admin", "qwerty")
-        .expect(204);
-    });
-
+  describe("DELETE POSTS", () => {
     it("2 - shouldn't delete post and return status code 401 if unauthorized", async () => {
       const posts = await postManager.getPosts();
 
       const res = await request(app)
-        .delete(`${SETTINGS.PATH.POSTS}/${posts[1].id}`)
+        .delete(`${SETTINGS.PATH.POSTS}/${posts[0].id}`)
         .auth("admin5662", "qwerty")
         .expect(401);
     });
@@ -141,6 +134,16 @@ describe("/posts test", () => {
         .delete(`${SETTINGS.PATH.POSTS}/${postsId}`)
         .auth("admin", "qwerty")
         .expect(404);
+    });
+    
+    it("1 - should delete post and return status code 204", async () => {
+      const posts = await postManager.getPosts();
+      console.log(posts);
+
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.POSTS}/${posts[0].id}`)
+        .auth("admin", "qwerty")
+        .expect(204);
     });
   });
 });

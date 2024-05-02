@@ -4,3 +4,5 @@ export { UserDBType } from "./mongo_db_types";
 export { ConnectMongoDB } from "./mongo_db_atlas";
 export { postsCollection } from "./mongo_db_atlas";
 export { blogsCollection } from "./mongo_db_atlas";
+export { usersCollection } from "./mongo_db_atlas";
+export { commentsCollection } from "./mongo_db_atlas";
