@@ -12,57 +12,56 @@ describe("/blogs test", () => {
   afterAll(async () => {});
 
   describe("CREATE BLOG", () => {
-    it("1 - should create blog and return  status code of 201", async () => {
-      const newBlog = await blogManager.createBlog();
+    // it("1 - should create blog and return  status code of 201", async () => {
+    //   const newBlog = await blogManager.createBlog();
+
+    //   const res = await request(app)
+    //     .post(SETTINGS.PATH.BLOGS)
+    //     .send(newBlog)
+    //     .auth("admin", "qwerty")
+    //     .expect(201);
+    // });
+
+    it("2 - shouldn't create blog and return  status code of 400", async () => {
+      const newBlog = {
+        name: "",
+        description: "",
+        websiteUrl: ""
+      };
 
       const res = await request(app)
         .post(SETTINGS.PATH.BLOGS)
         .send(newBlog)
         .auth("admin", "qwerty")
-        .expect(201);
+        .expect(400);
+
+      expect(res.body.errorsMessages.length).toBe(3);
     });
 
-//     it("2 - shouldn't create post and return  status code of 400", async () => {
-//       const newPost = {
-//         title: "",
-//         shortDescription: "",
-//         content: "whole content about refactor",
-//         blogId: "662bf8758f1a93a2082eb4ee",
-//       };
+    it("3 - shouldn't create blog if unauthorized and return  status code of 401", async () => {
+      const newBlog = await blogManager.createBlog();
 
-//       const res = await request(app)
-//         .post(SETTINGS.PATH.POSTS)
-//         .send(newPost)
-//         .auth("admin", "qwerty")
-//         .expect(400);
+      const res = await request(app)
+        .post(SETTINGS.PATH.BLOGS)
+        .send(newBlog)
+        .auth("admin252", "qwerty5252")
+        .expect(401);
+    });
+  });
 
-//       expect(res.body.errorsMessages.length).toBe(2);
-//     });
+  describe("GET BLOGS", () => {
+    it("1 - should get posts and return status code 200 and object with pagination", async () => {
+      const posts = await postManager.postsWithPagination(1, 5);
 
-//     it("3 - shouldn't create post if unauthorized and return  status code of 401", async () => {
-//       const newPost = await postManager.createPost();
-
-//       const res = await request(app)
-//         .post(SETTINGS.PATH.POSTS)
-//         .send(newPost)
-//         .auth("admin252", "qwerty5252")
-//         .expect(401);
-//     });
-//   });
-
-//   describe("GET POSTS", () => {
-//     it("1 - should get posts and return status code 200 and object with pagination", async () => {
-//       const posts = await postManager.postsWithPagination(1, 5);
-
-//       const res = await request(app)
-//         .get(SETTINGS.PATH.POSTS)
-//         .send(posts)
-//         .auth("admin", "qwerty")
-//         .expect(200);
-//       expect(posts.page).toBe(1);
-//       expect(posts.pageSize).toBe(5);
-//     });
-//   });
+      const res = await request(app)
+        .get(SETTINGS.PATH.POSTS)
+        .send(posts)
+        .auth("admin", "qwerty")
+        .expect(200);
+      expect(posts.page).toBe(1);
+      expect(posts.pageSize).toBe(5);
+    });
+  });
 
 //   describe("UPDATE POSTS", () => {
 //     it("1 - should update posts and return status code 204", async () => {
@@ -142,5 +141,5 @@ describe("/blogs test", () => {
 //         .auth("admin", "qwerty")
 //         .expect(404);
 //     });
-  });
+  //});
 });
