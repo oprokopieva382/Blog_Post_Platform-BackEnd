@@ -2,7 +2,7 @@ import request from "supertest";
 import { SETTINGS } from "../settings";
 import { app } from "../app";
 import { blogManager } from "./blogManager";
-import { blogsCollection } from "../cloud_DB";
+import { blogsCollection, commentsCollection } from "../cloud_DB";
 
 export const postManager = {
   async createPost() {
@@ -56,9 +56,8 @@ export const postManager = {
       .get(SETTINGS.PATH.POSTS)
       .auth("admin", "qwerty")
       .expect(200);
-      
-      const postId = postsRequest.body.items[0].id;
-      console.log(postId);
+
+    const postId = postsRequest.body.items[0].id;
 
     return postId;
   },
@@ -78,5 +77,32 @@ export const postManager = {
       .send(blog)
       .auth("admin", "qwerty")
       .expect(201);
+  },
+
+  async getComments() {
+    const comments = await commentsCollection.find({}).toArray();
+    return comments;
+  },
+
+  async commentsWithPagination(pageNumber: number = 1, pageSize: number = 10) {
+    const comments = await this.getComments();
+    const totalCommentsCount = comments.length;
+
+    const paginatorPostView = {
+      pagesCount: Math.ceil(totalCommentsCount / pageSize),
+      page: pageNumber,
+      pageSize,
+      totalCount: totalCommentsCount,
+      items: comments.map((p) => ({
+        id: p._id.toString(),
+        content: p.content,
+        commentatorInfo: {
+          userId: p.commentatorInfo.userId,
+          userLogin: p.commentatorInfo.userLogin,
+        },
+        createdAt: p.createdAt,
+      })),
+    };
+     return paginatorPostView;
   },
 };

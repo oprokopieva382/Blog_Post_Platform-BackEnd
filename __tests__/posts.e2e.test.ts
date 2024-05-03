@@ -11,7 +11,7 @@ describe("/posts test", () => {
   });
 
   afterAll(async () => {
-    ///await dropCollections();
+    //await dropCollections();
   });
 
   describe("CREATE POST", () => {
@@ -132,6 +132,55 @@ describe("/posts test", () => {
         .send(comment)
         .set("Authorization", `Bearer ${token}`)
         .expect(201);
+    });
+
+    it("2- shouldn't create comment for proper post and with user auth if incorrect values & return status code 400", async () => {
+      const loginUser = await authManager.loginUser();
+      const token = await authManager.userToken();
+      const postId = await postManager.getPostId();
+      const shortComment = {
+        content: "How it works?",
+      };
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.POSTS}/${postId}/comments`)
+        .send(shortComment)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(400);
+    });
+
+    it("3- shouldn't create comment for proper post if user unauthorized & return status code 401", async () => {
+      const loginUser = await authManager.loginUser();
+      const token = await authManager.userToken();
+      const postId = await postManager.getPostId();
+      const comment = await postManager.createComment();
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.POSTS}/${postId}/comments`)
+        .send(comment)
+        .set("Authorization", `Bearer ${token}+1`)
+        .expect(401);
+    });
+
+    it("4- shouldn't create comment for proper post if postId is not exist & return status code 404", async () => {
+      const loginUser = await authManager.loginUser();
+      const token = await authManager.userToken();
+      const wrongPostId = "6634e807bcf8ea51a3d4da61";
+      const comment = await postManager.createComment();
+      const res = await request(app)
+        .post(`${SETTINGS.PATH.POSTS}/${wrongPostId}/comments`)
+        .send(comment)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(404);
+    });
+  });
+
+  describe("GET COMMENTS OF POST", () => {
+    it("1 - shouldn't find comment for proper post if postId is not exist & return status code 404", async () => {
+      const wrongPostId = "6634e807bcf8ea51a3d4da61";
+      const comments = await postManager.commentsWithPagination();
+      const res = await request(app)
+        .get(`${SETTINGS.PATH.POSTS}/${wrongPostId}/comments`)
+        .send(comments)
+        .expect(404);
     });
   });
 

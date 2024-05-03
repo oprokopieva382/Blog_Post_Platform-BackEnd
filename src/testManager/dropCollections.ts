@@ -10,7 +10,7 @@ export const dropCollections = async () => {
     await Promise.all([
       blogsCollection.drop(),
       postsCollection.drop(),
-      //   commentsCollection.drop(),
+      commentsCollection.drop(),
       usersCollection.drop(),
     ]);
     console.log("Collections dropped successfully");
