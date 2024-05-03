@@ -1,24 +1,28 @@
 import request from "supertest";
 import { SETTINGS } from "../settings";
 import { app } from "../app";
+import { blogManager } from "./blogManager";
+import { blogsCollection, commentsCollection } from "../cloud_DB";
 
 export const postManager = {
   async createPost() {
+    const blog = await blogsCollection.find({}).toArray();
     const newPost = {
       title: "Refactor",
       shortDescription: "Learn more about refactor in " + new Date(),
       content: "whole content about refactor",
-      blogId: "662bf8758f1a93a2082eb4ee",
+      blogId: blog[0]._id.toString(),
     };
     return newPost;
   },
 
   async updatePost() {
+    const blog = await blogsCollection.find({}).toArray();
     const postToUpdate = {
       title: "Nest.js",
       shortDescription: "Learn more about Nest.js in " + new Date(),
       content: "whole content about Nest.js",
-      blogId: "662bf8758f1a93a2082eb4ee",
+      blogId: blog[0]._id.toString(),
     };
     return postToUpdate;
   },
@@ -52,8 +56,48 @@ export const postManager = {
       .get(SETTINGS.PATH.POSTS)
       .auth("admin", "qwerty")
       .expect(200);
-    const postId = postsRequest.body.items[1].id;
+
+    const postId = postsRequest.body.items[0].id;
 
     return postId;
+  },
+
+  async createComment() {
+    const newComment = {
+      content: "Can you, please, explain how it works?",
+    };
+    return newComment;
+  },
+
+  async createBlog() {
+    const blog = await blogManager.createBlog();
+
+    const res = await request(app)
+      .post(SETTINGS.PATH.BLOGS)
+      .send(blog)
+      .auth("admin", "qwerty")
+      .expect(201);
+  },
+
+  async commentsWithPagination(pageNumber: number = 1, pageSize: number = 10, postId:string ) {
+   const comments = await commentsCollection.find({ postId }).toArray();
+    const totalCommentsCount = comments.length;
+
+    const paginatorPostView = {
+      pagesCount: Math.ceil(totalCommentsCount / pageSize),
+      page: pageNumber,
+      pageSize,
+      totalCount: totalCommentsCount,
+      items: comments.map((p) => ({
+        id: p._id.toString(),
+        content: p.content,
+        commentatorInfo: {
+          userId: p.commentatorInfo.userId,
+          userLogin: p.commentatorInfo.userLogin,
+        },
+        createdAt: p.createdAt,
+      })),
+    };
+    return paginatorPostView;
   },
 };
