@@ -3,6 +3,7 @@ import { SETTINGS } from "../settings";
 import { app } from "../app";
 import { blogManager } from "./blogManager";
 import { blogsCollection, commentsCollection } from "../cloud_DB";
+import { CommentDBType } from "../cloud_DB/mongo_db_types";
 
 export const postManager = {
   async createPost() {
@@ -79,13 +80,8 @@ export const postManager = {
       .expect(201);
   },
 
-  async getComments() {
-    const comments = await commentsCollection.find({}).toArray();
-    return comments;
-  },
-
-  async commentsWithPagination(pageNumber: number = 1, pageSize: number = 10) {
-    const comments = await this.getComments();
+  async commentsWithPagination(pageNumber: number = 1, pageSize: number = 10, postId:string ) {
+   const comments = await commentsCollection.find({ postId }).toArray();
     const totalCommentsCount = comments.length;
 
     const paginatorPostView = {
@@ -103,6 +99,6 @@ export const postManager = {
         createdAt: p.createdAt,
       })),
     };
-     return paginatorPostView;
+    return paginatorPostView;
   },
 };

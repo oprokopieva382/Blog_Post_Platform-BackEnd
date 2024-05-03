@@ -176,11 +176,26 @@ describe("/posts test", () => {
   describe("GET COMMENTS OF POST", () => {
     it("1 - shouldn't find comment for proper post if postId is not exist & return status code 404", async () => {
       const wrongPostId = "6634e807bcf8ea51a3d4da61";
-      const comments = await postManager.commentsWithPagination();
+      const comments = await postManager.commentsWithPagination(
+        1,
+        5,
+        wrongPostId
+      );
       const res = await request(app)
         .get(`${SETTINGS.PATH.POSTS}/${wrongPostId}/comments`)
         .send(comments)
         .expect(404);
+    });
+
+    it("2 - should find comment for proper post if postId exist, return status code 200 & object with pagination", async () => {
+      const postId = await postManager.getPostId();
+      console.log(postId);
+      const comments = await postManager.commentsWithPagination(1, 5, postId);
+      console.log(comments);
+      const res = await request(app)
+        .get(`${SETTINGS.PATH.POSTS}/${postId}/comments`)
+        .send(comments)
+        .expect(200);
     });
   });
 
