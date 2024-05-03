@@ -189,9 +189,7 @@ describe("/posts test", () => {
 
     it("2 - should find comment for proper post if postId exist, return status code 200 & object with pagination", async () => {
       const postId = await postManager.getPostId();
-      console.log(postId);
       const comments = await postManager.commentsWithPagination(1, 5, postId);
-      console.log(comments);
       const res = await request(app)
         .get(`${SETTINGS.PATH.POSTS}/${postId}/comments`)
         .send(comments)
@@ -199,33 +197,32 @@ describe("/posts test", () => {
     });
   });
 
-  // describe("DELETE POSTS", () => {
-  //   it("1 - shouldn't delete post and return status code 401 if unauthorized", async () => {
-  //     const posts = await postManager.getPosts();
+  describe("DELETE POST", () => {
+    it("1 - shouldn't delete post and return status code 401 if unauthorized", async () => {
+      const postId = await postManager.getPostId();
 
-  //     const res = await request(app)
-  //       .delete(`${SETTINGS.PATH.POSTS}/${posts[0].id}`)
-  //       .auth("admin5662", "qwerty")
-  //       .expect(401);
-  //   });
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.POSTS}/${postId}`)
+        .auth("admin5662", "qwerty")
+        .expect(401);
+    });
 
-  //   it("2 - shouldn't delete post and return status code 404 if id is not exist", async () => {
-  //     const postsId = "662bb47c5ea70648a79f7c10";
+    it("2 - shouldn't delete post and return status code 404 if id is not exist", async () => {
+      const postsId = "662bb47c5ea70648a79f7c10";
 
-  //     const res = await request(app)
-  //       .delete(`${SETTINGS.PATH.POSTS}/${postsId}`)
-  //       .auth("admin", "qwerty")
-  //       .expect(404);
-  //   });
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.POSTS}/${postsId}`)
+        .auth("admin", "qwerty")
+        .expect(404);
+    });
 
-  //   it("3 - should delete post and return status code 204", async () => {
-  //     const posts = await postManager.getPosts();
-  //     console.log(posts);
+    it("3 - should delete post and return status code 204", async () => {
+      const postId = await postManager.getPostId();
 
-  //     const res = await request(app)
-  //       .delete(`${SETTINGS.PATH.POSTS}/${posts[0].id}`)
-  //       .auth("admin", "qwerty")
-  //       .expect(204);
-  //   });
-  //});
+      const res = await request(app)
+        .delete(`${SETTINGS.PATH.POSTS}/${postId}`)
+        .auth("admin", "qwerty")
+        .expect(204);
+    });
+  });
 });
