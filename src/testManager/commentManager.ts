@@ -2,7 +2,6 @@ import request from "supertest";
 import { app } from "../app";
 import { SETTINGS } from "../settings";
 import { commentsCollection } from "../cloud_DB";
-import { ObjectId } from "mongodb";
 import { mapCommentDBToView } from "../utils/mapDBToView";
 
 export const commentManager = {
@@ -32,7 +31,7 @@ export const commentManager = {
       .send(loginInput)
       .expect(200);
 
-    return res.body.accessToken;
+      return res.body.accessToken;
   },
 
   async createBlog() {
