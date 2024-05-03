@@ -3,7 +3,6 @@ import { SETTINGS } from "../settings";
 import { app } from "../app";
 import { blogManager } from "./blogManager";
 import { blogsCollection, commentsCollection } from "../cloud_DB";
-import { CommentDBType } from "../cloud_DB/mongo_db_types";
 
 export const postManager = {
   async createPost() {

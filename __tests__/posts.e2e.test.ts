@@ -11,7 +11,7 @@ describe("/posts test", () => {
   });
 
   afterAll(async () => {
-    //await dropCollections();
+    await dropCollections();
   });
 
   describe("CREATE POST", () => {
