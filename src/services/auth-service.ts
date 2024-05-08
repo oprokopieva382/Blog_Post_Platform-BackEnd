@@ -4,6 +4,7 @@ import { LoginInputModel, UserInputModel } from "../models";
 import { authRepository, usersRepository } from "../repositories";
 import { add } from "date-fns/add";
 import { ObjectId } from "mongodb";
+import { emailService } from "../features/application";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
@@ -50,6 +51,8 @@ export const authService = {
 
     await usersRepository.createUser(newUser);
 
-    return findUser;
+    emailService.sendEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
+
+    return newUser;
   },
 };

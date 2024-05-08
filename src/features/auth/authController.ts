@@ -50,10 +50,18 @@ export const authController = {
   registration: async (req: Request, res: Response<null | APIErrorResult>) => {
     try {
       const registerUser = await authService.registerUser(req.body);
-      // if (!registerUser) {
-      //   res.sendStatus(401);
-      //   return;
-      // }
+      if (!registerUser) {
+        const errorResult: APIErrorResult = {
+          errorsMessages: [
+            {
+              message: "User already exists",
+              field: "registration",
+            },
+          ],
+        };
+        res.status(400).send(errorResult);
+        return;
+      }
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in auth register user", error);
