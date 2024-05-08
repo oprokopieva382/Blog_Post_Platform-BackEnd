@@ -11,13 +11,15 @@ export const emailAdapter = {
       },
     });
 
-    const emailInfo = await transporter.sendMail({
+    const emailInfo = transporter.sendMail({
       from: `"BlogPosts Registration" <${SETTINGS.REGISTRATION_EMAIL}>`,
       to: email,
       subject: "Email confirmation",
-      html: `<h1>Thank you for your registration</h1>
-      <p>To finish registration, please follow the link below:</p>
-      <p><a href="https://somesite.com/confirm-email?code=${code}">Complete registration</a></p>`,
+      html: `
+        <h1>Thank you for your registration</h1>
+        <p>To finish registration please follow the link below:
+        <a href="https://google.com/confirm-email?code=${code}">complete registration</a></p>
+      `,
     });
 
     return !!emailInfo;
