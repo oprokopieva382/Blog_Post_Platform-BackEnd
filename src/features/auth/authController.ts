@@ -46,4 +46,18 @@ export const authController = {
       res.status(500);
     }
   },
+
+  registration: async (req: Request, res: Response<null | APIErrorResult>) => {
+    try {
+      const registerUser = await authService.registerUser(req.body);
+      // if (!registerUser) {
+      //   res.sendStatus(401);
+      //   return;
+      // }
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in auth register user", error);
+      res.status(500);
+    }
+  },
 };

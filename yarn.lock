@@ -852,11 +852,6 @@
     "@types/methods" "^1.1.4"
     "@types/superagent" "^8.1.0"
 
-"@types/uuid@^9.0.8":
-  version "9.0.8"
-  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.8.tgz#7545ba4fc3c003d6c756f651f3bf163d8f0f29ba"
-  integrity sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==
-
 "@types/webidl-conversions@*":
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/@types/webidl-conversions/-/webidl-conversions-7.0.3.tgz#1306dbfa53768bcbcfc95a1c8cde367975581859"
@@ -1435,6 +1430,11 @@ cross-spawn@^7.0.3:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+date-fns@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-3.6.0.tgz#f20ca4fe94f8b754951b24240676e8618c0206bf"
+  integrity sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==
 
 debug@2.6.9:
   version "2.6.9"
@@ -2980,6 +2980,11 @@ node-releases@^2.0.14:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.14.tgz#2ffb053bceb8b2be8495ece1ab6ce600c4461b0b"
   integrity sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==
 
+nodemailer@^6.9.13:
+  version "6.9.13"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.9.13.tgz#5b292bf1e92645f4852ca872c56a6ba6c4a3d3d6"
+  integrity sha512-7o38Yogx6krdoBf3jCAqnIN4oSQFx+fMa0I7dK1D+me9kBxx12D+/33wSb+fhOCtIxvYJ+4x4IMEhmhCKfAiOA==
+
 nodemon@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-3.1.0.tgz#ff7394f2450eb6a5e96fe4180acd5176b29799c9"
@@ -3778,11 +3783,6 @@ utils-merge@1.0.1:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
-
-uuid@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
-  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 v8-compile-cache-lib@^3.0.1:
   version "3.0.1"
