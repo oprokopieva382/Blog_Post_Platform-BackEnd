@@ -3,7 +3,6 @@ import {
   LoginInputModel,
   LoginSuccessViewModel,
   MeViewModel,
-  RegistrationConfirmationCodeModel,
 } from "../../models";
 import { APIErrorResult } from "../../output-errors-type";
 import { authService } from "../../services";
@@ -71,11 +70,11 @@ export const authController = {
   },
 
   registrationConfirmation: async (
-    req: Request<RegistrationConfirmationCodeModel>,
+    req: Request,
     res: Response<null | APIErrorResult>
   ) => {
     try {
-      const registerUser = await authService.registerUser(req.body);
+      const registerUser = await authService.confirmUser(req.body);
       if (!registerUser) {
         const errorResult: APIErrorResult = {
           errorsMessages: [
@@ -90,7 +89,7 @@ export const authController = {
       }
       res.sendStatus(204);
     } catch (error) {
-      console.error("Error in auth register user", error);
+      console.error("Error in auth registration confirmation user", error);
       res.status(500);
     }
   },

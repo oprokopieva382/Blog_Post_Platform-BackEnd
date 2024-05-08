@@ -54,41 +54,25 @@ export const authService = {
     };
 
     await usersRepository.createUser(newUser);
-    try {
-      await emailAdapter.sendEmail(
-        newUser.email,
-        newUser.emailConfirmation.confirmationCode
-      );
-    } catch (error) {
-      console.error(error);
-      await usersRepository.removeUser(newUser._id.toString());
-    }
+
+    emailAdapter.sendEmail(
+      newUser.email,
+      newUser.emailConfirmation.confirmationCode
+    );
 
     return newUser;
   },
 
   async confirmUser(data: RegistrationConfirmationCodeModel) {
-    const findUser = await authRepository.getByConfirmationCode(data);
+    const findUser = await authRepository.getByConfirmationCode(data.code);
 
-    if (findUser) return null;
+    if (!findUser) return false;
+    if (findUser.emailConfirmation.isConfirmed === true) return false;
+    if (findUser.emailConfirmation.confirmationCode !== data.code) return false;
+    if (findUser.emailConfirmation.expirationDate < new Date()) return false;
 
-    const newUser = {
-      _id: new ObjectId(),
-      login,
-      email,
-      password: passwordHash,
-      createdAt: new Date().toISOString(),
-      emailConfirmation: {
-        confirmationCode: randomUUID(),
-        expirationDate: add(new Date(), {
-          hours: 1,
-        }),
-        isConfirmed: false,
-      },
-    };
+    const result = await authRepository.updateConfirmation(findUser._id);
 
-    await usersRepository.createUser(newUser);
-
-    return newUser;
+    return result;
   },
 };
