@@ -56,7 +56,7 @@ export const authService = {
 
     await usersRepository.createUser(newUser);
 
-    emailAdapter.sendEmail(
+    await emailAdapter.sendEmail(
       newUser.email,
       newUser.emailConfirmation.confirmationCode
     );
@@ -81,11 +81,11 @@ export const authService = {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
 
     if (!findUser) return false;
-   
-   emailAdapter.sendEmail(
-     data.email,
-     findUser.emailConfirmation.confirmationCode
-   );
+
+    emailAdapter.sendEmail(
+      data.email,
+      findUser.emailConfirmation.confirmationCode
+    );
 
     return findUser;
   },
