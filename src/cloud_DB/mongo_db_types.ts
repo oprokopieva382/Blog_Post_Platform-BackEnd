@@ -24,7 +24,7 @@ export type UserDBType = {
   login: string;
   password: string;
   email: string;
-  createdAt: Date;
+  createdAt: string;
   emailConfirmation: ConfirmationEmailType;
 };
 

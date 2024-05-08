@@ -39,7 +39,7 @@ export const authService = {
       login,
       email,
       password: passwordHash,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       emailConfirmation: {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), {
