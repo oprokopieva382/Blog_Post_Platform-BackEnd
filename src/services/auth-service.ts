@@ -33,7 +33,7 @@ export const authService = {
 
   async registerUser(data: UserInputModel) {
     const { login, password, email } = data;
-    const findUser = await authRepository.getByLoginOrEmail(email);
+    const findUser = await authRepository.getByLoginOrEmail(login, email);
 
     if (findUser) return null;
 
@@ -56,7 +56,7 @@ export const authService = {
 
     await usersRepository.createUser(newUser);
 
-    await emailAdapter.sendEmail(
+   await emailAdapter.sendEmail(
       newUser.email,
       newUser.emailConfirmation.confirmationCode
     );
@@ -81,11 +81,11 @@ export const authService = {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
 
     if (!findUser) return false;
-
-    emailAdapter.sendEmail(
-      data.email,
-      findUser.emailConfirmation.confirmationCode
-    );
+   
+   emailAdapter.sendEmail(
+     data.email,
+     findUser.emailConfirmation.confirmationCode
+   );
 
     return findUser;
   },
