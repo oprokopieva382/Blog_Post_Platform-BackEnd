@@ -2,6 +2,8 @@ import { ObjectId } from "mongodb";
 import { UserInputModel } from "../models";
 import { usersRepository } from "../repositories";
 import { bcryptService } from "./bcrypt-service";
+import { randomUUID } from "crypto";
+import { add } from "date-fns/add";
 
 export const usersService = {
   async createUser(data: UserInputModel) {
@@ -14,7 +16,14 @@ export const usersService = {
       login,
       password: hashedPassword,
       email,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
+      emailConfirmation: {
+        confirmationCode: randomUUID(),
+        expirationDate: add(new Date(), {
+          hours: 1,
+        }),
+        isConfirmed: false,
+      },
     };
 
     const createdUser = await usersRepository.createUser(newUser);

@@ -48,7 +48,7 @@ export const authService = {
       },
     };
 
-    await usersRepository.createUser(newUser)
+    await usersRepository.createUser(newUser);
 
     return findUser;
   },
