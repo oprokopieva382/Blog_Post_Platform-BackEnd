@@ -47,7 +47,7 @@ export const authController = {
     }
   },
 
-  registration: async (req: Request, res: Response<null | APIErrorResult>) => {
+  registration: async (req: Request, res: Response) => {
     try {
       const registerUser = await authService.registerUser(req.body);
       if (!registerUser) {
@@ -55,7 +55,7 @@ export const authController = {
           errorsMessages: [
             {
               message: "User already exists",
-              field: "id",
+              field: "email",
             },
           ],
         };
@@ -87,7 +87,10 @@ export const authController = {
     }
   },
 
-  registrationResending: async (req: Request, res: Response<null | APIErrorResult>) => {
+  registrationResending: async (
+    req: Request,
+    res: Response<null | APIErrorResult>
+  ) => {
     try {
       const registerUser = await authService.confirmResentUser(req.body);
       if (registerUser && registerUser.emailConfirmation.isConfirmed === true) {
