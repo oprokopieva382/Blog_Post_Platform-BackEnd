@@ -74,19 +74,12 @@ export const authController = {
     res: Response<null | APIErrorResult>
   ) => {
     try {
-      const registerUser = await authService.confirmUser(req.body);
-      if (!registerUser) {
-        const errorResult: APIErrorResult = {
-          errorsMessages: [
-            {
-              message: "User already exists",
-              field: "registration",
-            },
-          ],
-        };
-        res.status(400).send(errorResult);
+      const confirmedUser = await authService.confirmUser(req.body);
+      if (!confirmedUser) {
+        res.sendStatus(400);
         return;
       }
+
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in auth registration confirmation user", error);
