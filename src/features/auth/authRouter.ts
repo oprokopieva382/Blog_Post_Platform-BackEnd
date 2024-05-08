@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authController } from "./authController";
-import { authMiddleware, codeValidationMiddleware, loginValidationMiddleware, userValidationMiddleware } from "../../middlewares";
+import { authMiddleware, codeValidationMiddleware, emailValidationMiddleware, loginValidationMiddleware, userValidationMiddleware } from "../../middlewares";
 
 export const authRouter = Router();
 
@@ -10,4 +10,9 @@ authRouter.post("/registration", userValidationMiddleware, authController.regist
 authRouter.post(
   "/registration-confirmation",
   codeValidationMiddleware, authController.registrationConfirmation
+);
+authRouter.post(
+  "/registration-email-resending",
+  emailValidationMiddleware,
+  authController.registrationResending
 );

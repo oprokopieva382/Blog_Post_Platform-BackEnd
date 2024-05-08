@@ -9,6 +9,7 @@ import { authRepository, usersRepository } from "../repositories";
 import { add } from "date-fns/add";
 import { ObjectId } from "mongodb";
 import { emailAdapter } from "../features/adapters";
+import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
@@ -74,5 +75,18 @@ export const authService = {
     const result = await authRepository.updateConfirmation(findUser._id);
 
     return result;
+  },
+
+  async confirmResentUser(data: RegistrationEmailResending) {
+    const findUser = await authRepository.getByLoginOrEmail(data.email);
+
+    if (!findUser) return false;
+   
+   emailAdapter.sendEmail(
+     data.email,
+     findUser.emailConfirmation.confirmationCode
+   );
+
+    return findUser;
   },
 };

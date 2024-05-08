@@ -55,7 +55,7 @@ export const authController = {
           errorsMessages: [
             {
               message: "User already exists",
-              field: "registration",
+              field: "id",
             },
           ],
         };
@@ -83,6 +83,28 @@ export const authController = {
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in auth registration confirmation user", error);
+      res.status(500);
+    }
+  },
+
+  registrationResending: async (req: Request, res: Response<null | APIErrorResult>) => {
+    try {
+      const registerUser = await authService.confirmResentUser(req.body);
+      if (registerUser && registerUser.emailConfirmation.isConfirmed === true) {
+        const errorResult: APIErrorResult = {
+          errorsMessages: [
+            {
+              message: "Email is already confirmed",
+              field: "isConfirmed",
+            },
+          ],
+        };
+        res.status(400).send(errorResult);
+        return;
+      }
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in auth register user", error);
       res.status(500);
     }
   },
