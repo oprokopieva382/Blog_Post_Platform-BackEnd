@@ -12,6 +12,8 @@ export const SETTINGS = {
   USERS_COLLECTION: process.env.USERS_COLLECTION || "",
   COMMENTS_COLLECTION: process.env.COMMENTS_COLLECTION || "",
   JWT_SECRET: process.env.JWT_SECRET || "123",
+  REGISTRATION_EMAIL: process.env.REGISTRATION_EMAIL || "",
+  REGISTRATION_PASS: process.env.REGISTRATION_PASS || "",
   ADMIN_AUTH: "admin:qwerty",
   PATH: {
     TESTING: "/testing",

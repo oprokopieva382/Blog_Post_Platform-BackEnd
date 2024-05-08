@@ -24,8 +24,17 @@ export type UserDBType = {
   login: string;
   password: string;
   email: string;
-  createdAt: string;
+  createdAt: Date;
+  emailConfirmation: ConfirmationEmailType;
 };
+
+type ConfirmationEmailType = {
+  confirmationCode: string;
+  expirationDate: ExpirationDate;
+  isConfirmed: boolean;
+};
+
+type ExpirationDate = Date;
 
 export type CommentDBType = {
   _id: ObjectId;
