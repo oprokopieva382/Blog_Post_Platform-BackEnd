@@ -50,6 +50,7 @@ export const authController = {
   registration: async (req: Request, res: Response) => {
     try {
       const registerUser = await authService.registerUser(req.body);
+
       if (!registerUser?.email) {
         const errorResult: APIErrorResult = {
           errorsMessages: [
@@ -62,6 +63,7 @@ export const authController = {
         res.status(400).send(errorResult);
         return;
       }
+
       if (!registerUser?.login) {
         const errorResult: APIErrorResult = {
           errorsMessages: [
@@ -74,6 +76,7 @@ export const authController = {
         res.status(400).send(errorResult);
         return;
       }
+      
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in auth register user", error);
