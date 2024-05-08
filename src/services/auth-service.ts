@@ -1,10 +1,14 @@
 import { randomUUID } from "crypto";
 import { bcryptService } from ".";
-import { LoginInputModel, UserInputModel } from "../models";
+import {
+  LoginInputModel,
+  RegistrationConfirmationCodeModel,
+  UserInputModel,
+} from "../models";
 import { authRepository, usersRepository } from "../repositories";
 import { add } from "date-fns/add";
 import { ObjectId } from "mongodb";
-import { emailService } from "../features/application";
+import { emailAdapter } from "../features/adapters";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
@@ -27,11 +31,11 @@ export const authService = {
   },
 
   async registerUser(data: UserInputModel) {
-    const {login, password, email }= data
+    const { login, password, email } = data;
     const findUser = await authRepository.getByLoginOrEmail(email);
 
     if (findUser) return null;
-  
+
     const passwordHash = await bcryptService.createHash(password);
 
     const newUser = {
@@ -50,8 +54,40 @@ export const authService = {
     };
 
     await usersRepository.createUser(newUser);
+    try {
+      await emailAdapter.sendEmail(
+        newUser.email,
+        newUser.emailConfirmation.confirmationCode
+      );
+    } catch (error) {
+      console.error(error);
+      await usersRepository.removeUser(newUser._id.toString());
+    }
 
-    emailService.sendEmail(newUser.email, newUser.emailConfirmation.confirmationCode)
+    return newUser;
+  },
+
+  async confirmUser(data: RegistrationConfirmationCodeModel) {
+    const findUser = await authRepository.getByConfirmationCode(data);
+
+    if (findUser) return null;
+
+    const newUser = {
+      _id: new ObjectId(),
+      login,
+      email,
+      password: passwordHash,
+      createdAt: new Date().toISOString(),
+      emailConfirmation: {
+        confirmationCode: randomUUID(),
+        expirationDate: add(new Date(), {
+          hours: 1,
+        }),
+        isConfirmed: false,
+      },
+    };
+
+    await usersRepository.createUser(newUser);
 
     return newUser;
   },

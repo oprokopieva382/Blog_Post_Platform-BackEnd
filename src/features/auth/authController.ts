@@ -3,6 +3,7 @@ import {
   LoginInputModel,
   LoginSuccessViewModel,
   MeViewModel,
+  RegistrationConfirmationCodeModel,
 } from "../../models";
 import { APIErrorResult } from "../../output-errors-type";
 import { authService } from "../../services";
@@ -48,6 +49,31 @@ export const authController = {
   },
 
   registration: async (req: Request, res: Response<null | APIErrorResult>) => {
+    try {
+      const registerUser = await authService.registerUser(req.body);
+      if (!registerUser) {
+        const errorResult: APIErrorResult = {
+          errorsMessages: [
+            {
+              message: "User already exists",
+              field: "registration",
+            },
+          ],
+        };
+        res.status(400).send(errorResult);
+        return;
+      }
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in auth register user", error);
+      res.status(500);
+    }
+  },
+
+  registrationConfirmation: async (
+    req: Request<RegistrationConfirmationCodeModel>,
+    res: Response<null | APIErrorResult>
+  ) => {
     try {
       const registerUser = await authService.registerUser(req.body);
       if (!registerUser) {
