@@ -95,7 +95,7 @@ export const authController = {
           errorsMessages: [
             {
               message: "Email is already confirmed",
-              field: "isConfirmed",
+              field: "email",
             },
           ],
         };
