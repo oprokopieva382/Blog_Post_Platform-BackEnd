@@ -11,3 +11,4 @@ export { CommentViewModel } from "./CommentViewModel";
 export { CommentInputModel } from "./CommentInputModel";
 export { LoginSuccessViewModel } from "./LoginSuccessViewModel";
 export { MeViewModel } from "./MeViewModel";
+export { RegistrationConfirmationCodeModel } from "./RegistrationConfirmationCodeModel";

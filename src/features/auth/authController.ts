@@ -50,10 +50,58 @@ export const authController = {
   registration: async (req: Request, res: Response<null | APIErrorResult>) => {
     try {
       const registerUser = await authService.registerUser(req.body);
-      // if (!registerUser) {
-      //   res.sendStatus(401);
-      //   return;
-      // }
+      if (!registerUser) {
+        const errorResult: APIErrorResult = {
+          errorsMessages: [
+            {
+              message: "User already exists",
+              field: "id",
+            },
+          ],
+        };
+        res.status(400).send(errorResult);
+        return;
+      }
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in auth register user", error);
+      res.status(500);
+    }
+  },
+
+  registrationConfirmation: async (
+    req: Request,
+    res: Response<null | APIErrorResult>
+  ) => {
+    try {
+      const confirmedUser = await authService.confirmUser(req.body);
+      if (!confirmedUser) {
+        res.sendStatus(400);
+        return;
+      }
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Error in auth registration confirmation user", error);
+      res.status(500);
+    }
+  },
+
+  registrationResending: async (req: Request, res: Response<null | APIErrorResult>) => {
+    try {
+      const registerUser = await authService.confirmResentUser(req.body);
+      if (registerUser && registerUser.emailConfirmation.isConfirmed === true) {
+        const errorResult: APIErrorResult = {
+          errorsMessages: [
+            {
+              message: "Email is already confirmed",
+              field: "isConfirmed",
+            },
+          ],
+        };
+        res.status(400).send(errorResult);
+        return;
+      }
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in auth register user", error);

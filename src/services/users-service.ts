@@ -16,7 +16,7 @@ export const usersService = {
       login,
       password: hashedPassword,
       email,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       emailConfirmation: {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), {
