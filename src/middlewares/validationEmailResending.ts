@@ -7,22 +7,21 @@ export const validationEmailResending = async (
   next: NextFunction
 ) => {
   const result = await authRepository.getByLoginOrEmail(req.body.email);
+
+  const generateError = (message: string, field: string) => ({
+    errorsMessages: [{ message, field }],
+  });
+
   if (!result) {
-    next();
-    return;
+    return res.status(400).send(generateError("Email is not found", "email"));
   }
-  const error = {
-    errorsMessages: [
-      {
-        message: "Email is already confirmed",
-        field: "email",
-      },
-    ],
-  };
 
   if (result.emailConfirmation.isConfirmed === true) {
-    return res.status(400).send(error);
+    return res
+      .status(400)
+      .send(generateError("Email is already confirmed", "email"));
   }
 
+  next();
   return;
 };
