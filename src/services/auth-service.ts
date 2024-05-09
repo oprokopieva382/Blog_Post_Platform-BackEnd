@@ -33,9 +33,9 @@ export const authService = {
 
   async registerUser(data: UserInputModel) {
     const { login, password, email } = data;
-    const findUser = await authRepository.getByLoginOrEmail(login, email);
+    const findUser = await authRepository.getByLoginOrEmail(login);
 
-    if (findUser) return null;
+    if (findUser) return false;
 
     const passwordHash = await bcryptService.createHash(password);
 
