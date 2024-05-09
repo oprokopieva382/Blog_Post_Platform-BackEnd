@@ -81,19 +81,20 @@ export const authController = {
     res: Response<null | APIErrorResult>
   ) => {
     try {
+      console.log(req);
       const registerUser = await authService.confirmResentUser(req.body);
-      if (registerUser && registerUser.emailConfirmation.isConfirmed === true) {
-        const errorResult: APIErrorResult = {
-          errorsMessages: [
-            {
-              message: "Email is already confirmed",
-              field: "email",
-            },
-          ],
-        };
-        res.status(400).send(errorResult);
-        return;
-      }
+      // if (registerUser && registerUser.emailConfirmation.isConfirmed === true) {
+      //   const errorResult: APIErrorResult = {
+      //     errorsMessages: [
+      //       {
+      //         message: "Email is already confirmed",
+      //         field: "email",
+      //       },
+      //     ],
+      //   };
+      //   res.status(400).send(errorResult);
+      //   return;
+      // }
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in auth register user", error);

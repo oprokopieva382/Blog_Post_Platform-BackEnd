@@ -38,8 +38,6 @@ export const loginValidationMiddleware = async (
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    //console.log(errors.array());
-    //console.log(errors.array().map((error) => error));
 
     const errorsFields = errors.array({
       onlyFirstError: true,

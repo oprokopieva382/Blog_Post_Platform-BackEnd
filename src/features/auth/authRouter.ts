@@ -6,6 +6,7 @@ import {
   emailValidationMiddleware,
   loginValidationMiddleware,
   userValidationMiddleware,
+  validationEmailResending,
   validationUserEmailUnique,
   validationUserLoginUnique,
 
@@ -30,5 +31,6 @@ authRouter.post(
 authRouter.post(
   "/registration-email-resending",
   emailValidationMiddleware,
+  validationEmailResending,
   authController.registrationResending
 );

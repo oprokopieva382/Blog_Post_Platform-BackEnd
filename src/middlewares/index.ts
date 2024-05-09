@@ -9,4 +9,5 @@ export { codeValidationMiddleware } from "./codeValidationMiddleware";
 export { emailValidationMiddleware } from "./emailValidationMiddleware";
 export { validationUserLoginUnique } from "./validationUserLoginUnique";
 export { validationUserEmailUnique } from "./validationUserEmailUnique";
+export { validationEmailResending } from "./validationEmailResending";
 export { authMiddleware } from "./authMiddleware";

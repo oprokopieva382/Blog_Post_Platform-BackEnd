@@ -79,6 +79,7 @@ export const authService = {
 
   async confirmResentUser(data: RegistrationEmailResending) {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
+    console.log(findUser);
 
     if (!findUser) return false;
    
