@@ -56,7 +56,7 @@ export const authService = {
 
     await usersRepository.createUser(newUser);
 
-   await emailAdapter.sendEmail(
+    await emailAdapter.sendEmail(
       newUser.email,
       newUser.emailConfirmation.confirmationCode
     );
@@ -68,24 +68,18 @@ export const authService = {
     const findUser = await authRepository.getByConfirmationCode(data.code);
 
     if (!findUser) return false;
-    if (findUser.emailConfirmation.isConfirmed === true) return false;
-    if (findUser.emailConfirmation.confirmationCode !== data.code) return false;
-    if (findUser.emailConfirmation.expirationDate < new Date()) return false;
-
-    const result = await authRepository.updateConfirmation(findUser._id);
-
-    return result;
+    return await authRepository.updateConfirmation(findUser._id);
   },
 
   async confirmResentUser(data: RegistrationEmailResending) {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
-
+  
     if (!findUser) return false;
-   
-   emailAdapter.sendEmail(
-     data.email,
-     findUser.emailConfirmation.confirmationCode
-   );
+
+    emailAdapter.sendEmail(
+      data.email,
+      findUser.emailConfirmation.confirmationCode
+    );
 
     return findUser;
   },

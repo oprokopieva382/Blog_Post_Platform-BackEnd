@@ -6,9 +6,10 @@ import {
   emailValidationMiddleware,
   loginValidationMiddleware,
   userValidationMiddleware,
+  validationEmailConfirmation,
+  validationEmailResending,
   validationUserEmailUnique,
   validationUserLoginUnique,
-
 } from "../../middlewares";
 
 export const authRouter = Router();
@@ -25,10 +26,12 @@ authRouter.post(
 authRouter.post(
   "/registration-confirmation",
   codeValidationMiddleware,
+  validationEmailConfirmation,
   authController.registrationConfirmation
 );
 authRouter.post(
   "/registration-email-resending",
   emailValidationMiddleware,
+  validationEmailResending,
   authController.registrationResending
 );
