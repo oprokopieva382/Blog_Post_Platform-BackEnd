@@ -6,6 +6,9 @@ import {
   emailValidationMiddleware,
   loginValidationMiddleware,
   userValidationMiddleware,
+  validationUserEmailUnique,
+  validationUserLoginUnique,
+
 } from "../../middlewares";
 
 export const authRouter = Router();
@@ -15,6 +18,8 @@ authRouter.get("/me", authMiddleware, authController.me);
 authRouter.post(
   "/registration",
   userValidationMiddleware,
+  validationUserLoginUnique,
+  validationUserEmailUnique,
   authController.registration
 );
 authRouter.post(

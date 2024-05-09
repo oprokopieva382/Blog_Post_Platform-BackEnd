@@ -107,7 +107,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   
   },
-  "include": ["src/**/*", "__tests__/blogs.e2e.test.ts"],
+  "include": ["src/**/*", "__tests__/blogs.e2e.test.ts", "src/middlewares/.ts"],
   "exclude": ["node_modules", "**/*.test.ts"],
   "files": ["src/types/index.d.ts"],
 }
