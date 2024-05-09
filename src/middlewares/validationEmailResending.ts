@@ -7,7 +7,6 @@ export const validationEmailResending = async (
   next: NextFunction
 ) => {
   const result = await authRepository.getByLoginOrEmail(req.body.email);
-  console.log(result);
   if (!result) {
     next();
     return;
