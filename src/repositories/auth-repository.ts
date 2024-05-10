@@ -18,10 +18,14 @@ export const authRepository = {
   },
 
   async updateCode(userId: ObjectId, newCode: string): Promise<Boolean> {
-    const updatedUser = await usersCollection.updateOne({_id: userId},
+    const updatedUser = await usersCollection.updateOne(
+      { _id: userId },
       {
-      "emailConfirmation.confirmationCode": newCode,
-    });
+        $set: {
+          "emailConfirmation.confirmationCode": newCode,
+        },
+      }
+    );
     return !!updatedUser.modifiedCount;
   },
 
