@@ -1,8 +1,8 @@
 import request from "supertest";
-import { SETTINGS } from "../src/settings";
-import { app } from "../src/app";
-import { ConnectMongoDB } from "../src/cloud_DB";
-import { userManager } from "./../src/testManager";
+import { SETTINGS } from "../../src/settings";
+import { app } from "../../src/app";
+import { ConnectMongoDB } from "../../src/cloud_DB";
+import { userManager } from "../../src/testManager";
 
 describe("/users test", () => {
   beforeAll(async () => {
