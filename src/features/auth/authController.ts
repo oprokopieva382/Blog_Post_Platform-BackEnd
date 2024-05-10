@@ -17,8 +17,13 @@ export const authController = {
   ) => {
     try {
       const authResult = await authService.loginUser(req.body);
+      console.log(authResult);
 
-      if (!authResult || authResult === 401) {
+      if (
+        !authResult ||
+        authResult === 401 
+        // || authResult.emailConfirmation.isConfirmed === false
+      ) {
         res.sendStatus(401);
         return;
       }

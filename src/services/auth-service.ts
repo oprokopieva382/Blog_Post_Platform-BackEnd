@@ -14,6 +14,7 @@ import { RegistrationEmailResending } from "../types/RegistrationEmailResending"
 export const authService = {
   async loginUser(data: LoginInputModel) {
     const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
+    console.log(findUser);
 
     if (!findUser) {
       return null;
