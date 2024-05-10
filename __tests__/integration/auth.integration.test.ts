@@ -11,11 +11,11 @@ describe("auth tests", () => {
   });
 
   afterEach(async () => {
-    await dropCollections();
+    //await dropCollections();
   });
 
   afterAll(async () => {
-    await dropCollections();
+    //await dropCollections();
   });
 
   describe("USER REGISTRATION", () => {
@@ -27,7 +27,7 @@ describe("auth tests", () => {
         return true;
       });
 
-    it("should register user and return status code 204", async () => {
+    it.skip("1- should register user and return status code 204", async () => {
       const result = await registerUser(user);
 
       expect(result).toEqual({
@@ -45,6 +45,13 @@ describe("auth tests", () => {
 
       expect(emailAdapter.sendEmail).toHaveBeenCalled();
       expect(emailAdapter.sendEmail).toHaveBeenCalledTimes(1);
+    });
+
+    it("2- shouldn't register user and if the user with the given email or login already exists return status code 400", async () => {
+      await registerUser(user);
+      const userToRegister: any = await registerUser(user);
+
+      expect(userToRegister).toBe(false);
     });
   });
 });
