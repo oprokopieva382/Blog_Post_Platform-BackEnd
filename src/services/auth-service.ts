@@ -75,10 +75,14 @@ export const authService = {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
 
     if (!findUser) return false;
+    console.log(findUser);
+
+    const newCode = randomUUID();
+    const updatedUser = await authRepository.updateCode(findUser._id, newCode)
 
     emailAdapter.sendEmail(
       data.email,
-      findUser.emailConfirmation.confirmationCode
+      newCode
     );
 
     return findUser;
