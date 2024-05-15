@@ -1,7 +1,7 @@
 import { ConnectMongoDB } from "../../src/cloud_DB";
 import { dropCollections } from "../../src/testManager/dropCollections";
 import { authService } from "../../src/services";
-import { findUserInDB, user } from "./seeder";
+import { user } from "./seeder";
 import { emailAdapter } from "../../src/features/adapters";
 import { ObjectId } from "mongodb";
 
