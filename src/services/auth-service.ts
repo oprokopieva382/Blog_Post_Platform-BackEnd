@@ -14,6 +14,7 @@ import { RegistrationEmailResending } from "../types/RegistrationEmailResending"
 export const authService = {
   async loginUser(data: LoginInputModel) {
     const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
+    console.log(findUser);
 
     if (!findUser) {
       return null;
@@ -67,7 +68,7 @@ export const authService = {
   async confirmUser(data: RegistrationConfirmationCodeModel) {
     const findUser = await authRepository.getByConfirmationCode(data.code);
 
-    if (!findUser) return false;
+    if (!findUser) return;
     return await authRepository.updateConfirmation(findUser._id);
   },
 
@@ -75,7 +76,6 @@ export const authService = {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
 
     if (!findUser) return false;
-    console.log(findUser);
 
     const newCode = randomUUID();
     const updatedUser = await authRepository.updateCode(findUser._id, newCode)

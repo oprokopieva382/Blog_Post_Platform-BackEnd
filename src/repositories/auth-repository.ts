@@ -32,7 +32,8 @@ export const authRepository = {
   async updateConfirmation(_id: ObjectId): Promise<UserDBType | null> {
     const updatedUser = await usersCollection.findOneAndUpdate(
       { _id },
-      { $set: { "emailConfirmation.isConfirmed": true } }
+      { $set: { "emailConfirmation.isConfirmed": true } },
+      { returnDocument: "after" }
     );
 
     return updatedUser;

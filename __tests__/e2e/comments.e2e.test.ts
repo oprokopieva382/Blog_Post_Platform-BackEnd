@@ -1,9 +1,9 @@
 import request from "supertest";
-import { SETTINGS } from "../src/settings";
-import { app } from "../src/app";
-import { ConnectMongoDB } from "../src/cloud_DB";
-import { commentManager } from "../src/testManager";
-import { dropCollections } from "../src/testManager/dropCollections";
+import { SETTINGS } from "../../src/settings";
+import { app } from "../../src/app";
+import { ConnectMongoDB } from "../../src/cloud_DB";
+import { commentManager } from "../../src/testManager";
+import { dropCollections } from "../../src/testManager/dropCollections";
 
 describe("/comments test", () => {
   beforeAll(async () => {
