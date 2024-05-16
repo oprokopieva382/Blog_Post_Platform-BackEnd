@@ -29,7 +29,12 @@ export const authController = {
 
       const user = mapUserDBToView(authResult);
       const accessToken = await jwtTokenService.createAccessToken(user);
+      const refreshToken = await jwtTokenService.createRefreshToken(user);
 
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+      });
       res.status(200).send(accessToken);
     } catch (error) {
       console.error("Error in user login:", error);
