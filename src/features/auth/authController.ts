@@ -34,6 +34,7 @@ export const authController = {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
+        maxAge: 20000,
       });
       res.status(200).send(accessToken);
     } catch (error) {
