@@ -7,7 +7,7 @@ import {
 import { APIErrorResult } from "../../output-errors-type";
 import { authService } from "../../services";
 import { mapMeToView, mapUserDBToView } from "../../utils/mapDBToView";
-import { jwtService } from "../application";
+import { jwtTokenService } from "../application";
 import { usersQueryRepository } from "../../query_repositories";
 
 export const authController = {
@@ -17,18 +17,18 @@ export const authController = {
   ) => {
     try {
       const authResult = await authService.loginUser(req.body);
-    
+
       if (
         !authResult ||
-        authResult === 401 
-      //|| authResult.emailConfirmation.isConfirmed === false
+        authResult === 401
+        //|| authResult.emailConfirmation.isConfirmed === false
       ) {
         res.sendStatus(401);
         return;
       }
 
       const user = mapUserDBToView(authResult);
-      const accessToken = await jwtService.createJWT(user);
+      const accessToken = await jwtTokenService.createAccessToken(user);
 
       res.status(200).send(accessToken);
     } catch (error) {
