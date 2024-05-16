@@ -32,6 +32,10 @@ export const authService = {
     return findUser;
   },
 
+  async logoutUser(refreshToken: string) {
+
+  },
+
   async registerUser(data: UserInputModel) {
     const { login, password, email } = data;
     const findUser = await authRepository.getByLoginOrEmail(login);

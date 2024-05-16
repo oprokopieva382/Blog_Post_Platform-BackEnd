@@ -98,4 +98,17 @@ export const authController = {
       res.status(500);
     }
   },
+
+  logout: async (req: Request, res: Response) => {
+    try {
+      const { refreshToken } = req.cookies;
+      const token = await authService.logoutUser(refreshToken);
+      res.clearCookie("refreshToken");
+
+      res.status(200).send(token);
+    } catch (error) {
+      console.error("Error in user logout:", error);
+      res.status(500);
+    }
+  },
 };

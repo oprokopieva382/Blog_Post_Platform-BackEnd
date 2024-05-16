@@ -46,3 +46,8 @@ export type CommentDBType = {
   };
   createdAt: string;
 };
+
+export type BlackListTokenDBType = {
+  _id: ObjectId;
+  token: string;
+};
