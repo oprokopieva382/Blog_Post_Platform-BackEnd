@@ -22,7 +22,7 @@ export const usersService = {
         expirationDate: add(new Date(), {
           hours: 1,
         }),
-        isConfirmed: false,
+        isConfirmed: true,
       },
     };
 
