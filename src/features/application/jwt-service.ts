@@ -2,19 +2,41 @@ import { UserViewModel } from "../../models";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { SETTINGS } from "../../settings";
 
-export const jwtService = {
-  async createJWT(user: UserViewModel) {
-    const token = jwt.sign({ userId: user.id }, SETTINGS.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+export const jwtTokenService = {
+  async createAccessToken(user: UserViewModel) {
+    const aToken = jwt.sign(
+      { userId: user.id },
+      SETTINGS.JWT_ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
     return {
-      accessToken: token,
+      accessToken: aToken,
+    };
+  },
+
+  async createRefreshToken(user: UserViewModel) {
+    const rToken = jwt.sign(
+      { userId: user.id },
+      SETTINGS.JWT_REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    return {
+      refreshToken: rToken,
     };
   },
 
   async getUserIdByToken(token: string) {
     try {
-      const result = jwt.verify(token, SETTINGS.JWT_SECRET) as JwtPayload; 
+      const result = jwt.verify(
+        token,
+        SETTINGS.JWT_ACCESS_TOKEN_SECRET
+      ) as JwtPayload;
       return result.userId;
     } catch (error) {
       return null;

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { jwtService } from "../features/application";
+import { jwtTokenService } from "../features/application";
 import { usersQueryRepository } from "../query_repositories";
 
 export const authMiddleware = async (
@@ -7,7 +7,6 @@ export const authMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  
   if (!req.headers.authorization) {
     res.status(401).json({
       errorMessages: {
@@ -18,7 +17,7 @@ export const authMiddleware = async (
   }
 
   const token = req.headers.authorization.split(" ")[1];
-  const userId = await jwtService.getUserIdByToken(token);
+  const userId = await jwtTokenService.getUserIdByToken(token);
 
   if (!userId) {
     res.status(401).json({

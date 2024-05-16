@@ -1,1 +1,1 @@
-export { jwtService } from "./jwt-service";
+export { jwtTokenService } from "./jwt-service";

@@ -11,7 +11,8 @@ export const SETTINGS = {
   POSTS_COLLECTION: process.env.POSTS_COLLECTION || "",
   USERS_COLLECTION: process.env.USERS_COLLECTION || "",
   COMMENTS_COLLECTION: process.env.COMMENTS_COLLECTION || "",
-  JWT_SECRET: process.env.JWT_SECRET || "123",
+  JWT_ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET || "123bga",
+  JWT_REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET || "123456ab",
   REGISTRATION_EMAIL: process.env.REGISTRATION_EMAIL || "",
   REGISTRATION_PASS: process.env.REGISTRATION_PASS || "",
   ADMIN_AUTH: "admin:qwerty",
@@ -21,6 +22,6 @@ export const SETTINGS = {
     BLOGS: "/blogs",
     USERS: "/users",
     COMMENTS: "/comments",
-    AUTH: "/auth"
+    AUTH: "/auth",
   },
 };
