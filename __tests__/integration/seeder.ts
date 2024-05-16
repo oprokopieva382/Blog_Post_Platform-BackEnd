@@ -6,8 +6,4 @@ export const user = {
   email: "oprokopieva382@gmail.com",
 };
 
-export const findUserInDB = async (email: string) => {
-  const user = await authRepository.getByLoginOrEmail(email);
 
-  return user;
-};

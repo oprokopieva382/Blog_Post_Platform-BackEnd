@@ -22,7 +22,7 @@ export const authController = {
       if (
         !authResult ||
         authResult === 401 
-        // || authResult.emailConfirmation.isConfirmed === false
+      || authResult.emailConfirmation.isConfirmed === false
       ) {
         res.sendStatus(401);
         return;
