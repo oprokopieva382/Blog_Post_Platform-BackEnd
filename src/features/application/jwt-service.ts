@@ -4,9 +4,13 @@ import { SETTINGS } from "../../settings";
 
 export const jwtService = {
   async createJWT(user: UserViewModel) {
-    const token = jwt.sign({ userId: user.id }, SETTINGS.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { userId: user.id },
+      SETTINGS.JWT_ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
     return {
       accessToken: token,
     };
@@ -14,7 +18,10 @@ export const jwtService = {
 
   async getUserIdByToken(token: string) {
     try {
-      const result = jwt.verify(token, SETTINGS.JWT_SECRET) as JwtPayload; 
+      const result = jwt.verify(
+        token,
+        SETTINGS.JWT_ACCESS_TOKEN_SECRET
+      ) as JwtPayload;
       return result.userId;
     } catch (error) {
       return null;

@@ -17,21 +17,20 @@ export const authController = {
   ) => {
     try {
       const authResult = await authService.loginUser(req.body);
-      console.log(authResult);
-
+    
       if (
         !authResult ||
         authResult === 401 
-      || authResult.emailConfirmation.isConfirmed === false
+      //|| authResult.emailConfirmation.isConfirmed === false
       ) {
         res.sendStatus(401);
         return;
       }
 
       const user = mapUserDBToView(authResult);
-      const token = await jwtService.createJWT(user);
+      const accessToken = await jwtService.createJWT(user);
 
-      res.status(200).send(token);
+      res.status(200).send(accessToken);
     } catch (error) {
       console.error("Error in user login:", error);
       res.status(500);
