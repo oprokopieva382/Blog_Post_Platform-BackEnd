@@ -35,3 +35,9 @@ authRouter.post(
   validationEmailResending,
   authController.registrationResending
 );
+authRouter.post(
+  "/logout",
+  //emailValidationMiddleware,
+  //validationEmailResending,
+  authController.logout
+);

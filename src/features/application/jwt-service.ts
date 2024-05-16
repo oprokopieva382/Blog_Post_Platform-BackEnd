@@ -1,6 +1,8 @@
 import { UserViewModel } from "../../models";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { SETTINGS } from "../../settings";
+import { blackListTokenCollection } from "../../cloud_DB";
+import { BlackListTokenDBType } from "../../cloud_DB/mongo_db_types";
 
 export const jwtTokenService = {
   async createAccessToken(user: UserViewModel) {
@@ -8,7 +10,7 @@ export const jwtTokenService = {
       { userId: user.id },
       SETTINGS.JWT_ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: "10s",
       }
     );
 
@@ -22,7 +24,7 @@ export const jwtTokenService = {
       { userId: user.id },
       SETTINGS.JWT_REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "20s",
       }
     );
 
@@ -41,5 +43,12 @@ export const jwtTokenService = {
     } catch (error) {
       return null;
     }
+  },
+
+  async addTokenToBlackList(refreshToken: string) {
+    const result = await blackListTokenCollection.insertOne({
+      token: refreshToken,
+    });
+    return result;
   },
 };

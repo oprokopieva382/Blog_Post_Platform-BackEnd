@@ -101,11 +101,11 @@ export const authController = {
 
   logout: async (req: Request, res: Response) => {
     try {
-      const { refreshToken } = req.cookies;
-      const token = await authService.logoutUser(refreshToken);
+      const token = req.cookies.refreshToken;
+      const result = await authService.logoutUser(token.refreshToken);
       res.clearCookie("refreshToken");
 
-      res.status(200).send(token);
+      res.status(200).send(result);
     } catch (error) {
       console.error("Error in user logout:", error);
       res.status(500);

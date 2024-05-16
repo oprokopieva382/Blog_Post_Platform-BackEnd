@@ -10,12 +10,12 @@ import { add } from "date-fns/add";
 import { ObjectId } from "mongodb";
 import { emailAdapter } from "../features/adapters";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
+import { jwtTokenService } from "../features/application";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
     const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
-    console.log(findUser);
-
+  
     if (!findUser) {
       return null;
     }
@@ -33,7 +33,8 @@ export const authService = {
   },
 
   async logoutUser(refreshToken: string) {
-
+    const token = await jwtTokenService.addTokenToBlackList(refreshToken);
+    return token;
   },
 
   async registerUser(data: UserInputModel) {
@@ -82,12 +83,9 @@ export const authService = {
     if (!findUser) return false;
 
     const newCode = randomUUID();
-    const updatedUser = await authRepository.updateCode(findUser._id, newCode)
+    const updatedUser = await authRepository.updateCode(findUser._id, newCode);
 
-    emailAdapter.sendEmail(
-      data.email,
-      newCode
-    );
+    emailAdapter.sendEmail(data.email, newCode);
 
     return findUser;
   },
