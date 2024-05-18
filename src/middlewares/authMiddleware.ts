@@ -8,7 +8,7 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   if (!req.headers.authorization) {
-    res.status(401)
+    res.sendStatus(401)
     // .json({
     //   errorMessages: {
     //     message: "Auth credentials is incorrect",
@@ -21,7 +21,7 @@ export const authMiddleware = async (
   const userId = await jwtTokenService.getUserIdByAccessToken(token);
 
   if (!userId) {
-    res.status(401)
+    res.sendStatus(401);
     // .json({
     //   errorMessages: {
     //     message: "Auth credentials is incorrect",
