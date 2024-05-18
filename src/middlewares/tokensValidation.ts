@@ -8,7 +8,7 @@ export const tokensValidation = async (
 ) => {
   const token = req.cookies.refreshToken;
   if (!token) {
-    res.status(401)
+    res.sendStatus(401);
     // .json({
     //   errorMessages: {
     //     message:
@@ -23,7 +23,7 @@ export const tokensValidation = async (
   );
  
   if (!isValid) {
-    res.status(401)
+    res.sendStatus(401);
     // .json({
     //   errorMessage: {
     //     message:
@@ -34,7 +34,7 @@ export const tokensValidation = async (
   }
 
   if (typeof token.refreshToken !== "string") {
-    res.status(401)
+    res.sendStatus(401);
     // .json({
     //   errorMessage: {
     //     message:
