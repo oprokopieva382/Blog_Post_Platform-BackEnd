@@ -38,7 +38,7 @@ export const jwtTokenService = {
     }
   },
 
-  async getUserIdByRefreshToken(token: string) {
+  async validateRefreshToken(token: string) {
     try {
       const result = jwt.verify(
         token,

@@ -10,6 +10,7 @@ import {
   emailResendingValidation,
   validationUserEmailUnique,
   validationUserLoginUnique,
+  tokensValidation,
 } from "../../middlewares";
 
 export const authRouter = Router();
@@ -35,15 +36,9 @@ authRouter.post(
   emailResendingValidation,
   authController.registrationResending
 );
-authRouter.post(
-  "/logout",
-  //emailValidation,
-  //emailResendingValidation,
-  authController.logout
-);
+authRouter.post("/logout", tokensValidation, authController.logout);
 authRouter.post(
   "/refresh-token",
-  //emailValidation,
-  //emailResendingValidation,
+  tokensValidation,
   authController.refreshToken
 );

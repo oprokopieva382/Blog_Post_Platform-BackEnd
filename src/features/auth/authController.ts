@@ -30,7 +30,7 @@ export const authController = {
       const user = mapUserDBToView(authResult);
       const accessToken = await jwtTokenService.createAccessToken(user.id);
       const refreshToken = await jwtTokenService.createRefreshToken(user.id);
- 
+
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
@@ -129,6 +129,7 @@ export const authController = {
       const user = mapUserDBToView(authResult);
       const { newAccessToken, newRefreshToken } =
         await authService.refreshToken(token.refreshToken, user.id);
+
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: true,

@@ -12,3 +12,4 @@ export { validationUserEmailUnique } from "./validationUserEmailUnique";
 export { emailResendingValidation } from "./emailResendingValidation";
 export { emailConfirmationValidation } from "./emailConfirmationValidation";
 export { authMiddleware } from "./authMiddleware";
+export { tokensValidation } from "./tokensValidation";

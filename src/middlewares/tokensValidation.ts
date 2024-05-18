@@ -1,24 +1,47 @@
 import { Response, Request, NextFunction } from "express";
-import { authRepository } from "../repositories";
+import { jwtTokenService } from "../features/application";
 
 export const tokensValidation = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const result = await authRepository.getByLoginOrEmail(req.body.email);
-  // if (!result) {
-  //   next();
-  //   return;
-  // }
+  const token = req.cookies.refreshToken;
+  if (!token) {
+    res.status(401)
+    // .json({
+    //   errorMessages: {
+    //     message:
+    //       "JWT refreshToken inside cookie is missing, expired or incorrect",
+    //   },
+    // });
+    return;
+  }
 
-  // const error = {
-  //   errorsMessages: [
-  //     {
-  //       message: "User already exists",
-  //       field: "email",
-  //     },
-  //   ],
-  // };
-  //return res.status(400).send(error);
+  const isValid = await jwtTokenService.validateRefreshToken(
+    token.refreshToken
+  );
+ 
+  if (!isValid) {
+    res.status(401)
+    // .json({
+    //   errorMessage: {
+    //     message:
+    //       "JWT refreshToken inside cookie is missing, expired or incorrect",
+    //   },
+    // });
+    // return;
+  }
+
+  if (typeof token.refreshToken !== "string") {
+    res.status(401)
+    // .json({
+    //   errorMessage: {
+    //     message:
+    //       "JWT refreshToken inside cookie is missing, expired or incorrect",
+    //   },
+    // });
+    return;
+  }
+  next();
 };
