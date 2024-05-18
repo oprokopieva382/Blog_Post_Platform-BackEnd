@@ -5,7 +5,7 @@ import {
   validationResult,
 } from "express-validator";
 
-export const userValidationMiddleware = async (
+export const userRegistrationInputValidation = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -57,7 +57,6 @@ export const userValidationMiddleware = async (
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-
     const errorsFields = errors.array({
       onlyFirstError: true,
     }) as FieldValidationError[];
