@@ -28,9 +28,9 @@ export const authController = {
       }
 
       const user = mapUserDBToView(authResult);
-      const accessToken = await jwtTokenService.createAccessToken(user);
-      const refreshToken = await jwtTokenService.createRefreshToken(user);
-
+      const accessToken = await jwtTokenService.createAccessToken(user.id);
+      const refreshToken = await jwtTokenService.createRefreshToken(user.id);
+ 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
@@ -114,9 +114,31 @@ export const authController = {
 
   refreshToken: async (req: Request, res: Response) => {
     try {
+      const token = req.cookies;
+      const authResult = await authService.loginUser(req.body);
 
-    }catch(error) {
+      if (
+        !authResult ||
+        authResult === 401
+        //|| authResult.emailConfirmation.isConfirmed === false
+      ) {
+        res.sendStatus(401);
+        return;
+      }
 
+      const user = mapUserDBToView(authResult);
+      const { newAccessToken, newRefreshToken } =
+        await authService.refreshToken(token.refreshToken, user.id);
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 20000,
+      });
+
+      res.status(200).send(newAccessToken);
+    } catch (error) {
+      console.error("Error in refresh user token:", error);
+      res.status(500);
     }
-  }
+  },
 };
