@@ -114,7 +114,7 @@ export const authController = {
 
   refreshToken: async (req: Request, res: Response) => {
     try {
-      const token = req.cookies;
+      const token = req.cookies.refreshToken;
       const authResult = await authService.loginUser(req.body);
 
       if (
