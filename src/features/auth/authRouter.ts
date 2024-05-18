@@ -11,6 +11,7 @@ import {
   validationUserEmailUnique,
   validationUserLoginUnique,
   tokensValidation,
+  blackListTokenCheckMiddleware,
 } from "../../middlewares";
 
 export const authRouter = Router();
@@ -40,5 +41,6 @@ authRouter.post("/logout", tokensValidation, authController.logout);
 authRouter.post(
   "/refresh-token",
   tokensValidation,
+  blackListTokenCheckMiddleware,
   authController.refreshToken
 );
