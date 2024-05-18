@@ -10,11 +10,12 @@ import { add } from "date-fns/add";
 import { ObjectId } from "mongodb";
 import { emailAdapter } from "../features/adapters";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
+import { jwtTokenService } from "../features/application";
+import { blackListTokenCollection } from "../cloud_DB";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
     const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
-    console.log(findUser);
 
     if (!findUser) {
       return null;
@@ -30,6 +31,11 @@ export const authService = {
     }
 
     return findUser;
+  },
+
+  async logoutUser(refreshToken: string) {
+    const token = await this.addTokenToBlackList(refreshToken);
+    return token;
   },
 
   async registerUser(data: UserInputModel) {
@@ -78,13 +84,26 @@ export const authService = {
     if (!findUser) return false;
 
     const newCode = randomUUID();
-    const updatedUser = await authRepository.updateCode(findUser._id, newCode)
+    const updatedUser = await authRepository.updateCode(findUser._id, newCode);
 
-    emailAdapter.sendEmail(
-      data.email,
-      newCode
-    );
+    emailAdapter.sendEmail(data.email, newCode);
 
     return findUser;
+  },
+
+  async addTokenToBlackList(refreshToken: string) {
+    const result = await blackListTokenCollection.insertOne({
+      token: refreshToken,
+    });
+    return result;
+  },
+
+  async refreshToken(refreshToken: string, userId: string) {
+    const tokenToBlackList = await this.addTokenToBlackList(
+      refreshToken
+    );
+    const newAccessToken = await jwtTokenService.createAccessToken(userId);
+    const newRefreshToken = await jwtTokenService.createRefreshToken(userId);
+    return { newAccessToken, newRefreshToken };
   },
 };

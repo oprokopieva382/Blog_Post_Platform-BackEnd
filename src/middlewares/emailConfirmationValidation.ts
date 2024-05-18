@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { authRepository } from "../repositories";
 
-export const validationEmailConfirmation = async (
+export const emailConfirmationValidation = async (
   req: Request,
   res: Response,
   next: NextFunction

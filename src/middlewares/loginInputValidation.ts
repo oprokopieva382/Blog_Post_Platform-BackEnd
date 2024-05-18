@@ -5,7 +5,7 @@ import {
   validationResult,
 } from "express-validator";
 
-export const userValidationMiddleware = async (
+export const loginInputValidation = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,31 +13,12 @@ export const userValidationMiddleware = async (
   const allBodyValidation: any[] = [];
 
   allBodyValidation.push(
-    body("login")
+    body("loginOrEmail")
       .trim()
       .isString()
-      .withMessage("login field must be a string")
+      .withMessage("Field must be a string")
       .notEmpty()
-      .withMessage("login field is required")
-      .isLength({ max: 10 })
-      .withMessage("max length of login 10 characters")
-      .isLength({ min: 3 })
-      .withMessage("min length of login 3 characters")
-      .matches(/^[a-zA-Z0-9_-]*$/)
-      .withMessage(
-        "login must contain only alphanumeric characters, underscores, or dashes"
-      )
-  );
-
-  allBodyValidation.push(
-    body("email")
-      .trim()
-      .isString()
-      .withMessage("Email field must be a string")
-      .notEmpty()
-      .withMessage("Email field is required")
-      .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-      .withMessage("email must be a valid email address")
+      .withMessage("Field is required")
   );
 
   allBodyValidation.push(
@@ -57,7 +38,6 @@ export const userValidationMiddleware = async (
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-
     const errorsFields = errors.array({
       onlyFirstError: true,
     }) as FieldValidationError[];

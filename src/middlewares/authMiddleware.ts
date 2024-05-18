@@ -8,23 +8,25 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   if (!req.headers.authorization) {
-    res.status(401).json({
-      errorMessages: {
-        message: "Auth credentials is incorrect",
-      },
-    });
+    res.status(401)
+    // .json({
+    //   errorMessages: {
+    //     message: "Auth credentials is incorrect",
+    //   },
+    // });
     return;
   }
 
   const token = req.headers.authorization.split(" ")[1];
-  const userId = await jwtTokenService.getUserIdByToken(token);
+  const userId = await jwtTokenService.getUserIdByAccessToken(token);
 
   if (!userId) {
-    res.status(401).json({
-      errorMessages: {
-        message: "Auth credentials is incorrect",
-      },
-    });
+    res.status(401)
+    // .json({
+    //   errorMessages: {
+    //     message: "Auth credentials is incorrect",
+    //   },
+    // });
     return;
   }
 

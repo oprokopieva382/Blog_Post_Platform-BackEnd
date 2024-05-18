@@ -6,10 +6,12 @@ import { testingRouter } from "./features/dbCleanUp/testingRouter";
 import { usersRouter } from "./features/users/usersRouter";
 import { authRouter } from "./features/auth/authRouter";
 import { commentsRouter } from "./features/comments/commentsRouter";
+import cookieParser from "cookie-parser";
 
 export const app = express();
 
 //use middleware to be able have access to body and query of all needed requests
+app.use(cookieParser());
 app.use(express.json());
 app.use(SETTINGS.PATH.TESTING, testingRouter);
 app.use(SETTINGS.PATH.AUTH, authRouter);

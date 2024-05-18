@@ -6,3 +6,4 @@ export { postsCollection } from "./mongo_db_atlas";
 export { blogsCollection } from "./mongo_db_atlas";
 export { usersCollection } from "./mongo_db_atlas";
 export { commentsCollection } from "./mongo_db_atlas";
+export { blackListTokenCollection } from "./mongo_db_atlas";

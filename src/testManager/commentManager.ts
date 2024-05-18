@@ -83,7 +83,6 @@ export const commentManager = {
 
   async getCommentId() {
     const foundComment = await commentsCollection.find({}).toArray();
-    console.log(foundComment);
     return foundComment[0]._id.toString();
   },
 

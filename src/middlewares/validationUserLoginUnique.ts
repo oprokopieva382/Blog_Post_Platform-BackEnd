@@ -7,7 +7,6 @@ export const validationUserLoginUnique = async (
   next: NextFunction
 ) => {
   const result = await authRepository.getByLoginOrEmail(req.body.login);
-  console.log(result);
   if (!result) {
     next();
     return;
