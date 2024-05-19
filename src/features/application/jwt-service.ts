@@ -13,13 +13,9 @@ export const jwtTokenService = {
   },
 
   async createRefreshToken(userId: string) {
-    const rToken = jwt.sign(
-      { userId},
-      SETTINGS.JWT_REFRESH_TOKEN_SECRET,
-      {
-        expiresIn: "20s",
-      }
-    );
+    const rToken = jwt.sign({ userId }, SETTINGS.JWT_REFRESH_TOKEN_SECRET, {
+      expiresIn: "20s",
+    });
 
     return {
       refreshToken: rToken,
@@ -38,7 +34,7 @@ export const jwtTokenService = {
     }
   },
 
-  async validateRefreshToken(token: string) {
+  async getUserIdByRefreshToken(token: string) {
     try {
       const result = jwt.verify(
         token,
@@ -50,4 +46,15 @@ export const jwtTokenService = {
     }
   },
 
+  async validateRefreshToken(token: string) {
+    try {
+      const result = jwt.verify(
+        token,
+        SETTINGS.JWT_REFRESH_TOKEN_SECRET
+      ) as JwtPayload;
+      return result.userId;
+    } catch (error) {
+      return null;
+    }
+  },
 };
