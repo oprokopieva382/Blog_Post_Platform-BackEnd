@@ -9,6 +9,7 @@ export const blackListTokenCheckMiddleware = async (
   const token = req.cookies.refreshToken;
  
 const isIncluded = await blackListTokenCollection.findOne({ token: token.refreshToken});
+console.log(isIncluded);
 
   if (isIncluded) {
     res.status(401)

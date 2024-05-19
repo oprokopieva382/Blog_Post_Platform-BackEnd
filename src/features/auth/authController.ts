@@ -115,20 +115,10 @@ export const authController = {
   refreshToken: async (req: Request, res: Response) => {
     try {
       const token = req.cookies.refreshToken;
-      const authResult = await authService.loginUser(req.body);
-
-      if (
-        !authResult ||
-        authResult === 401
-        //|| authResult.emailConfirmation.isConfirmed === false
-      ) {
-        res.sendStatus(401);
-        return;
-      }
-
-      const user = mapUserDBToView(authResult);
+    //console.log(req.user.id);
+       //const user = mapUserDBToView(req.user.userId);
       const { newAccessToken, newRefreshToken } =
-        await authService.refreshToken(token.refreshToken, user.id);
+        await authService.refreshToken(token.refreshToken, req.user.id);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
