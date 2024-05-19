@@ -40,6 +40,7 @@ authRouter.post(
 authRouter.post(
   "/logout",
   tokensRefreshValidationMiddleware,
+  blackListTokenCheckMiddleware,
   authController.logout
 );
 authRouter.post(
