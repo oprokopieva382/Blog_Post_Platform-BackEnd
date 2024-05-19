@@ -43,6 +43,6 @@ export const tokensValidation = async (
     // });
     return;
   }
-
+ req.user = isValid;
   next();
 };

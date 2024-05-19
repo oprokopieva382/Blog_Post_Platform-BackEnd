@@ -115,7 +115,7 @@ export const authController = {
   refreshToken: async (req: Request, res: Response) => {
     try {
       const token = req.cookies.refreshToken;
-    //console.log(req.user.id);
+    console.log(req.user);
        //const user = mapUserDBToView(req.user.userId);
       const { newAccessToken, newRefreshToken } =
         await authService.refreshToken(token.refreshToken, req.user.id);
