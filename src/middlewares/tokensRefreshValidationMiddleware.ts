@@ -28,6 +28,7 @@ export const tokensRefreshValidationMiddleware = async (
     res.sendStatus(401);
     return;
   }
-  req.user = isValid;
+
+  req.userId = isValid;
   next();
 };

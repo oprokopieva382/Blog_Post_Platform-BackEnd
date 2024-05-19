@@ -99,6 +99,7 @@ export const authService = {
   },
 
   async refreshToken(refreshToken: string, userId: string) {
+    console.log(userId)
     const tokenToBlackList = await this.addTokenToBlackList(
       refreshToken
     );
