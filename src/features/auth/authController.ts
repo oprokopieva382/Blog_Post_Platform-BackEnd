@@ -34,7 +34,7 @@ export const authController = {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        maxAge: 20000,
+        //maxAge: 20000,
       });
       res.status(200).send(accessToken);
     } catch (error) {
@@ -103,8 +103,7 @@ export const authController = {
     try {
       const token = req.cookies.refreshToken;
       const result = await authService.logoutUser(token.refreshToken);
-      res.clearCookie("refreshToken");
-
+      
       res.sendStatus(204);
     } catch (error) {
       console.error("Error in user logout:", error);
@@ -123,7 +122,7 @@ export const authController = {
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: true,
-        maxAge: 20000,
+        //maxAge: 20000,
       });
 
       res.status(200).send(newAccessToken);
