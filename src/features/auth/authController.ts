@@ -102,6 +102,7 @@ export const authController = {
   logout: async (req: Request, res: Response) => {
     try {
       const token = req.cookies.refreshToken;
+      
       const result = await authService.logoutUser(token.refreshToken);
       
       res.sendStatus(204);
