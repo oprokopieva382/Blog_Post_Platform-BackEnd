@@ -12,5 +12,5 @@ export { validationUserEmailUnique } from "./validationUserEmailUnique";
 export { emailResendingValidation } from "./emailResendingValidation";
 export { emailConfirmationValidation } from "./emailConfirmationValidation";
 export { authMiddleware } from "./authMiddleware";
-export { tokensValidation } from "./tokensValidation";
+export { tokensRefreshValidationMiddleware } from "./tokensRefreshValidationMiddleware";
 export { blackListTokenCheckMiddleware } from "./blackListTokenCheckMiddleware";

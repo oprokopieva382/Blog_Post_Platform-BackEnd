@@ -21,7 +21,7 @@ export const authMiddleware = async (
   const userId = await jwtTokenService.getUserIdByAccessToken(token);
 
   if (!userId) {
-    res.sendStatus(401);
+    res.sendStatus(401)
     // .json({
     //   errorMessages: {
     //     message: "Auth credentials is incorrect",

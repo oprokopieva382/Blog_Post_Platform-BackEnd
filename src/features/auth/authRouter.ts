@@ -10,7 +10,7 @@ import {
   emailResendingValidation,
   validationUserEmailUnique,
   validationUserLoginUnique,
-  tokensValidation,
+  tokensRefreshValidationMiddleware,
   blackListTokenCheckMiddleware,
 } from "../../middlewares";
 
@@ -37,10 +37,14 @@ authRouter.post(
   emailResendingValidation,
   authController.registrationResending
 );
-authRouter.post("/logout", tokensValidation, authController.logout);
+authRouter.post(
+  "/logout",
+  tokensRefreshValidationMiddleware,
+  authController.logout
+);
 authRouter.post(
   "/refresh-token",
-  tokensValidation,
+  tokensRefreshValidationMiddleware,
   blackListTokenCheckMiddleware,
   authController.refreshToken
 );

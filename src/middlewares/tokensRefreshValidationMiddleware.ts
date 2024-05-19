@@ -1,12 +1,15 @@
 import { Response, Request, NextFunction } from "express";
 import { jwtTokenService } from "../features/application";
 
-export const tokensValidation = async (
+export const tokensRefreshValidationMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const token = req.cookies.refreshToken;
+  console.log(req.headers.cookie);
+  console.log("__________________----___________________________________")
+  console.log(req.cookies)
   if (!token) {
     res.sendStatus(401);
     // .json({
@@ -21,7 +24,7 @@ export const tokensValidation = async (
   const isValid = await jwtTokenService.validateRefreshToken(
     token.refreshToken
   );
- 
+
   if (!isValid) {
     res.sendStatus(401);
     // .json({
@@ -43,6 +46,6 @@ export const tokensValidation = async (
     // });
     return;
   }
- req.user = isValid;
+  req.user = isValid;
   next();
 };
