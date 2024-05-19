@@ -12,13 +12,7 @@ export const tokensRefreshValidationMiddleware = async (
   console.log(req.cookies)
   if (!token) {
     res.sendStatus(401);
-    // .json({
-    //   errorMessages: {
-    //     message:
-    //       "JWT refreshToken inside cookie is missing, expired or incorrect",
-    //   },
-    // });
-    return;
+     return;
   }
 
   const isValid = await jwtTokenService.validateRefreshToken(
@@ -27,23 +21,11 @@ export const tokensRefreshValidationMiddleware = async (
 
   if (!isValid) {
     res.sendStatus(401);
-    // .json({
-    //   errorMessage: {
-    //     message:
-    //       "JWT refreshToken inside cookie is missing, expired or incorrect",
-    //   },
-    // });
-    // return;
+    return;
   }
 
   if (typeof token.refreshToken !== "string") {
     res.sendStatus(401);
-    // .json({
-    //   errorMessage: {
-    //     message:
-    //       "JWT refreshToken inside cookie is missing, expired or incorrect",
-    //   },
-    // });
     return;
   }
   req.user = isValid;
