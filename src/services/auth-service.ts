@@ -12,13 +12,16 @@ import { emailAdapter } from "../features/adapters";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { jwtTokenService } from "../features/application";
 import { blackListTokenCollection } from "../cloud_DB";
+import { ApiError } from "../helper/api-errors";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
     const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
 
     if (!findUser) {
-      return null;
+      throw ApiError.BadRequestError("Bad request", [
+        "Login failed. Can't find user, register first",
+      ]);
     }
 
     const isPasswordCorrect = await bcryptService.testPassword(
@@ -27,7 +30,9 @@ export const authService = {
     );
 
     if (!isPasswordCorrect) {
-      return 401;
+      throw ApiError.UnauthorizedError("Not authorized", [
+        "Login failed. Password is incorrect.",
+      ]);
     }
 
     return findUser;
@@ -42,7 +47,11 @@ export const authService = {
     const { login, password, email } = data;
     const findUser = await authRepository.getByLoginOrEmail(login);
 
-    if (findUser) return false;
+    if (findUser) {
+      throw ApiError.BadRequestError("Bad Request", [
+        "Registration failed. User already exists.",
+      ]);
+    }
 
     const passwordHash = await bcryptService.createHash(password);
 
@@ -74,17 +83,25 @@ export const authService = {
   async confirmUser(data: RegistrationConfirmationCodeModel) {
     const findUser = await authRepository.getByConfirmationCode(data.code);
 
-    if (!findUser) return;
+    if (!findUser) {
+      throw ApiError.BadRequestError("Bad Request", [
+        "Can't find user by confirmation code",
+      ]);
+    }
     return await authRepository.updateConfirmation(findUser._id);
   },
 
   async confirmResentUser(data: RegistrationEmailResending) {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
 
-    if (!findUser) return false;
+    if (!findUser) {
+        throw ApiError.BadRequestError("Bad Request", [
+          "Request failed. Can't find user with such email.",
+        ]);
+    };
 
     const newCode = randomUUID();
-    const updatedUser = await authRepository.updateCode(findUser._id, newCode);
+    await authRepository.updateCode(findUser._id, newCode);
 
     emailAdapter.sendEmail(data.email, newCode);
 
@@ -99,10 +116,8 @@ export const authService = {
   },
 
   async refreshToken(refreshToken: string, userId: string) {
-    console.log(userId)
-    const tokenToBlackList = await this.addTokenToBlackList(
-      refreshToken
-    );
+    console.log(userId);
+    await this.addTokenToBlackList(refreshToken);
     const newAccessToken = await jwtTokenService.createAccessToken(userId);
     const newRefreshToken = await jwtTokenService.createRefreshToken(userId);
     return { newAccessToken, newRefreshToken };

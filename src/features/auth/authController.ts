@@ -1,31 +1,24 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   LoginInputModel,
   LoginSuccessViewModel,
   MeViewModel,
 } from "../../models";
-import { APIErrorResult } from "../../output-errors-type";
+import { APIErrorResult, formatResponse } from "../../output-errors-type";
 import { authService } from "../../services";
 import { mapMeToView, mapUserDBToView } from "../../utils/mapDBToView";
 import { jwtTokenService } from "../application";
 import { usersQueryRepository } from "../../query_repositories";
+import { ApiError } from "../../helper/api-errors";
 
 export const authController = {
   login: async (
     req: Request<{}, {}, LoginInputModel>,
-    res: Response<LoginSuccessViewModel | APIErrorResult>
+    res: Response<LoginSuccessViewModel | APIErrorResult>,
+    next: NextFunction
   ) => {
     try {
       const authResult = await authService.loginUser(req.body);
-
-      if (
-        !authResult ||
-        authResult === 401
-        //|| authResult.emailConfirmation.isConfirmed === false
-      ) {
-        res.sendStatus(401);
-        return;
-      }
 
       const user = mapUserDBToView(authResult);
       const accessToken = await jwtTokenService.createAccessToken(user.id);
@@ -34,101 +27,100 @@ export const authController = {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        //maxAge: 20000,
       });
-      res.status(200).send(accessToken);
+      formatResponse(res, 201, accessToken, "User logged in successfully");
     } catch (error) {
-      console.error("Error in user login:", error);
-      res.status(500);
+      next(error);
     }
   },
 
-  me: async (req: Request, res: Response<MeViewModel | APIErrorResult>) => {
+  me: async (
+    req: Request,
+    res: Response<MeViewModel | APIErrorResult>,
+    next: NextFunction
+  ) => {
     try {
       const me = await usersQueryRepository.getByIdUser(req.user.id);
       if (!me) {
-        res.sendStatus(401);
-        return;
+        throw ApiError.UnauthorizedError("Not authorized", [
+          "Authorization failed. Can't find user with such id",
+        ]);
       }
-      res.status(200).send(mapMeToView(me));
+      formatResponse(res, 200, mapMeToView(me), "User authorized");
     } catch (error) {
-      console.error("Error in auth me", error);
-      res.status(500);
+      next(error);
     }
   },
 
-  registration: async (req: Request, res: Response) => {
+  registration: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const registerUser = await authService.registerUser(req.body);
+      await authService.registerUser(req.body);
 
-      res.sendStatus(204);
+      formatResponse(
+        res,
+        204,
+        {},
+        "User registered and email with confirmation link sent to email"
+      );
     } catch (error) {
-      console.error("Error in auth register user", error);
-      res.status(500);
+      next(error);
     }
   },
 
   registrationConfirmation: async (
     req: Request,
-    res: Response<null | APIErrorResult>
+    res: Response<null | APIErrorResult>,
+    next: NextFunction
   ) => {
     try {
-      const confirmedUser = await authService.confirmUser(req.body);
-      if (!confirmedUser) {
-        res.sendStatus(400);
-        return;
-      }
+      await authService.confirmUser(req.body);
 
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "User confirmation made successfully");
     } catch (error) {
-      console.error("Error in auth registration confirmation user", error);
-      res.status(500);
+      next(error);
     }
   },
 
   registrationResending: async (
     req: Request,
-    res: Response<null | APIErrorResult>
+    res: Response<null | APIErrorResult>,
+    next: NextFunction
   ) => {
     try {
-      const registerUser = await authService.confirmResentUser(req.body);
-      res.sendStatus(204);
+      await authService.confirmResentUser(req.body);
+      formatResponse(res, 204, {}, "Registration link resent");
     } catch (error) {
-      console.error("Error in auth register user", error);
-      res.status(500);
+      next(error);
     }
   },
 
-  logout: async (req: Request, res: Response) => {
+  logout: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.cookies.refreshToken;
 
-      const result = await authService.logoutUser(token.refreshToken);
+      await authService.logoutUser(token.refreshToken);
 
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "User logout successfully");
     } catch (error) {
-      console.error("Error in user logout:", error);
-      res.status(500);
+      next(error);
     }
   },
 
-  refreshToken: async (req: Request, res: Response) => {
+  refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.cookies.refreshToken;
-    
+
       const { newAccessToken, newRefreshToken } =
         await authService.refreshToken(token.refreshToken, req.userId!);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: true,
-        //maxAge: 20000,
       });
 
-      res.status(200).send(newAccessToken);
+      formatResponse(res, 200, newAccessToken, "New access token sent");
     } catch (error) {
-      console.error("Error in refresh user token:", error);
-      res.status(500);
+      next(error);
     }
   },
 };
