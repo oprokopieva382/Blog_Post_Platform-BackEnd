@@ -2,7 +2,7 @@ import { Router } from "express";
 import { postsController } from "./postsController";
 import {
   authAdminMiddleware,
-  authMiddleware,
+  isAuthorizedMiddleware,
   commentValidationMiddleware,
   postValidationMiddleware,
 } from "../../middlewares";
@@ -27,7 +27,7 @@ postsRouter.put(
 postsRouter.get("/:postId/comments", postsController.getPostComments);
 postsRouter.post(
   "/:postId/comments",
-  authMiddleware,
+  isAuthorizedMiddleware,
   commentValidationMiddleware,
   postsController.createPostComment
 );

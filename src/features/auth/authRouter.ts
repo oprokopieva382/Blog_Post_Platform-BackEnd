@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { authController } from "./authController";
 import {
-  authMiddleware,
-  emailCodeValidation,
+  isAuthorizedMiddleware,
+  validateRegistrationCode,
   emailValidation,
   validateLoginInputs,
   validateRegistrationInput,
-  emailConfirmationValidation,
+  validateEmailConfirmation,
   emailResendingValidation,
   validationUserEmailUnique,
   validationUserLoginUnique,
@@ -17,7 +17,7 @@ import {
 export const authRouter = Router();
 
 authRouter.post("/login", validateLoginInputs, authController.login);
-authRouter.get("/me", authMiddleware, authController.me);
+authRouter.get("/me", isAuthorizedMiddleware, authController.me);
 authRouter.post(
   "/registration",
   validateRegistrationInput,
@@ -27,8 +27,8 @@ authRouter.post(
 );
 authRouter.post(
   "/registration-confirmation",
-  emailCodeValidation,
-  emailConfirmationValidation,
+  validateRegistrationCode,
+  validateEmailConfirmation,
   authController.registrationConfirmation
 );
 authRouter.post(
