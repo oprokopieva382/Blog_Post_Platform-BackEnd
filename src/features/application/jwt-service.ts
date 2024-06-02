@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { SETTINGS } from "../../settings";
+import { ApiError } from "../../helper/api-errors";
 
 export const jwtTokenService = {
   async createAccessToken(userId: string) {
@@ -30,7 +31,7 @@ export const jwtTokenService = {
       ) as JwtPayload;
       return result.userId;
     } catch (error) {
-      return null;
+      throw ApiError.UnauthorizedError("Unauthorized. Invalid access token");
     }
   },
 
@@ -42,7 +43,7 @@ export const jwtTokenService = {
       ) as JwtPayload;
       return result.userId;
     } catch (error) {
-      return null;
+      throw ApiError.UnauthorizedError("Unauthorized. Invalid refresh token");
     }
   },
 };

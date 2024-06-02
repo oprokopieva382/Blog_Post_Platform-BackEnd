@@ -1,10 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  LoginInputModel,
-  LoginSuccessViewModel,
-  MeViewModel,
-} from "../../models";
-import { APIErrorResult, formatResponse } from "../../output-errors-type";
+import { LoginInputModel } from "../../models";
+import { formatResponse } from "../../output-errors-type";
 import { authService } from "../../services";
 import { mapMeToView, mapUserDBToView } from "../../utils/mapDBToView";
 import { jwtTokenService } from "../application";
@@ -14,7 +10,7 @@ import { ApiError } from "../../helper/api-errors";
 export const authController = {
   login: async (
     req: Request<{}, {}, LoginInputModel>,
-    res: Response<LoginSuccessViewModel | APIErrorResult>,
+    res: Response,
     next: NextFunction
   ) => {
     try {
@@ -34,11 +30,7 @@ export const authController = {
     }
   },
 
-  me: async (
-    req: Request,
-    res: Response<MeViewModel | APIErrorResult>,
-    next: NextFunction
-  ) => {
+  me: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const me = await usersQueryRepository.getByIdUser(req.user.id);
       if (!me) {
@@ -69,7 +61,7 @@ export const authController = {
 
   registrationConfirmation: async (
     req: Request,
-    res: Response<null | APIErrorResult>,
+    res: Response,
     next: NextFunction
   ) => {
     try {
@@ -83,7 +75,7 @@ export const authController = {
 
   registrationResending: async (
     req: Request,
-    res: Response<null | APIErrorResult>,
+    res: Response,
     next: NextFunction
   ) => {
     try {

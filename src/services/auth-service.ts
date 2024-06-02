@@ -20,7 +20,7 @@ export const authService = {
 
     if (!findUser) {
       throw ApiError.BadRequestError("Bad request", [
-        "Login failed. Can't find user, register first",
+        "Login failed. Can't find user, check your inputs or  register first",
       ]);
     }
 
@@ -95,10 +95,10 @@ export const authService = {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
 
     if (!findUser) {
-        throw ApiError.BadRequestError("Bad Request", [
-          "Request failed. Can't find user with such email.",
-        ]);
-    };
+      throw ApiError.BadRequestError("Bad Request", [
+        "Request failed. Can't find user with such email.",
+      ]);
+    }
 
     const newCode = randomUUID();
     await authRepository.updateCode(findUser._id, newCode);
@@ -116,7 +116,6 @@ export const authService = {
   },
 
   async refreshToken(refreshToken: string, userId: string) {
-    console.log(userId);
     await this.addTokenToBlackList(refreshToken);
     const newAccessToken = await jwtTokenService.createAccessToken(userId);
     const newRefreshToken = await jwtTokenService.createRefreshToken(userId);

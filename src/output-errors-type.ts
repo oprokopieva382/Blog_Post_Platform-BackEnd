@@ -5,7 +5,7 @@ export type FieldError = {
   field: string;
 };
 
-type ResponseDataType<T> = {
+export type ResponseDataType<T> = {
   status: number;
   data: T | {};
   message?: string;
