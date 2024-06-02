@@ -3,13 +3,13 @@ import { authController } from "./authController";
 import {
   isAuthorizedMiddleware,
   validateRegistrationCode,
-  emailValidation,
+  validateEmail,
   validateLoginInputs,
   validateRegistrationInput,
   validateEmailConfirmation,
-  emailResendingValidation,
-  validationUserEmailUnique,
-  validationUserLoginUnique,
+  validateEmailResending,
+  validateUserEmailUnique,
+  validateUserLoginUnique,
   tokensRefreshValidationMiddleware,
   blackListTokenCheckMiddleware,
 } from "../../middlewares";
@@ -21,8 +21,8 @@ authRouter.get("/me", isAuthorizedMiddleware, authController.me);
 authRouter.post(
   "/registration",
   validateRegistrationInput,
-  validationUserLoginUnique,
-  validationUserEmailUnique,
+  validateUserLoginUnique,
+  validateUserEmailUnique,
   authController.registration
 );
 authRouter.post(
@@ -33,8 +33,8 @@ authRouter.post(
 );
 authRouter.post(
   "/registration-email-resending",
-  emailValidation,
-  emailResendingValidation,
+  validateEmail,
+  validateEmailResending,
   authController.registrationResending
 );
 authRouter.post(
