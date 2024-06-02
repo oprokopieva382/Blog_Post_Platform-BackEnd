@@ -12,6 +12,6 @@ export { validateUserEmailUnique } from "./validateUserEmailUnique";
 export { validateEmailResending } from "./validateEmailResending";
 export { validateEmailConfirmation } from "./validateEmailConfirmation";
 export { isAuthorizedMiddleware } from "./isAuthorizedMiddleware";
-export { tokensRefreshValidationMiddleware } from "./tokensRefreshValidationMiddleware";
-export { blackListTokenCheckMiddleware } from "./blackListTokenCheckMiddleware";
+export { validateRefreshToken } from "./validateRefreshToken";
+export { checkBlackListTokenMiddleware } from "./checkBlackListTokenMiddleware";
 export { errorHandlerMiddleware } from "./errorHandlerMiddleware";

@@ -10,8 +10,8 @@ import {
   validateEmailResending,
   validateUserEmailUnique,
   validateUserLoginUnique,
-  tokensRefreshValidationMiddleware,
-  blackListTokenCheckMiddleware,
+  validateRefreshToken,
+  checkBlackListTokenMiddleware,
 } from "../../middlewares";
 
 export const authRouter = Router();
@@ -39,13 +39,13 @@ authRouter.post(
 );
 authRouter.post(
   "/logout",
-  tokensRefreshValidationMiddleware,
-  blackListTokenCheckMiddleware,
+  validateRefreshToken,
+  checkBlackListTokenMiddleware,
   authController.logout
 );
 authRouter.post(
   "/refresh-token",
-  tokensRefreshValidationMiddleware,
-  blackListTokenCheckMiddleware,
+  validateRefreshToken,
+  checkBlackListTokenMiddleware,
   authController.refreshToken
 );
