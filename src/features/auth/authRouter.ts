@@ -4,8 +4,8 @@ import {
   authMiddleware,
   emailCodeValidation,
   emailValidation,
-  loginInputValidation,
-  userRegistrationInputValidation,
+  validateLoginInputs,
+  validateRegistrationInput,
   emailConfirmationValidation,
   emailResendingValidation,
   validationUserEmailUnique,
@@ -16,11 +16,11 @@ import {
 
 export const authRouter = Router();
 
-authRouter.post("/login", loginInputValidation, authController.login);
+authRouter.post("/login", validateLoginInputs, authController.login);
 authRouter.get("/me", authMiddleware, authController.me);
 authRouter.post(
   "/registration",
-  userRegistrationInputValidation,
+  validateRegistrationInput,
   validationUserLoginUnique,
   validationUserEmailUnique,
   authController.registration

@@ -1,24 +1,26 @@
 import { Response, Request, NextFunction } from "express";
 import { authRepository } from "../repositories";
+import { ApiError } from "../helper/api-errors";
 
 export const validationUserLoginUnique = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const result = await authRepository.getByLoginOrEmail(req.body.login);
-  if (!result) {
-    next();
-    return;
-  }
+  try {
+    const result = await authRepository.getByLoginOrEmail(req.body.login);
+    if (!result) {
+      next();
+      return;
+    }
 
-  const error = {
-    errorsMessages: [
+    throw ApiError.BadRequestError("User already exists", [
       {
         message: "User already exists",
         field: "login",
       },
-    ],
-  };
-  return res.status(400).send(error);
+    ]);
+  } catch (error) {
+    next(error);
+  }
 };
