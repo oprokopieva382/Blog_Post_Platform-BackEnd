@@ -1,3 +1,4 @@
+import { ApiError } from "../helper/api-errors";
 import { CommentInputModel, UserViewModel } from "../models";
 import { commentsRepository } from "../repositories";
 
@@ -6,30 +7,37 @@ export const commentsService = {
     const foundComment = await commentsRepository.getByIdComment(commentId);
 
     if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
-      return 403;
+      throw ApiError.NotFoundError("Forbidden", [
+        "You don't have permission to create comment",
+      ]);
     }
 
-    const commentToRemove = await commentsRepository.removeComment(commentId);
-    return commentToRemove;
+    return await commentsRepository.removeComment(commentId);
   },
 
-  async updateComment(data: CommentInputModel, commentId: string, user: UserViewModel) {
-
+  async updateComment(
+    data: CommentInputModel,
+    commentId: string,
+    user: UserViewModel
+  ) {
     const isCommentExist = await commentsRepository.getByIdComment(commentId);
 
     if (!isCommentExist) {
-      return null;
+      throw ApiError.NotFoundError("Comment to update is not found", [
+        `Comment with id ${commentId} does not exist`,
+      ]);
     }
 
-      const foundComment = await commentsRepository.getByIdComment(commentId);
+    const foundComment = await commentsRepository.getByIdComment(commentId);
 
-      if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
-        return 403;
-      }
+    if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
+      throw ApiError.NotFoundError("Forbidden", [
+        "You don't have permission to create comment",
+      ]);
+    }
 
     await commentsRepository.updateComment(data, commentId);
 
-    const updatedComment = await commentsRepository.getByIdComment(commentId);
-    return updatedComment;
+    return await commentsRepository.getByIdComment(commentId);
   },
 };

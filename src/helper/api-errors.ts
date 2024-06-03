@@ -19,4 +19,8 @@ export class ApiError extends Error {
   static NotFoundError(message: string, errorsMessages: any[] = []) {
     return new ApiError(404, message, errorsMessages);
   }
+
+  static ForbiddenError(message: string, errorsMessages: any[] = []) {
+    return new ApiError(403, message, errorsMessages);
+  }
 }

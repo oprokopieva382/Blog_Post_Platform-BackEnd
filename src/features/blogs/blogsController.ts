@@ -39,7 +39,7 @@ export const blogsController = {
       const result = await blogsService.removeBlog(req.params.id);
 
       if (!result) {
-        throw ApiError.NotFoundError("Note to delete is not found", [
+        throw ApiError.NotFoundError("Blog to delete is not found", [
           `Blog with id ${req.params.id} does not exist`,
         ]);
       }
