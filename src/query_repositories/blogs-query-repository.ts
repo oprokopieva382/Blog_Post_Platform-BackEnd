@@ -29,7 +29,7 @@ export const blogsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => this._mapPostsToView(p)),
+      items: posts.map((p) => this._postDTO(p)),
     };
 
     return postsToView;
@@ -81,7 +81,7 @@ export const blogsQueryRepository = {
     };
   },
 
-  _mapPostsToView(post: PostDBType): PostViewModel {
+  _postDTO(post: PostDBType): PostViewModel {
     return {
       // Convert ObjectId to string
       id: post._id.toString(),

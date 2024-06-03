@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "../app";
 import { SETTINGS } from "../settings";
 import { commentsCollection } from "../cloud_DB";
-import { mapCommentDBToView } from "../utils/mapDBToView";
+import { commentDTO } from "../utils/mapDBToView";
 
 export const commentManager = {
   async createUser() {
@@ -31,7 +31,7 @@ export const commentManager = {
       .send(loginInput)
       .expect(200);
 
-      return res.body.accessToken;
+    return res.body.accessToken;
   },
 
   async createBlog() {
@@ -88,7 +88,7 @@ export const commentManager = {
 
   async commentToView() {
     const foundComment = await commentsCollection.find({}).toArray();
-    const mappedComment = mapCommentDBToView(foundComment[0]);
+    const mappedComment = commentDTO(foundComment[0]);
     return mappedComment;
   },
 };

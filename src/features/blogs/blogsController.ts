@@ -1,144 +1,133 @@
-import { Request, Response } from "express";
-import { APIErrorResult } from "../../output-errors-type";
+import { NextFunction, Request, Response } from "express";
+import { formatResponse } from "../../output-errors-type";
 import { ParamType } from ".";
-import {
-  BlogInputModel,
-  BlogViewModel,
-  BlogPostInputModel,
-  PostViewModel,
-} from "../../models";
+import { BlogInputModel, BlogPostInputModel } from "../../models";
 import { blogsService } from "../../services";
 import { blogsQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
-import { mapBlogDBToView, mapPostsToView } from "../../utils/mapDBToView";
+import { blogDTO, postDTO } from "../../utils/mapDBToView";
+import { ApiError } from "../../helper/api-errors";
 
 export const blogsController = {
-  getAll: async (req: Request, res: Response) => {
+  getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const blogs = await blogsQueryRepository.getAllBlogs(
+      const result = await blogsQueryRepository.getAllBlogs(
         queryFilter(req.query)
       );
 
-      if (!blogs) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", ["No blogs found"]);
       }
-      res.status(200).json(blogs);
+      formatResponse(res, 200, result, "Blogs retrieved successfully");
     } catch (error) {
-      console.error("Error in fetching all blogs:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
-  getById: async (req: Request, res: Response) => {
+  getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundBlog = await blogsQueryRepository.getByIdBlog(req.params.id);
+      const result = await blogsQueryRepository.getByIdBlog(req.params.id);
 
-      if (!foundBlog) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", ["No blog found"]);
       }
 
-      res.status(200).json(foundBlog);
+      formatResponse(res, 200, result, "Blog retrieved successfully");
     } catch (error) {
-      console.error("Error in fetching blog by ID:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
-  deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
+  deleteById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const blogToRemove = await blogsService.removeBlog(req.params.id);
+      const result = await blogsService.removeBlog(req.params.id);
 
-      if (!blogToRemove) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Note to delete is not found", [
+          `Blog with id ${req.params.id} does not exist`,
+        ]);
       }
 
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "Blog deleted successfully");
     } catch (error) {
-      console.error("Error in fetching delete blog by ID:", error);
-      res.status(500);
+      next(error);
     }
   },
 
   create: async (
     req: Request<{}, {}, BlogInputModel>,
-    res: Response<BlogViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
     try {
-      const newBlog = await blogsService.createBlog(req.body);
+      const result = await blogsService.createBlog(req.body);
 
-      if (!newBlog) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError(`Blog can't be created`);
       }
 
-      res.status(201).json(mapBlogDBToView(newBlog));
+      formatResponse(res, 201, blogDTO(result), "Blog created successfully");
     } catch (error) {
-      console.error("Error in fetching create blog:", error);
-      res.status(500);
+      next(error);
     }
   },
 
   update: async (
     req: Request<ParamType, {}, BlogInputModel>,
-    res: Response<BlogViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
     try {
-      const blogToUpdate = await blogsService.updateBlog(
-        req.body,
-        req.params.id
-      );
+      const result = await blogsService.updateBlog(req.body, req.params.id);
 
-      if (!blogToUpdate) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Blog to update is not found", [
+          `Blog with id ${req.params.id} does not exist`,
+        ]);
       }
 
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "Blog updated successfully");
     } catch (error) {
-      console.error("Error in fetching update blog by ID:", error);
-      res.status(500);
+      next(error);
     }
   },
 
-  getBlogPosts: async (req: Request, res: Response) => {
+  getBlogPosts: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundBlogPosts = await blogsQueryRepository.getPostsOfBlog(
+      const result = await blogsQueryRepository.getPostsOfBlog(
         req.params.blogId,
         queryFilter(req.query)
       );
 
-      if (foundBlogPosts.items.length === 0 || !foundBlogPosts) {
-        res.sendStatus(404);
-        return;
+      if (result.items.length === 0 || !result) {
+        throw ApiError.NotFoundError("Posts not found", [
+          `No posts of blogId ${req.params.blogId}`,
+        ]);
       }
 
-      res.status(200).json(foundBlogPosts);
+      formatResponse(res, 200, result, "Posts found successfully");
     } catch (error) {
-      console.error("Error in fetching posts of specific blog ID:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
   createBlogPost: async (
     req: Request<{ blogId: string }, {}, BlogPostInputModel>,
-    res: Response<PostViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
     try {
-      const newPost = await blogsService.createPost(
-        req.params.blogId,
-        req.body
-      );
-      if (!newPost) {
-        res.sendStatus(404);
-        return;
+      const result = await blogsService.createPost(req.params.blogId, req.body);
+
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", [
+          `Can't find blog with id ${req.params.blogId} to create post`,
+        ]);
       }
-      res.status(201).json(mapPostsToView(newPost));
+
+      formatResponse(res, 201, postDTO(result), "Posts created successfully");
     } catch (error) {
-      console.error("Error in fetching create post:", error);
-      res.status(500);
+      next(error);
     }
   },
 };

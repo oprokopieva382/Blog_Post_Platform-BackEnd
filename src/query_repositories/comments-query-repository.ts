@@ -25,7 +25,7 @@ export const commentsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCommentsCount,
-      items: comments.map((c) => this._mapCommentDBToView(c)),
+      items: comments.map((c) => this._commentDTO(c)),
     };
 
     return commentsToView;
@@ -38,7 +38,7 @@ export const commentsQueryRepository = {
     return foundComment;
   },
 
-  _mapCommentDBToView(comment: CommentDBType): CommentViewModel {
+  _commentDTO(comment: CommentDBType): CommentViewModel {
     return {
       // Convert ObjectId to string
       id: comment._id.toString(),

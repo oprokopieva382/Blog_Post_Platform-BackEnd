@@ -8,7 +8,7 @@ import {
   UserViewModel,
 } from "../models";
 
-const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
+const blogDTO = (blog: BlogDBType): BlogViewModel => {
   return {
     // Convert ObjectId to string
     id: blog._id.toString(),
@@ -20,7 +20,7 @@ const mapBlogDBToView = (blog: BlogDBType): BlogViewModel => {
   };
 };
 
-const mapPostsToView = (post: PostDBType): PostViewModel => {
+const postDTO = (post: PostDBType): PostViewModel => {
   return {
     // Convert ObjectId to string
     id: post._id.toString(),
@@ -33,7 +33,7 @@ const mapPostsToView = (post: PostDBType): PostViewModel => {
   };
 };
 
-const mapUserDBToView = (user: UserDBType): UserViewModel => {
+const userDTO = (user: UserDBType): UserViewModel => {
   return {
     // Convert ObjectId to string
     id: user._id.toString(),
@@ -43,7 +43,7 @@ const mapUserDBToView = (user: UserDBType): UserViewModel => {
   };
 };
 
-const mapCommentDBToView = (comment: CommentDBType): CommentViewModel => {
+const commentDTO = (comment: CommentDBType): CommentViewModel => {
   return {
     // Convert ObjectId to string
     id: comment._id.toString(),
@@ -56,7 +56,7 @@ const mapCommentDBToView = (comment: CommentDBType): CommentViewModel => {
   };
 };
 
-const mapMeToView = (me: UserViewModel): MeViewModel => {
+const authDTO = (me: UserViewModel): MeViewModel => {
   return {
     email: me.email,
     login: me.login,
@@ -64,10 +64,4 @@ const mapMeToView = (me: UserViewModel): MeViewModel => {
   };
 };
 
-export {
-  mapBlogDBToView,
-  mapPostsToView,
-  mapUserDBToView,
-  mapCommentDBToView,
-  mapMeToView,
-};
+export { blogDTO, postDTO, userDTO, commentDTO, authDTO };

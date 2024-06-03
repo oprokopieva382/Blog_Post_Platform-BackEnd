@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../models";
 import { formatResponse } from "../../output-errors-type";
 import { authService } from "../../services";
-import { mapMeToView, mapUserDBToView } from "../../utils/mapDBToView";
+import { authDTO, userDTO } from "../../utils/mapDBToView";
 import { jwtTokenService } from "../application";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
@@ -16,7 +16,7 @@ export const authController = {
     try {
       const authResult = await authService.loginUser(req.body);
 
-      const user = mapUserDBToView(authResult);
+      const user = userDTO(authResult);
       const accessToken = await jwtTokenService.createAccessToken(user.id);
       const refreshToken = await jwtTokenService.createRefreshToken(user.id);
 
@@ -38,7 +38,7 @@ export const authController = {
           "Authorization failed. Can't find user with such id",
         ]);
       }
-      formatResponse(res, 200, mapMeToView(me), "User authorized");
+      formatResponse(res, 200, authDTO(me), "User authorized");
     } catch (error) {
       next(error);
     }

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { APIErrorResult } from "../../output-errors-type";
 import { CommentInputModel, CommentViewModel } from "../../models";
 import { commentsQueryRepository } from "../../query_repositories";
-import { mapCommentDBToView } from "../../utils/mapDBToView";
+import { commentDTO } from "../../utils/mapDBToView";
 import { commentsService } from "../../services";
 import { CommentParamType } from ".";
 
@@ -18,7 +18,7 @@ export const commentsController = {
         return;
       }
 
-      res.status(200).json(mapCommentDBToView(foundComment));
+      res.status(200).json(commentDTO(foundComment));
     } catch (error) {
       console.error("Error in fetching comment by ID:", error);
       res.status(500).json({ error: "Internal server error" });

@@ -8,7 +8,7 @@ import {
   postsQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
-import { mapCommentDBToView, mapPostsToView } from "../../utils/mapDBToView";
+import { commentDTO, postDTO } from "../../utils/mapDBToView";
 import { CommentInputModel } from "../../models/CommentInputModel";
 
 export const postsController = {
@@ -58,7 +58,7 @@ export const postsController = {
         return;
       }
 
-      res.status(201).json(mapPostsToView(newPost));
+      res.status(201).json(postDTO(newPost));
     } catch (error) {
       console.error("Error in fetching create post:", error);
       res.status(500);
@@ -136,7 +136,7 @@ export const postsController = {
         res.sendStatus(404);
         return;
       }
-      res.status(201).json(mapCommentDBToView(newComment));
+      res.status(201).json(commentDTO(newComment));
     } catch (error) {
       console.error("Error in fetching create comment:", error);
       res.status(500);

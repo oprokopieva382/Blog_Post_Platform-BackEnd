@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { UserInputModel, UserViewModel } from "../../models";
 import { APIErrorResult } from "../../output-errors-type";
 import { usersService } from "../../services";
-import { mapUserDBToView } from "../../utils/mapDBToView";
+import { userDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
 import { userQueryFilter } from "../../utils/queryFilter";
 
@@ -34,7 +34,7 @@ export const usersController = {
       res.sendStatus(404);
       return;
     }
-    res.status(201).json(mapUserDBToView(newUser));
+    res.status(201).json(userDTO(newUser));
   },
 
   deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
