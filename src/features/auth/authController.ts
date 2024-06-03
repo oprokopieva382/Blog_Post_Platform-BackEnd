@@ -24,7 +24,7 @@ export const authController = {
         httpOnly: true,
         secure: true,
       });
-      formatResponse(res, 201, accessToken, "User logged in successfully");
+      formatResponse(res, 200, accessToken, "User logged in successfully");
     } catch (error) {
       next(error);
     }

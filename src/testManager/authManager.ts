@@ -10,7 +10,7 @@ export const authManager = {
       email: "Tina@gmail.com",
     };
 
-    const res = await request(app)
+    await request(app)
       .post(SETTINGS.PATH.USERS)
       .send(newUser)
       .auth("admin", "qwerty")
@@ -24,16 +24,21 @@ export const authManager = {
       loginOrEmail: "Tina@gmail.com",
       password: "tina123",
     };
-    return loginInput;
-  },
-
-  async userToken() {
-    const user = await this.loginUser();
+    
     const res = await request(app)
       .post(`${SETTINGS.PATH.AUTH}/login`)
-      .send(user)
+      .send(loginInput)
       .expect(200);
 
-    return res.body.accessToken;
+    const cookies = res.headers["set-cookie"];
+    const cookieArray = Array.isArray(cookies) ? cookies : [cookies];
+
+    const refreshToken = cookieArray
+      .find((cookie: string) => cookie.startsWith("refreshToken="))
+      .split(";")[0]
+      .split("=")[1];
+
+    return { res, refreshToken };
   },
+
 };
