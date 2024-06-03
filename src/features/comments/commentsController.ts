@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { APIErrorResult, formatResponse } from "../../output-errors-type";
-import { CommentInputModel, CommentViewModel } from "../../models";
+import { formatResponse } from "../../output-errors-type";
+import { CommentInputModel } from "../../models";
 import { commentsQueryRepository } from "../../query_repositories";
 import { commentDTO } from "../../utils/mapDBToView";
 import { commentsService } from "../../services";

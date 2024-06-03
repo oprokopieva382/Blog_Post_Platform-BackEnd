@@ -29,12 +29,10 @@ export const usersService = {
     const createdUser = await usersRepository.createUser(newUser);
     const insertedId = createdUser.insertedId;
 
-    const createdUserExist = usersRepository.getByIdUser(insertedId.toString());
-    return createdUserExist;
+    return usersRepository.getByIdUser(insertedId.toString());
   },
 
   async removeUser(id: string) {
-    const userToDelete = await usersRepository.removeUser(id);
-    return userToDelete;
+    return await usersRepository.removeUser(id);
   },
 };

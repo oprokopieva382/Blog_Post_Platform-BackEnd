@@ -5,17 +5,15 @@ import { commentsCollection } from "./../cloud_DB/mongo_db_atlas";
 
 export const commentsRepository = {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
-    const foundComment = await commentsCollection.findOne({
+    return await commentsCollection.findOne({
       _id: new ObjectId(commentId),
     });
-    return foundComment;
   },
 
   async removeComment(commentId: string) {
-    const foundComment = await commentsCollection.findOneAndDelete({
+    return await commentsCollection.findOneAndDelete({
       _id: new ObjectId(commentId),
     });
-    return foundComment;
   },
 
   async updateComment(data: CommentInputModel, commentId: string) {
