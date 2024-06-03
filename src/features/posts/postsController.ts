@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { APIErrorResult } from "../../output-errors-type";
+import { NextFunction, Request, Response } from "express";
+import { formatResponse } from "../../output-errors-type";
 import { ParamType } from ".";
-import { CommentViewModel, PostInputModel, PostViewModel } from "../../models";
+import { PostInputModel } from "../../models";
 import { postsService } from "../../services";
 import {
   commentsQueryRepository,
@@ -10,136 +10,134 @@ import {
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { commentDTO, postDTO } from "../../utils/mapDBToView";
 import { CommentInputModel } from "../../models/CommentInputModel";
+import { ApiError } from "../../helper/api-errors";
 
 export const postsController = {
-  getAll: async (req: Request, res: Response) => {
+  getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const posts = await postsQueryRepository.getAllPosts(
+      const result = await postsQueryRepository.getAllPosts(
         queryFilter(req.query)
       );
 
-      if (!posts) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", ["No posts found"]);
       }
 
-      res.status(200).json(posts);
+      formatResponse(res, 200, result, "Posts retrieved successfully");
     } catch (error) {
-      console.error("Error in fetching all posts:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
-  getById: async (req: Request, res: Response) => {
+  getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundPost = await postsQueryRepository.getByIdPost(req.params.id);
+      const result = await postsQueryRepository.getByIdPost(req.params.id);
 
-      if (!foundPost) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.status(200).json(foundPost);
+      formatResponse(res, 200, result, "Post retrieved successfully");
     } catch (error) {
-      console.error("Error in fetching post by ID:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
   create: async (
     req: Request<{}, {}, PostInputModel>,
-    res: Response<PostViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
     try {
-      const newPost = await postsService.createPost(req.body);
+      const result = await postsService.createPost(req.body);
 
-      if (!newPost) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError(`Post can't be created`);
       }
 
-      res.status(201).json(postDTO(newPost));
+      formatResponse(res, 201, postDTO(result), "Post created successfully");
     } catch (error) {
-      console.error("Error in fetching create post:", error);
-      res.status(500);
+      next(error);
     }
   },
 
-  deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
+  deleteById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const postToRemove = await postsService.removePost(req.params.id);
+      const result = await postsService.removePost(req.params.id);
 
-      if (!postToRemove) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Post to delete is not found", [
+          `Post with id ${req.params.id} does not exist`,
+        ]);
       }
 
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "Post deleted successfully");
     } catch (error) {
-      console.error("Error in fetching delete post by ID:", error);
-      res.status(500);
+      next(error);
     }
   },
 
   update: async (
     req: Request<ParamType, {}, PostInputModel>,
-    res: Response<PostViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
     try {
-      const postToUpdate = await postsService.updatePost(
-        req.body,
-        req.params.id
-      );
+      const result = await postsService.updatePost(req.body, req.params.id);
 
-      if (!postToUpdate) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Post to update is not found", [
+          `Post with id ${req.params.id} does not exist`,
+        ]);
       }
 
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "Post updated successfully");
     } catch (error) {
-      console.error("Error in fetching update post by ID:", error);
-      res.status(500);
+      next(error);
     }
   },
 
-  getPostComments: async (req: Request, res: Response) => {
+  getPostComments: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundPostComments = await commentsQueryRepository.getCommentsOfPost(
+      const result = await commentsQueryRepository.getCommentsOfPost(
         req.params.postId,
         commentsQueryFilter(req.query)
       );
 
-      if (foundPostComments.items.length === 0 || !foundPostComments) {
-        res.sendStatus(404);
-        return;
+      if (result.items.length === 0 || !result) {
+        throw ApiError.NotFoundError("Comments not found", [
+          `No comments of postId ${req.params.postId}`,
+        ]);
       }
 
-      res.status(200).json(foundPostComments);
+      formatResponse(res, 200, result, "Comments found successfully");
     } catch (error) {
-      console.error("Error in fetching comments of specific post ID:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
   createPostComment: async (
     req: Request<{ postId: string }, {}, CommentInputModel>,
-    res: Response<CommentViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
     try {
-      const newComment = await postsService.createPostComment(
+      const result = await postsService.createPostComment(
         req.params.postId,
         req.body,
         req.user
       );
-      if (!newComment) {
-        res.sendStatus(404);
-        return;
+
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", [
+          `Can't find post with id ${req.params.postId} to create comment`,
+        ]);
       }
-      res.status(201).json(commentDTO(newComment));
+
+      formatResponse(
+        res,
+        201,
+        commentDTO(result),
+        "Comment created successfully"
+      );
     } catch (error) {
-      console.error("Error in fetching create comment:", error);
-      res.status(500);
+      next(error);
     }
   },
 };

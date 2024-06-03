@@ -121,7 +121,7 @@ export const blogsController = {
         ]);
       }
 
-      formatResponse(res, 201, postDTO(result), "Posts created successfully");
+      formatResponse(res, 201, postDTO(result), "Post created successfully");
     } catch (error) {
       next(error);
     }
