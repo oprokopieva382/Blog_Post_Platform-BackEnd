@@ -32,10 +32,9 @@ export const commentsQueryRepository = {
   },
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
-    const foundComment = await commentsCollection.findOne({
+    return await commentsCollection.findOne({
       _id: new ObjectId(id),
     });
-    return foundComment;
   },
 
   _commentDTO(comment: CommentDBType): CommentViewModel {

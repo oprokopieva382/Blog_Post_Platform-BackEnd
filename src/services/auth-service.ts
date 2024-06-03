@@ -109,11 +109,10 @@ export const authService = {
   },
 
   async addTokenToBlackList(refreshToken: string) {
-    const result = await blackListTokenCollection.insertOne({
+   return await blackListTokenCollection.insertOne({
       token: refreshToken,
     });
-    return result;
-  },
+   },
 
   async refreshToken(refreshToken: string, userId: string) {
     await this.addTokenToBlackList(refreshToken);
