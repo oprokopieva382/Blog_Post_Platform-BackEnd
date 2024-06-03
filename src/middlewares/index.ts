@@ -1,10 +1,10 @@
 export { isAdminMiddleware } from "./isAdminMiddleware";
 export { validateBlog } from "./validateBlog";
-export { postValidationMiddleware } from "./postValidationMiddleware";
+export { validatePost } from "./validatePost";
 export { validatePostOfBlog } from "./validatePostOfBlog";
 export { validateRegistrationInput } from "./validateRegistrationInput";
 export { validateLoginInputs } from "./validateLoginInputs";
-export { commentValidationMiddleware } from "./commentValidationMiddleware";
+export { validateComment } from "./validateComment";
 export { validateRegistrationCode } from "./validateRegistrationCode";
 export { validateEmail } from "./validateEmail";
 export { validateUserLoginUnique } from "./validateUserLoginUnique";

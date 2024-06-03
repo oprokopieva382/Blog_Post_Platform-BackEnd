@@ -5,7 +5,7 @@ import {
   validationResult,
 } from "express-validator";
 
-export const commentValidationMiddleware = async (
+export const validateComment = async (
   req: Request,
   res: Response,
   next: NextFunction

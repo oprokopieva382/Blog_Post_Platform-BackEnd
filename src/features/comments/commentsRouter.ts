@@ -1,9 +1,6 @@
 import { Router } from "express";
 import { commentsController } from "./commentsController";
-import {
-  isAuthorizedMiddleware,
-  commentValidationMiddleware,
-} from "../../middlewares";
+import { isAuthorizedMiddleware, validateComment } from "../../middlewares";
 
 export const commentsRouter = Router();
 
@@ -16,6 +13,6 @@ commentsRouter.delete(
 commentsRouter.put(
   "/:commentId",
   isAuthorizedMiddleware,
-  commentValidationMiddleware,
+  validateComment,
   commentsController.update
 );

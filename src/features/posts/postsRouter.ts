@@ -3,31 +3,26 @@ import { postsController } from "./postsController";
 import {
   isAdminMiddleware,
   isAuthorizedMiddleware,
-  commentValidationMiddleware,
-  postValidationMiddleware,
+  validateComment,
+  validatePost,
 } from "../../middlewares";
 
 export const postsRouter = Router();
 
 postsRouter.get("/", postsController.getAll);
 postsRouter.get("/:id", postsController.getById);
-postsRouter.post(
-  "/",
-  isAdminMiddleware,
-  postValidationMiddleware,
-  postsController.create
-);
+postsRouter.post("/", isAdminMiddleware, validatePost, postsController.create);
 postsRouter.delete("/:id", isAdminMiddleware, postsController.deleteById);
 postsRouter.put(
   "/:id",
   isAdminMiddleware,
-  postValidationMiddleware,
+  validatePost,
   postsController.update
 );
 postsRouter.get("/:postId/comments", postsController.getPostComments);
 postsRouter.post(
   "/:postId/comments",
   isAuthorizedMiddleware,
-  commentValidationMiddleware,
+  validateComment,
   postsController.createPostComment
 );
