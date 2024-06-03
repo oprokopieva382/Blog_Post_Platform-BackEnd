@@ -2,8 +2,8 @@ import { Router } from "express";
 import { blogsController } from "./blogsController";
 import {
   isAdminMiddleware,
-  blogPostValidationMiddleware,
-  blogValidationMiddleware,
+  validatePostOfBlog,
+  validateBlog,
 } from "../../middlewares";
 
 export const blogsRouter = Router();
@@ -15,23 +15,18 @@ blogsRouter.get("/:blogId/posts", blogsController.getBlogPosts);
 
 blogsRouter.delete("/:id", isAdminMiddleware, blogsController.deleteById);
 
-blogsRouter.post(
-  "/",
-  isAdminMiddleware,
-  blogValidationMiddleware,
-  blogsController.create
-);
+blogsRouter.post("/", isAdminMiddleware, validateBlog, blogsController.create);
 
 blogsRouter.post(
   "/:blogId/posts",
   isAdminMiddleware,
-  blogPostValidationMiddleware,
+  validatePostOfBlog,
   blogsController.createBlogPost
 );
 
 blogsRouter.put(
   "/:id",
   isAdminMiddleware,
-  blogValidationMiddleware,
+  validateBlog,
   blogsController.update
 );

@@ -1,7 +1,7 @@
 export { isAdminMiddleware } from "./isAdminMiddleware";
-export { blogValidationMiddleware } from "./blogValidationMiddleware";
+export { validateBlog } from "./validateBlog";
 export { postValidationMiddleware } from "./postValidationMiddleware";
-export { blogPostValidationMiddleware } from "./blogPostValidationMiddleware";
+export { validatePostOfBlog } from "./validatePostOfBlog";
 export { validateRegistrationInput } from "./validateRegistrationInput";
 export { validateLoginInputs } from "./validateLoginInputs";
 export { commentValidationMiddleware } from "./commentValidationMiddleware";
