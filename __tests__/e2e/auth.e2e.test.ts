@@ -82,4 +82,27 @@ describe("auth tests", () => {
         .expect(401);
     });
   });
+
+  describe("LOG OUT", () => {
+    it("should logout user and return status code of 204", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/logout`)
+        .set("Cookie", `refreshToken=${refreshToken}`)
+        .expect(204);
+    });
+
+    it("shouldn't logout user and return status code of 401 if unauthorized", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+      await authManager.addToBlacklistToken(refreshToken);
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/logout`)
+        .set("Cookie", `refreshToken=${refreshToken}`)
+        .expect(401);
+    });
+  });
 });

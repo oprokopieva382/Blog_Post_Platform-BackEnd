@@ -8,21 +8,21 @@ export const validateRefreshToken = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
 
-    if (!token) {
+    if (!refreshToken) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
     }
 
     const isValid = await jwtTokenService.validateRefreshToken(
-      token.refreshToken
+      refreshToken
     );
 
     if (!isValid) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
     }
 
-    if (typeof token.refreshToken !== "string") {
+    if (typeof refreshToken !== "string") {
       throw ApiError.BadRequestError("Not authorized", [
         "Authorization failed. Refresh token must be a string",
       ]);

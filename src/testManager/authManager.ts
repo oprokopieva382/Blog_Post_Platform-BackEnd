@@ -1,6 +1,8 @@
 import request from "supertest";
 import { app } from "../app";
 import { SETTINGS } from "../settings";
+import { ObjectId } from "mongodb";
+import { blackListTokenCollection } from "../cloud_DB";
 
 export const authManager = {
   async createUser() {
@@ -15,7 +17,7 @@ export const authManager = {
       .send(newUser)
       .auth("admin", "qwerty")
       .expect(201);
-      
+
     return newUser;
   },
 
@@ -24,7 +26,7 @@ export const authManager = {
       loginOrEmail: "Tina@gmail.com",
       password: "tina123",
     };
-    
+
     const res = await request(app)
       .post(`${SETTINGS.PATH.AUTH}/login`)
       .send(loginInput)
@@ -41,4 +43,7 @@ export const authManager = {
     return { res, refreshToken };
   },
 
+  async addToBlacklistToken(refreshToken: string) {
+    return await blackListTokenCollection.insertOne({refreshToken});
+  },
 };

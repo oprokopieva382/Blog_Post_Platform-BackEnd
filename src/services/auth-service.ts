@@ -39,8 +39,7 @@ export const authService = {
   },
 
   async logoutUser(refreshToken: string) {
-    const token = await this.addTokenToBlackList(refreshToken);
-    return token;
+    return await this.addTokenToBlackList(refreshToken);
   },
 
   async registerUser(data: UserInputModel) {
@@ -109,10 +108,8 @@ export const authService = {
   },
 
   async addTokenToBlackList(refreshToken: string) {
-   return await blackListTokenCollection.insertOne({
-      token: refreshToken,
-    });
-   },
+    return await blackListTokenCollection.insertOne({refreshToken});
+  },
 
   async refreshToken(refreshToken: string, userId: string) {
     await this.addTokenToBlackList(refreshToken);

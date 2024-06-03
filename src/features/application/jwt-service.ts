@@ -14,13 +14,14 @@ export const jwtTokenService = {
   },
 
   async createRefreshToken(userId: string) {
-    const rToken = jwt.sign({ userId }, SETTINGS.JWT_REFRESH_TOKEN_SECRET, {
-      expiresIn: "20s",
-    });
-
-    return {
-      refreshToken: rToken,
-    };
+    const refreshToken = jwt.sign(
+      { userId },
+      SETTINGS.JWT_REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "20s",
+      }
+    );
+    return refreshToken;
   },
 
   async getUserIdByAccessToken(token: string) {
@@ -35,10 +36,10 @@ export const jwtTokenService = {
     }
   },
 
-  async validateRefreshToken(token: string) {
+  async validateRefreshToken(refreshToken: string) {
     try {
       const result = jwt.verify(
-        token,
+        refreshToken,
         SETTINGS.JWT_REFRESH_TOKEN_SECRET
       ) as JwtPayload;
       return result.userId;

@@ -8,11 +8,15 @@ export const checkBlackListTokenMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
+   
+    if (!refreshToken) {
+      throw ApiError.UnauthorizedError("Not authorized", [
+        "Missing refresh token",
+      ]);
+    }
 
-    const isIncluded = await blackListTokenCollection.findOne({
-      token: token.refreshToken,
-    });
+    const isIncluded = await blackListTokenCollection.findOne({refreshToken});
 
     if (isIncluded) {
       throw ApiError.UnauthorizedError("Not authorized", [
