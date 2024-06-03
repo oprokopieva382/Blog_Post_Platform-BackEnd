@@ -7,6 +7,7 @@ import {
 } from "../cloud_DB";
 import { BlogViewModel, Paginator, PostViewModel } from "../models";
 import { QueryType } from "../query-type";
+import { ApiError } from "../helper/api-errors";
 
 export const blogsQueryRepository = {
   async getPostsOfBlog(
@@ -56,20 +57,25 @@ export const blogsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalBlogsCount,
-      items: blogs.map((b) => this._mapBlogsToView(b)),
+      items: blogs.map((b) => this._blogDTO(b)),
     };
 
     return blogsToView;
   },
 
-  async getByIdBlog(id: string): Promise<BlogViewModel | null> {
+  async getByIdBlog(id: string): Promise<BlogViewModel> {
     const foundBlog = await blogsCollection.findOne({
       _id: new ObjectId(id),
     });
-    return foundBlog ? this._mapBlogsToView(foundBlog) : null;
+
+    if (!foundBlog) {
+      throw ApiError.NotFoundError("Not found", ["No blog found"]);
+    }
+
+    return this._blogDTO(foundBlog);
   },
 
-  _mapBlogsToView(blog: BlogDBType): BlogViewModel {
+  _blogDTO(blog: BlogDBType): BlogViewModel {
     return {
       // Convert ObjectId to string
       id: blog._id.toString(),

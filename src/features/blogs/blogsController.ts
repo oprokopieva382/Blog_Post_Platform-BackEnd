@@ -28,10 +28,6 @@ export const blogsController = {
     try {
       const result = await blogsQueryRepository.getByIdBlog(req.params.id);
 
-      if (!result) {
-        throw ApiError.NotFoundError("Not found", ["No blog found"]);
-      }
-
       formatResponse(res, 200, result, "Blog retrieved successfully");
     } catch (error) {
       next(error);
