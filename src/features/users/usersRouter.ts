@@ -1,17 +1,17 @@
 import { Router } from "express";
 import { usersController } from "./usersController";
 import {
-  authAdminMiddleware,
+  isAdminMiddleware,
   validateRegistrationInput,
 } from "../../middlewares";
 
 export const usersRouter = Router();
 
-usersRouter.get("/", authAdminMiddleware, usersController.getAll);
+usersRouter.get("/", isAdminMiddleware, usersController.getAll);
 usersRouter.post(
   "/",
-  authAdminMiddleware,
+  isAdminMiddleware,
   validateRegistrationInput,
   usersController.create
 );
-usersRouter.delete("/:id", authAdminMiddleware, usersController.deleteById);
+usersRouter.delete("/:id", isAdminMiddleware, usersController.deleteById);

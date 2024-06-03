@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { postsController } from "./postsController";
 import {
-  authAdminMiddleware,
+  isAdminMiddleware,
   isAuthorizedMiddleware,
   commentValidationMiddleware,
   postValidationMiddleware,
@@ -13,14 +13,14 @@ postsRouter.get("/", postsController.getAll);
 postsRouter.get("/:id", postsController.getById);
 postsRouter.post(
   "/",
-  authAdminMiddleware,
+  isAdminMiddleware,
   postValidationMiddleware,
   postsController.create
 );
-postsRouter.delete("/:id", authAdminMiddleware, postsController.deleteById);
+postsRouter.delete("/:id", isAdminMiddleware, postsController.deleteById);
 postsRouter.put(
   "/:id",
-  authAdminMiddleware,
+  isAdminMiddleware,
   postValidationMiddleware,
   postsController.update
 );

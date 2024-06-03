@@ -1,4 +1,4 @@
-export { authAdminMiddleware } from "./authAdminMiddleware";
+export { isAdminMiddleware } from "./isAdminMiddleware";
 export { blogValidationMiddleware } from "./blogValidationMiddleware";
 export { postValidationMiddleware } from "./postValidationMiddleware";
 export { blogPostValidationMiddleware } from "./blogPostValidationMiddleware";
