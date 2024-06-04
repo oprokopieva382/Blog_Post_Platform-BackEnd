@@ -70,7 +70,7 @@ export const authManager = {
     const userWithCode = await usersCollection.findOne({
       _id: new ObjectId(user.items[0].id),
     });
-  console.log(userWithCode);
+
     return userWithCode
       ? userWithCode.emailConfirmation.confirmationCode
       : null;

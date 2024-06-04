@@ -137,7 +137,6 @@ describe("auth tests", () => {
   describe("REGISTRATION CONFIRMATION", () => {
     it("should confirm user registration by email link and return status code of 204", async () => {
       const code = await authManager.getConfirmCode();
-      console.log(code);
 
       await request(app)
         .post(`${SETTINGS.PATH.AUTH}/registration-confirmation`)
@@ -152,6 +151,30 @@ describe("auth tests", () => {
         .post(`${SETTINGS.PATH.AUTH}/registration-confirmation`)
         .send({ code })
         .expect(400);
+    });
+  });
+
+  describe("REFRESH TOKEN", () => {
+    it("should request new refreshToken, return new accessToken & status code of 200", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/refresh-token`)
+        .set("Cookie", `refreshToken=${refreshToken}`)
+        .set("Authorization", `Bearer ${res.body.data.accessToken}`)
+        .expect(200);
+    });
+
+    it("should request new refreshToken but request failed as unauthorized user, return status code of 401", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/refresh-token`)
+        .set("Cookie", `refreshToken=${refreshToken}+1`)
+        .set("Authorization", `Bearer ${res.body.data.accessToken}+1`)
+        .expect(401);
     });
   });
 });
