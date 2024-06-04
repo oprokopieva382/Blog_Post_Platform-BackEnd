@@ -1,51 +1,51 @@
 import { Router } from "express";
 import { authController } from "./authController";
 import {
-  authMiddleware,
-  emailCodeValidation,
-  emailValidation,
-  loginInputValidation,
-  userRegistrationInputValidation,
-  emailConfirmationValidation,
-  emailResendingValidation,
-  validationUserEmailUnique,
-  validationUserLoginUnique,
-  tokensRefreshValidationMiddleware,
-  blackListTokenCheckMiddleware,
+  isAuthorizedMiddleware,
+  validateRegistrationCode,
+  validateEmail,
+  validateLoginInputs,
+  validateRegistrationInput,
+  validateEmailConfirmation,
+  validateEmailResending,
+  validateUserEmailUnique,
+  validateUserLoginUnique,
+  validateRefreshToken,
+  checkBlackListTokenMiddleware,
 } from "../../middlewares";
 
 export const authRouter = Router();
 
-authRouter.post("/login", loginInputValidation, authController.login);
-authRouter.get("/me", authMiddleware, authController.me);
+authRouter.post("/login", validateLoginInputs, authController.login);
+authRouter.get("/me", isAuthorizedMiddleware, authController.me);
 authRouter.post(
   "/registration",
-  userRegistrationInputValidation,
-  validationUserLoginUnique,
-  validationUserEmailUnique,
+  validateRegistrationInput,
+  validateUserLoginUnique,
+  validateUserEmailUnique,
   authController.registration
 );
 authRouter.post(
   "/registration-confirmation",
-  emailCodeValidation,
-  emailConfirmationValidation,
+  validateRegistrationCode,
+  validateEmailConfirmation,
   authController.registrationConfirmation
 );
 authRouter.post(
   "/registration-email-resending",
-  emailValidation,
-  emailResendingValidation,
+  validateEmail,
+  validateEmailResending,
   authController.registrationResending
 );
 authRouter.post(
   "/logout",
-  tokensRefreshValidationMiddleware,
-  blackListTokenCheckMiddleware,
+  validateRefreshToken,
+  checkBlackListTokenMiddleware,
   authController.logout
 );
 authRouter.post(
   "/refresh-token",
-  tokensRefreshValidationMiddleware,
-  blackListTokenCheckMiddleware,
+  validateRefreshToken,
+  checkBlackListTokenMiddleware,
   authController.refreshToken
 );

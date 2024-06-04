@@ -3,6 +3,7 @@ import { Paginator, UserViewModel } from "../models";
 import { QueryUserType } from "../query-type";
 import { usersCollection } from "../cloud_DB/mongo_db_atlas";
 import { ObjectId } from "mongodb";
+import { ApiError } from "../helper/api-errors";
 
 export const usersQueryRepository = {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
@@ -30,7 +31,7 @@ export const usersQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalUsersCount,
-      items: users.map((u) => this._mapUsersToView(u)),
+      items: users.map((u) => this._userDTO(u)),
     };
 
     return usersToView;
@@ -40,10 +41,14 @@ export const usersQueryRepository = {
     const foundUser = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
-    return foundUser ? this._mapUsersToView(foundUser) : null;
+    if (!foundUser) {
+      throw ApiError.NotFoundError("Not found", ["No user found"]);
+    }
+
+    return this._userDTO(foundUser);
   },
 
-  _mapUsersToView(user: UserDBType): UserViewModel {
+  _userDTO(user: UserDBType): UserViewModel {
     return {
       // Convert ObjectId to string
       id: user._id.toString(),

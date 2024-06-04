@@ -1,4 +1,5 @@
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
+import { ApiError } from "../helper/api-errors";
 import { PostInputModel, UserViewModel } from "../models";
 import { CommentInputModel } from "../models/CommentInputModel";
 import { blogsRepository, postsRepository } from "../repositories";
@@ -6,8 +7,7 @@ import { ObjectId } from "mongodb";
 
 export const postsService = {
   async removePost(id: string) {
-    const foundPost = await postsRepository.removePost(id);
-    return foundPost;
+    return await postsRepository.removePost(id);
   },
 
   async createPost(data: PostInputModel) {
@@ -15,7 +15,9 @@ export const postsService = {
 
     const isBlogExist = await blogsRepository.getByIdBlog(blogId);
     if (!isBlogExist) {
-      return null;
+      throw ApiError.NotFoundError("Blog is not found", [
+        `Blog with id ${data.blogId} does not exist`,
+      ]);
     }
 
     const newPost = {
@@ -31,20 +33,20 @@ export const postsService = {
     const createdPost = await postsRepository.createPost(newPost);
     const insertedId = createdPost.insertedId;
 
-    const createdPostExist = postsRepository.getByIdPost(insertedId.toString());
-    return createdPostExist;
+    return postsRepository.getByIdPost(insertedId.toString());
   },
 
   async updatePost(data: PostInputModel, id: string) {
     const isBlogExist = await blogsRepository.getByIdBlog(data.blogId);
 
     if (!isBlogExist) {
-      return null;
+      throw ApiError.NotFoundError("Blog is not found", [
+        `Blog with id ${data.blogId} does not exist`,
+      ]);
     }
     await postsRepository.updatePost(data, id, isBlogExist.name);
 
-    const updatedPost = await postsRepository.getByIdPost(id);
-    return updatedPost;
+    return await postsRepository.getByIdPost(id);
   },
 
   async createPostComment(
@@ -54,8 +56,11 @@ export const postsService = {
   ): Promise<CommentDBType | null> {
     const { content } = data;
     const isPostExist = await postsRepository.getByIdPost(postId);
+
     if (!isPostExist) {
-      return null;
+      throw ApiError.NotFoundError("Post is not found", [
+        `Post with id ${postId} does not exist`,
+      ]);
     }
 
     const newComment = {
@@ -63,8 +68,8 @@ export const postsService = {
       postId,
       content,
       commentatorInfo: {
-        userId: user.id, 
-        userLogin: user.login, 
+        userId: user.id,
+        userLogin: user.login,
       },
       createdAt: new Date().toISOString(),
     };
@@ -72,12 +77,11 @@ export const postsService = {
     const createdComment = await postsRepository.createComment(newComment);
 
     if (!createdComment) {
-      return null;
+      throw ApiError.NotFoundError("Comment is not found", [
+        `Comment does not exist`,
+      ]);
     }
     const insertedId = createdComment.insertedId;
-    const createdCommentExist = await postsRepository.getByIdComment(
-      insertedId.toString()
-    );
-    return createdCommentExist;
+    return await postsRepository.getByIdComment(insertedId.toString());
   },
 };

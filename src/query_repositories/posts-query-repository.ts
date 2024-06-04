@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { PostDBType, postsCollection } from "../cloud_DB";
 import { Paginator, PostViewModel } from "../models";
 import { QueryType } from "../query-type";
+import { ApiError } from "../helper/api-errors";
 
 export const postsQueryRepository = {
   async getAllPosts(query: QueryType): Promise<Paginator<PostViewModel>> {
@@ -19,7 +20,7 @@ export const postsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => this._mapPostDBToView(p)),
+      items: posts.map((p) => this._postDTO(p)),
     };
 
     return postsToView;
@@ -27,10 +28,14 @@ export const postsQueryRepository = {
 
   async getByIdPost(id: string): Promise<PostViewModel | null> {
     const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
-    return foundPost ? this._mapPostDBToView(foundPost) : null;
+    if (!foundPost) {
+      throw ApiError.NotFoundError("Not found", ["No post found"]);
+    }
+
+    return this._postDTO(foundPost);
   },
 
-  _mapPostDBToView(post: PostDBType): PostViewModel {
+  _postDTO(post: PostDBType): PostViewModel {
     return {
       // Convert ObjectId to string
       id: post._id.toString(),

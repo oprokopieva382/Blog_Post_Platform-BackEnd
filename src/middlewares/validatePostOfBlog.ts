@@ -1,12 +1,18 @@
 import { NextFunction, Request, Response } from "express";
-import { FieldValidationError, body, validationResult } from "express-validator";
+import {
+  FieldValidationError,
+  body,
+  validationResult,
+} from "express-validator";
+import { ApiError } from "../helper/api-errors";
 
-export const blogPostValidationMiddleware = async (
+export const validatePostOfBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const allBodyValidation: any[] = [];
+  try {
+    const allBodyValidation: any[] = [];
 
     allBodyValidation.push(
       body("title")
@@ -41,24 +47,24 @@ export const blogPostValidationMiddleware = async (
         .withMessage("max length of content 1000 characters")
     );
 
-   await Promise.all(allBodyValidation.map((item) => item.run(req)));
+    await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    //console.log(errors.array());
-    //console.log(errors.array().map((error) => error));
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorsMessages = errors.array({
+        onlyFirstError: true,
+      }) as FieldValidationError[];
+      throw ApiError.BadRequestError(
+        "Validation failed",
+        errorsMessages.map((error) => ({
+          message: error.msg,
+          field: error.path,
+        }))
+      );
+    }
 
-    const errorsFields = errors.array({
-      onlyFirstError: true,
-    }) as FieldValidationError[];
-    return res.status(400).json({
-       errorsMessages: errorsFields.map((error) => ({
-        message: error.msg,
-        field: error.path,
-      })),
-    });
+    next();
+  } catch (error) {
+    next(error);
   }
-
-  next();
-  return;
 };

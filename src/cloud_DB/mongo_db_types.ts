@@ -49,5 +49,5 @@ export type CommentDBType = {
 
 export type BlackListTokenDBType = {
   //_id: ObjectId;
-  token: string;
+  refreshToken: string;
 };

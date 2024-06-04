@@ -25,20 +25,19 @@ export const commentsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCommentsCount,
-      items: comments.map((c) => this._mapCommentDBToView(c)),
+      items: comments.map((c) => this._commentDTO(c)),
     };
 
     return commentsToView;
   },
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
-    const foundComment = await commentsCollection.findOne({
+    return await commentsCollection.findOne({
       _id: new ObjectId(id),
     });
-    return foundComment;
   },
 
-  _mapCommentDBToView(comment: CommentDBType): CommentViewModel {
+  _commentDTO(comment: CommentDBType): CommentViewModel {
     return {
       // Convert ObjectId to string
       id: comment._id.toString(),

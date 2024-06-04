@@ -6,22 +6,19 @@ import { commentsCollection } from "./../cloud_DB/mongo_db_atlas";
 
 export const postsRepository = {
   async getByIdPost(postId: string): Promise<PostDBType | null> {
-    const foundPost = await postsCollection.findOne({
+    return await postsCollection.findOne({
       _id: new ObjectId(postId),
     });
-    return foundPost;
   },
 
   async removePost(id: string) {
-    const foundPost = await postsCollection.findOneAndDelete({
+    return await postsCollection.findOneAndDelete({
       _id: new ObjectId(id),
     });
-    return foundPost;
   },
 
   async createPost(newPost: PostDBType) {
-    const createdPost = await postsCollection.insertOne(newPost);
-    return createdPost;
+    return await postsCollection.insertOne(newPost);
   },
 
   async updatePost(data: PostInputModel, id: string, blogName: string) {
@@ -44,14 +41,12 @@ export const postsRepository = {
   },
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
-    const foundComment = await commentsCollection.findOne({
+    return await commentsCollection.findOne({
       _id: new ObjectId(id),
     });
-    return foundComment;
   },
 
   async createComment(newComment: CommentDBType) {
-    const createdComment = await commentsCollection.insertOne(newComment);
-    return createdComment;
+    return await commentsCollection.insertOne(newComment);
   },
 };

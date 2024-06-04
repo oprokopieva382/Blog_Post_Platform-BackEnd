@@ -1,33 +1,28 @@
 import { Router } from "express";
 import { postsController } from "./postsController";
 import {
-  authAdminMiddleware,
-  authMiddleware,
-  commentValidationMiddleware,
-  postValidationMiddleware,
+  isAdminMiddleware,
+  isAuthorizedMiddleware,
+  validateComment,
+  validatePost,
 } from "../../middlewares";
 
 export const postsRouter = Router();
 
 postsRouter.get("/", postsController.getAll);
 postsRouter.get("/:id", postsController.getById);
-postsRouter.post(
-  "/",
-  authAdminMiddleware,
-  postValidationMiddleware,
-  postsController.create
-);
-postsRouter.delete("/:id", authAdminMiddleware, postsController.deleteById);
+postsRouter.post("/", isAdminMiddleware, validatePost, postsController.create);
+postsRouter.delete("/:id", isAdminMiddleware, postsController.deleteById);
 postsRouter.put(
   "/:id",
-  authAdminMiddleware,
-  postValidationMiddleware,
+  isAdminMiddleware,
+  validatePost,
   postsController.update
 );
 postsRouter.get("/:postId/comments", postsController.getPostComments);
 postsRouter.post(
   "/:postId/comments",
-  authMiddleware,
-  commentValidationMiddleware,
+  isAuthorizedMiddleware,
+  validateComment,
   postsController.createPostComment
 );

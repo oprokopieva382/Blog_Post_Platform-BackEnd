@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { SETTINGS } from "../settings";
+import { ApiError } from "../helper/api-errors";
 
-export const authAdminMiddleware = (
+export const isAdminMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -9,12 +10,9 @@ export const authAdminMiddleware = (
   const auth = req.headers["authorization"] as string;
 
   if (!auth) {
-    res.status(401).json({
-      errorMessages: {
-        message: "Auth credentials is incorrect",
-      },
-    });
-    return;
+    throw ApiError.UnauthorizedError("Not authorized", [
+      "You are not authorized for this action",
+    ]);
   }
 
   const bufEncoded = Buffer.from(auth.slice(6), "base64");
@@ -24,12 +22,9 @@ export const authAdminMiddleware = (
   const encodedAuth = bufDecoded.toString("base64");
 
   if (auth.slice(6) !== encodedAuth || auth.slice(0, 6) !== "Basic ") {
-    res.status(401).json({
-      errorMessages: {
-        message: "Auth credentials is incorrect",
-      },
-    });
-    return;
+    throw ApiError.UnauthorizedError("Not authorized", [
+      "You are not authorized for this action",
+    ]);
   }
 
   next();

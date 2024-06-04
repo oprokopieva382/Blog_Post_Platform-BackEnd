@@ -1,55 +1,60 @@
-import { Request, Response } from "express";
-import { UserInputModel, UserViewModel } from "../../models";
-import { APIErrorResult } from "../../output-errors-type";
+import { NextFunction, Request, Response } from "express";
+import { UserInputModel } from "../../models";
+import { formatResponse } from "../../output-errors-type";
 import { usersService } from "../../services";
-import { mapUserDBToView } from "../../utils/mapDBToView";
+import { userDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
 import { userQueryFilter } from "../../utils/queryFilter";
+import { ApiError } from "../../helper/api-errors";
 
 export const usersController = {
-  getAll: async (req: Request, res: Response) => {
+  getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const users = await usersQueryRepository.getAllUsers(
+      const result = await usersQueryRepository.getAllUsers(
         userQueryFilter(req.query)
       );
 
-      if (!users) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", ["No users found"]);
       }
-      res.status(200).json(users);
+
+      formatResponse(res, 200, result, "Users retrieved successfully");
     } catch (error) {
-      console.error("Error in fetching all users:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
   create: async (
     req: Request<{}, {}, UserInputModel>,
-    res: Response<UserViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
-    const newUser = await usersService.createUser(req.body);
-
-    if (!newUser) {
-      res.sendStatus(404);
-      return;
-    }
-    res.status(201).json(mapUserDBToView(newUser));
-  },
-
-  deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
     try {
-      const userToRemove = await usersService.removeUser(req.params.id);
+      const result = await usersService.createUser(req.body);
 
-      if (!userToRemove) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError(`User can't be created`);
       }
 
-      res.sendStatus(204);
+      formatResponse(res, 201, userDTO(result), "User created successfully");
     } catch (error) {
-      console.error("Error in fetching delete user by ID:", error);
-      res.status(500);
+      next(error);
+    }
+  },
+
+  deleteById: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await usersService.removeUser(req.params.id);
+
+      if (!result) {
+        throw ApiError.NotFoundError("User to delete is not found", [
+          `User with id ${req.params.id} does not exist`,
+        ]);
+      }
+
+      formatResponse(res, 204, {}, "User deleted successfully");
+    } catch (error) {
+      next(error);
     }
   },
 };

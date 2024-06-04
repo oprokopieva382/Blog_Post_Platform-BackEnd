@@ -5,25 +5,27 @@ import {
   validationResult,
 } from "express-validator";
 
-export const emailValidation = async (
+export const validateComment = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const allValidation: any[] = [];
+  const allBodyValidation: any[] = [];
 
-  allValidation.push(
-    body("email")
+  allBodyValidation.push(
+    body("content")
       .trim()
       .isString()
-      .withMessage("Email field must be a string")
+      .withMessage("Name field must be a string")
       .notEmpty()
-      .withMessage("Email field is required")
-      .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-      .withMessage("email must be a valid email address")
+      .withMessage("Name field is required")
+      .isLength({ max: 300 })
+      .withMessage("max length of name 300 characters")
+      .isLength({ min: 20 })
+      .withMessage("min length of name 20 characters")
   );
 
-  await Promise.all(allValidation.map((item) => item.run(req)));
+  await Promise.all(allBodyValidation.map((item) => item.run(req)));
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

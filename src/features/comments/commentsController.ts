@@ -1,79 +1,74 @@
-import { Request, Response } from "express";
-import { APIErrorResult } from "../../output-errors-type";
-import { CommentInputModel, CommentViewModel } from "../../models";
+import { NextFunction, Request, Response } from "express";
+import { formatResponse } from "../../output-errors-type";
+import { CommentInputModel } from "../../models";
 import { commentsQueryRepository } from "../../query_repositories";
-import { mapCommentDBToView } from "../../utils/mapDBToView";
+import { commentDTO } from "../../utils/mapDBToView";
 import { commentsService } from "../../services";
 import { CommentParamType } from ".";
+import { ApiError } from "../../helper/api-errors";
 
 export const commentsController = {
-  getById: async (req: Request, res: Response) => {
+  getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const foundComment = await commentsQueryRepository.getByIdComment(
+      const result = await commentsQueryRepository.getByIdComment(
         req.params.id
       );
 
-      if (!foundComment) {
-        res.sendStatus(404);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", ["No comment found"]);
       }
 
-      res.status(200).json(mapCommentDBToView(foundComment));
+      formatResponse(
+        res,
+        200,
+        commentDTO(result),
+        "Comment retrieved successfully"
+      );
     } catch (error) {
-      console.error("Error in fetching comment by ID:", error);
-      res.status(500).json({ error: "Internal server error" });
+      next(error);
     }
   },
 
-  deleteById: async (req: Request, res: Response<void | APIErrorResult>) => {
+  deleteById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const commentToRemove = await commentsService.removeComment(
+      const result = await commentsService.removeComment(
         req.params.commentId,
         req.user
       );
 
-      if (commentToRemove === 403) {
-        res.sendStatus(403);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Comment to delete is not found", [
+          `Comment with id ${req.params.commentId} does not exist`,
+        ]);
       }
 
-      if (!commentToRemove) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "Comment deleted successfully");
     } catch (error) {
-      console.error("Error in fetching delete comment by ID:", error);
-      res.status(500);
+      next(error);
     }
   },
 
   update: async (
     req: Request<CommentParamType, {}, CommentInputModel>,
-    res: Response<CommentViewModel | APIErrorResult>
+    res: Response,
+    next: NextFunction
   ) => {
     try {
-      const commentToUpdate = await commentsService.updateComment(
+      const result = await commentsService.updateComment(
         req.body,
         req.params.commentId,
         req.user
       );
 
-      if (commentToUpdate === 403) {
-        res.sendStatus(403);
-        return;
+      if (!result) {
+        throw ApiError.NotFoundError("Comment to update is not found", [
+          `Comment with id ${req.params.commentId} does not exist`,
+        ]);
       }
 
-      if (!commentToUpdate) {
-        res.sendStatus(404);
-        return;
-      }
-
-      res.sendStatus(204);
+      formatResponse(res, 204, {}, "Comment updated successfully");
     } catch (error) {
-      console.error("Error in fetching update comment by ID:", error);
-      res.status(500);
+      next(error);
     }
   },
 };
