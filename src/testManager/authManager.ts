@@ -1,7 +1,6 @@
 import request from "supertest";
 import { app } from "../app";
 import { SETTINGS } from "../settings";
-import { ObjectId } from "mongodb";
 import { blackListTokenCollection } from "../cloud_DB";
 
 export const authManager = {

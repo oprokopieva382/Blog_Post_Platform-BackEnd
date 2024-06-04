@@ -1,4 +1,5 @@
 import {
+  blackListTokenCollection,
   blogsCollection,
   commentsCollection,
   postsCollection,
@@ -12,6 +13,7 @@ export const dropCollections = async () => {
       postsCollection.drop(),
       commentsCollection.drop(),
       usersCollection.drop(),
+      await blackListTokenCollection.drop()
     ]);
     console.log("Collections dropped successfully");
   } catch (error) {

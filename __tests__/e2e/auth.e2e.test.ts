@@ -105,4 +105,32 @@ describe("auth tests", () => {
         .expect(401);
     });
   });
+
+  describe("REGISTRATION", () => {
+    it("should register user and return status code of 204", async () => {
+      const newUser = {
+        login: "Tina",
+        password: "tina123",
+        email: "Tina@gmail.com",
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration`)
+        .send(newUser)
+        .expect(204);
+    });
+
+    it("shouldn't register user and return status code of 400 if invalid inputs", async () => {
+      const newUser = {
+        login: "Tina",
+        password: "tina123",
+        email: "Tina", //not valid email, should be in pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration`)
+        .send(newUser)
+        .expect(400);
+    });
+  });
 });
