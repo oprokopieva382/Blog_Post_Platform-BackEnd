@@ -133,4 +133,25 @@ describe("auth tests", () => {
         .expect(400);
     });
   });
+
+  describe("REGISTRATION CONFIRMATION", () => {
+    it("should confirm user registration by email link and return status code of 204", async () => {
+      const code = await authManager.getConfirmCode();
+      console.log(code);
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-confirmation`)
+        .send({ code })
+        .expect(204);
+    });
+
+    it("shouldn't confirm user registration by email link and return status code of 400 if the confirmation code is incorrect", async () => {
+      const code = "6654cc84aa3424d5f961994b"; //incorrect code
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-confirmation`)
+        .send({ code })
+        .expect(400);
+    });
+  });
 });
