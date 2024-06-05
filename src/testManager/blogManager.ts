@@ -24,8 +24,6 @@ export const blogManager = {
     return res.body.data.items;
   },
 
-
-
   async createPost(blogId: string) {
     const newPost = {
       title: "Memo",
@@ -33,10 +31,24 @@ export const blogManager = {
       content: "whole content about memo",
     };
 
-    await request(app)
+    const res = await request(app)
       .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
       .send(newPost)
       .auth("admin", "qwerty")
+      .expect(201);
+
+    return res.body.data;
+  },
+
+  async createComment(postId: string, accessToken: string) {
+    const comment = {
+      content: "Can you, please, explain how it works?",
+    };
+
+    await request(app)
+      .post(`${SETTINGS.PATH.POSTS}/${postId}/comments`)
+      .send(comment)
+      .set("Authorization", `Bearer ${accessToken}`)
       .expect(201);
   },
 };
