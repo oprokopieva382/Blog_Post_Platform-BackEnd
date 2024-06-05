@@ -2,8 +2,8 @@ import request from "supertest";
 import { SETTINGS } from "../../src/settings";
 import { app } from "../../src/app";
 import { ConnectMongoDB } from "../../src/cloud_DB";
-import { authManager } from "../../src/testManager";
-import { dropCollections } from "../../src/testManager/dropCollections";
+import { dropCollections } from "../e2e/dropCollections";
+import { testManager } from "./test-helpers";
 
 describe("/users test", () => {
   beforeAll(async () => {
@@ -11,7 +11,7 @@ describe("/users test", () => {
   });
 
   afterEach(async () => {
-     await dropCollections();
+    await dropCollections();
   });
 
   describe("CREATE USER", () => {
@@ -69,7 +69,7 @@ describe("/users test", () => {
 
   describe("GET USERS", () => {
     it("1 - should get users and return status code 200 and object with pagination", async () => {
-      await authManager.createUser();
+      await testManager.createUser();
 
       const res = await request(app)
         .get(SETTINGS.PATH.USERS)
@@ -80,7 +80,7 @@ describe("/users test", () => {
     });
 
     it("2 - shouldn't get users and return status code 401 if unauthorized", async () => {
-      await authManager.createUser();
+      await testManager.createUser();
 
       await request(app)
         .get(SETTINGS.PATH.USERS)
@@ -91,9 +91,9 @@ describe("/users test", () => {
 
   describe("DELETE USER", () => {
     it("1 - should delete user and return status code 204", async () => {
-      await authManager.createUser();
-      const user = await authManager.getUser();
-  
+      await testManager.createUser();
+      const user = await testManager.getUser();
+
       await request(app)
         .delete(`${SETTINGS.PATH.USERS}/${user.items[0].id}`)
         .auth("admin", "qwerty")
@@ -101,8 +101,8 @@ describe("/users test", () => {
     });
 
     it("2 - shouldn't delete user and return status code 401 if unauthorized", async () => {
-      await authManager.createUser();
-      const user = await authManager.getUser();
+      await testManager.createUser();
+      const user = await testManager.getUser();
 
       await request(app)
         .delete(`${SETTINGS.PATH.USERS}/${user.id}`)
@@ -111,7 +111,7 @@ describe("/users test", () => {
     });
 
     it("3 - shouldn't delete user and return status code 404 if id is not exist", async () => {
-      await authManager.createUser();
+      await testManager.createUser();
       const usersId = "662bb47c5ea70648a79f7c10";
 
       await request(app)

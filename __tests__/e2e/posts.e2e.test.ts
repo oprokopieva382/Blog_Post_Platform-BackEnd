@@ -2,8 +2,8 @@ import request from "supertest";
 import { SETTINGS } from "../../src/settings";
 import { app } from "../../src/app";
 import { ConnectMongoDB } from "../../src/cloud_DB";
-import { authManager, blogManager } from "../../src/testManager";
-import { dropCollections } from "../../src/testManager/dropCollections";
+import { dropCollections } from "../e2e/dropCollections";
+import { testManager } from "./test-helpers";
 
 describe("/posts test", () => {
   beforeAll(async () => {
@@ -16,8 +16,8 @@ describe("/posts test", () => {
 
   describe("CREATE POST", () => {
     it("1 - should create post and return  status code of 201", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
 
       const newPost = {
         title: "Refactor",
@@ -34,8 +34,8 @@ describe("/posts test", () => {
     });
 
     it("2 - shouldn't create post and return  status code of 400", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
 
       const newPost = {
         title: "",
@@ -54,8 +54,8 @@ describe("/posts test", () => {
     });
 
     it("3 - shouldn't create post if unauthorized and return  status code of 401", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
 
       const newPost = {
         title: "Refactor",
@@ -74,9 +74,9 @@ describe("/posts test", () => {
 
   describe("GET POSTS", () => {
     it("1 - should get posts and return status code 200 and object with pagination", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      await testManager.createPost(blog.id);
 
       const res = await request(app)
         .get(`${SETTINGS.PATH.POSTS}?pageNumber=1&pageSize=5`)
@@ -89,9 +89,9 @@ describe("/posts test", () => {
 
   describe("UPDATE POSTS", () => {
     it("1 - should update posts and return status code 204", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       const update = {
         title: "Nest.js",
@@ -108,9 +108,9 @@ describe("/posts test", () => {
     });
 
     it("2 - shouldn't update post and return  status code of 400", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       const update = {
         title: "",
@@ -129,9 +129,9 @@ describe("/posts test", () => {
     });
 
     it("3 - shouldn't update posts and return status code 401", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       const update = {
         title: "Nest.js",
@@ -148,9 +148,9 @@ describe("/posts test", () => {
     });
 
     it("4 - shouldn't update posts and return status code 404 if Id not found", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      await testManager.createPost(blog.id);
 
       const update = {
         title: "Nest.js",
@@ -171,11 +171,11 @@ describe("/posts test", () => {
 
   describe("CREATE COMMENT FOR POST", () => {
     it("1- should create comment for proper post and with user auth & return status code 201", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       const comment = {
         content: "Can you, please, explain how it works?",
@@ -189,11 +189,11 @@ describe("/posts test", () => {
     });
 
     it("2- shouldn't create comment for proper post and with user auth if incorrect values & return status code 400", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       const shortComment = {
         content: "How it works?",
@@ -207,11 +207,11 @@ describe("/posts test", () => {
     });
 
     it("3- shouldn't create comment for proper post if user unauthorized & return status code 401", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       const comment = {
         content: "Can you, please, explain how it works?",
@@ -225,11 +225,11 @@ describe("/posts test", () => {
     });
 
     it("4- shouldn't create comment for proper post if postId is not exist & return status code 404", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
-      const blog = await blogManager.createBlog();
-      await blogManager.createPost(blog.id);
+      const blog = await testManager.createBlog();
+      await testManager.createPost(blog.id);
       const wrongPostId = "6634e807bcf8ea51a3d4da61";
 
       const comment = {
@@ -246,12 +246,12 @@ describe("/posts test", () => {
 
   describe("GET COMMENTS OF POST", () => {
     it("1 - shouldn't find comment for proper post if postId is not exist & return status code 404", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
-      await blogManager.createComment(post.id, accessToken);
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
+      await testManager.createComment(post.id, accessToken);
 
       const wrongPostId = "6634e807bcf8ea51a3d4da61";
 
@@ -263,12 +263,12 @@ describe("/posts test", () => {
     });
 
     it("2 - should find comment for proper post if postId exist, return status code 200 & object with pagination", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
-      await blogManager.createComment(post.id, accessToken);
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
+      await testManager.createComment(post.id, accessToken);
 
       await request(app)
         .get(
@@ -280,9 +280,9 @@ describe("/posts test", () => {
 
   describe("DELETE POST", () => {
     it("1 - shouldn't delete post and return status code 401 if unauthorized", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       await request(app)
         .delete(`${SETTINGS.PATH.POSTS}/${post.id}`)
@@ -291,9 +291,9 @@ describe("/posts test", () => {
     });
 
     it("2 - shouldn't delete post and return status code 404 if id is not exist", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      await testManager.createPost(blog.id);
       const postsId = "662bb47c5ea70648a79f7c10";
 
       await request(app)
@@ -303,9 +303,9 @@ describe("/posts test", () => {
     });
 
     it("3 - should delete post and return status code 204", async () => {
-      await authManager.createUser();
-      const blog = await blogManager.createBlog();
-      const post = await blogManager.createPost(blog.id);
+      await testManager.createUser();
+      const blog = await testManager.createBlog();
+      const post = await testManager.createPost(blog.id);
 
       await request(app)
         .delete(`${SETTINGS.PATH.POSTS}/${post.id}`)
