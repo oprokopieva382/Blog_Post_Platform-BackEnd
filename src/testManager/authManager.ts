@@ -1,8 +1,8 @@
 import request from "supertest";
 import { app } from "../app";
 import { SETTINGS } from "../settings";
+import { blackListTokenCollection, usersCollection } from "../cloud_DB";
 import { ObjectId } from "mongodb";
-import { blackListTokenCollection } from "../cloud_DB";
 
 export const authManager = {
   async createUser() {
@@ -44,6 +44,39 @@ export const authManager = {
   },
 
   async addToBlacklistToken(refreshToken: string) {
-    return await blackListTokenCollection.insertOne({refreshToken});
+    return await blackListTokenCollection.insertOne({ refreshToken });
+  },
+
+  async getUser() {
+    const res = await request(app)
+      .get(SETTINGS.PATH.USERS)
+      .auth("admin", "qwerty");
+    return res.body.data;
+  },
+
+  async registerUser() {
+    const newUser = {
+      login: "Tina",
+      password: "tina123",
+      email: "Tina@gmail.com",
+    };
+
+    await request(app)
+      .post(`${SETTINGS.PATH.AUTH}/registration`)
+      .send(newUser)
+      .expect(204);
+  },
+
+  async getConfirmCode() {
+    await this.registerUser();
+
+    const user = await this.getUser();
+    const userWithCode = await usersCollection.findOne({
+      _id: new ObjectId(user.items[0].id),
+    });
+    console.log(userWithCode);
+    return userWithCode
+      ? userWithCode.emailConfirmation.confirmationCode
+      : null;
   },
 };

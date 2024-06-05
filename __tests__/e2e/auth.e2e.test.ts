@@ -105,4 +105,103 @@ describe("auth tests", () => {
         .expect(401);
     });
   });
+
+  describe("REGISTRATION", () => {
+    it("should register user and return status code of 204", async () => {
+      const newUser = {
+        login: "Tina",
+        password: "tina123",
+        email: "Tina@gmail.com",
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration`)
+        .send(newUser)
+        .expect(204);
+    });
+
+    it("shouldn't register user and return status code of 400 if invalid inputs", async () => {
+      const newUser = {
+        login: "Tina",
+        password: "tina123",
+        email: "Tina", //not valid email, should be in pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration`)
+        .send(newUser)
+        .expect(400);
+    });
+  });
+
+  describe("REGISTRATION CONFIRMATION", () => {
+    it("should confirm user registration by email link and return status code of 204", async () => {
+      const code = await authManager.getConfirmCode();
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-confirmation`)
+        .send({ code })
+        .expect(204);
+    });
+
+    it("shouldn't confirm user registration by email link and return status code of 400 if the confirmation code is incorrect", async () => {
+      const code = "6654cc84aa3424d5f961994b"; //incorrect code
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-confirmation`)
+        .send({ code })
+        .expect(400);
+    });
+  });
+
+  describe("REFRESH TOKEN", () => {
+    it("should request new refreshToken, return new accessToken & status code of 200", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/refresh-token`)
+        .set("Cookie", `refreshToken=${refreshToken}`)
+        .set("Authorization", `Bearer ${res.body.data.accessToken}`)
+        .expect(200);
+    });
+
+    it("should request new refreshToken but request failed as unauthorized user, return status code of 401", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/refresh-token`)
+        .set("Cookie", `refreshToken=${refreshToken}+1`)
+        .set("Authorization", `Bearer ${res.body.data.accessToken}+1`)
+        .expect(401);
+    });
+  });
+
+  describe("REGISTRATION EMAIL RESENDING", () => {
+    it("should resend email with confirmation link, return status code of 204", async () => {
+      await authManager.registerUser();
+
+      const email = {
+        email: "Tina@gmail.com",
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-email-resending`)
+        .send(email)
+        .expect(204);
+    });
+
+    it("should fail the request resend-email with confirmation link, return status code of 400", async () => {
+      await authManager.registerUser();
+      const email = {
+        email: "Tina@gmail", //not valid email, should be in pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-email-resending`)
+        .send(email)
+        .expect(400);
+    });
+  });
 });
