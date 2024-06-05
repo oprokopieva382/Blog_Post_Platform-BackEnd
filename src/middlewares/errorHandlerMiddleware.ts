@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../helper/api-errors";
-import { formatResponse } from "../output-errors-type";
+import { formatResponse } from "../utils/responseDTO";
 
 export const errorHandlerMiddleware = (
   err: Error | ApiError,

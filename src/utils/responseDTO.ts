@@ -28,6 +28,6 @@ export const formatResponse = <T>(
   return res.status(status).json(responseObject);
 };
 
-export type APIErrorResult = {
-  errorsMessages: FieldError[];
-};
+// export type APIErrorResult = {
+//   errorsMessages: FieldError[];
+// };

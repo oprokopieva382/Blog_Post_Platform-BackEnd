@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { UserInputModel } from "../../models";
-import { formatResponse } from "../../output-errors-type";
+import { formatResponse } from "../../utils/responseDTO";
 import { usersService } from "../../services";
 import { userDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
