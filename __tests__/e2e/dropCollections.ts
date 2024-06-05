@@ -4,7 +4,7 @@ import {
   commentsCollection,
   postsCollection,
   usersCollection,
-} from "../cloud_DB";
+} from "../../src/cloud_DB";
 
 export const dropCollections = async () => {
   try {
@@ -13,7 +13,7 @@ export const dropCollections = async () => {
       postsCollection.drop(),
       commentsCollection.drop(),
       usersCollection.drop(),
-      await blackListTokenCollection.drop()
+      await blackListTokenCollection.drop(),
     ]);
     console.log("Collections dropped successfully");
   } catch (error) {

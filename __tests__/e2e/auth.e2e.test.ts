@@ -2,7 +2,7 @@ import { ConnectMongoDB } from "../../src/cloud_DB";
 import request from "supertest";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
-import { authManager } from "../../src/testManager";
+import { testManager } from "../../src/testManager";
 import { dropCollections } from "../../src/testManager/dropCollections";
 
 describe("auth tests", () => {
@@ -16,7 +16,7 @@ describe("auth tests", () => {
 
   describe("AUTH LOGIN", () => {
     it("should login user and return status code 200", async () => {
-      await authManager.createUser();
+      await testManager.createUser();
       const loginInput = {
         loginOrEmail: "Tina@gmail.com",
         password: "tina123",
@@ -33,7 +33,7 @@ describe("auth tests", () => {
     });
 
     it("shouldn't login user and return status code 401 if password or login is wrong", async () => {
-      await authManager.createUser();
+      await testManager.createUser();
       const loginInput = {
         loginOrEmail: "Tina@gmail.com",
         password: "string123mjmj,j,j", //wrong password
@@ -46,7 +46,7 @@ describe("auth tests", () => {
     });
 
     it("shouldn't login user and return status code 400 if incorrect values", async () => {
-      await authManager.createUser();
+      await testManager.createUser();
       const loginInput = {
         loginOrEmail: "Tina1@gmail.com", //incorrect email
         password: "string123",
@@ -61,8 +61,8 @@ describe("auth tests", () => {
 
   describe("AUTH ME", () => {
     it("should auth me return status code 200 and object", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
 
       await request(app)
@@ -72,8 +72,8 @@ describe("auth tests", () => {
     });
 
     it("shouldn't auth me and return status code 401", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
       const accessToken = res.body.data.accessToken;
 
       await request(app)
@@ -85,8 +85,8 @@ describe("auth tests", () => {
 
   describe("LOG OUT", () => {
     it("should logout user and return status code of 204", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
 
       await request(app)
         .post(`${SETTINGS.PATH.AUTH}/logout`)
@@ -95,9 +95,9 @@ describe("auth tests", () => {
     });
 
     it("shouldn't logout user and return status code of 401 if unauthorized", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
-      await authManager.addToBlacklistToken(refreshToken);
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
+      await testManager.addToBlacklistToken(refreshToken);
 
       await request(app)
         .post(`${SETTINGS.PATH.AUTH}/logout`)
@@ -136,7 +136,7 @@ describe("auth tests", () => {
 
   describe("REGISTRATION CONFIRMATION", () => {
     it("should confirm user registration by email link and return status code of 204", async () => {
-      const code = await authManager.getConfirmCode();
+      const code = await testManager.getConfirmCode();
 
       await request(app)
         .post(`${SETTINGS.PATH.AUTH}/registration-confirmation`)
@@ -156,8 +156,8 @@ describe("auth tests", () => {
 
   describe("REFRESH TOKEN", () => {
     it("should request new refreshToken, return new accessToken & status code of 200", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
 
       await request(app)
         .post(`${SETTINGS.PATH.AUTH}/refresh-token`)
@@ -167,8 +167,8 @@ describe("auth tests", () => {
     });
 
     it("should request new refreshToken but request failed as unauthorized user, return status code of 401", async () => {
-      await authManager.createUser();
-      const { res, refreshToken } = await authManager.loginUser();
+      await testManager.createUser();
+      const { res, refreshToken } = await testManager.loginUser();
 
       await request(app)
         .post(`${SETTINGS.PATH.AUTH}/refresh-token`)
@@ -180,7 +180,7 @@ describe("auth tests", () => {
 
   describe("REGISTRATION EMAIL RESENDING", () => {
     it("should resend email with confirmation link, return status code of 204", async () => {
-      await authManager.registerUser();
+      await testManager.registerUser();
 
       const email = {
         email: "Tina@gmail.com",
@@ -193,7 +193,7 @@ describe("auth tests", () => {
     });
 
     it("should fail the request resend-email with confirmation link, return status code of 400", async () => {
-      await authManager.registerUser();
+      await testManager.registerUser();
       const email = {
         email: "Tina@gmail", //not valid email, should be in pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
       };

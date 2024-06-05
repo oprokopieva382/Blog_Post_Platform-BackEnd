@@ -2,18 +2,25 @@ import request from "supertest";
 import { SETTINGS } from "../../src/settings";
 import { app } from "../../src/app";
 import { ConnectMongoDB } from "../../src/cloud_DB";
-import { userManager } from "../../src/testManager";
+import { dropCollections } from "../e2e/dropCollections";
+import { testManager } from "./test-helpers";
 
 describe("/users test", () => {
   beforeAll(async () => {
     await ConnectMongoDB();
   });
 
-  afterAll(async () => {});
+  afterEach(async () => {
+    await dropCollections();
+  });
 
   describe("CREATE USER", () => {
     it("1 - should create user and return  status code of 201", async () => {
-      const newUser = await userManager.createUser();
+      const newUser = {
+        login: "Tina",
+        password: "tina123",
+        email: "Tina@gmail.com",
+      };
 
       const res = await request(app)
         .post(SETTINGS.PATH.USERS)
@@ -21,7 +28,7 @@ describe("/users test", () => {
         .auth("admin", "qwerty")
         .expect(201);
 
-      expect(res.body).toEqual({
+      expect(res.body.data).toEqual({
         email: newUser.email,
         login: newUser.login,
         createdAt: expect.any(String),
@@ -46,9 +53,13 @@ describe("/users test", () => {
     });
 
     it("3 - shouldn't create user if unauthorized and return  status code of 401", async () => {
-      const newUser = await userManager.createUser();
+      const newUser = {
+        login: "Tina",
+        password: "tina123",
+        email: "Tina@gmail.com",
+      };
 
-      const res = await request(app)
+      await request(app)
         .post(SETTINGS.PATH.USERS)
         .send(newUser)
         .auth("admin252", "qwerty5252")
@@ -58,52 +69,52 @@ describe("/users test", () => {
 
   describe("GET USERS", () => {
     it("1 - should get users and return status code 200 and object with pagination", async () => {
-      const users = await userManager.usersWithPagination(1, 5);
-      console.log(users);
+      await testManager.createUser();
 
       const res = await request(app)
         .get(SETTINGS.PATH.USERS)
-        .send(users)
         .auth("admin", "qwerty")
         .expect(200);
-      expect(users.page).toBe(1);
-      expect(users.pageSize).toBe(5);
+      expect(res.body.data.page).toBe(1);
+      expect(res.body.data.pageSize).toBe(10);
     });
 
     it("2 - shouldn't get users and return status code 401 if unauthorized", async () => {
-      const users = await userManager.getUsers();
+      await testManager.createUser();
 
-      const res = await request(app)
+      await request(app)
         .get(SETTINGS.PATH.USERS)
-        .send(users)
         .auth("adminll", "qwertyll")
         .expect(401);
     });
   });
 
-  describe("DELETE USERS", () => {
+  describe("DELETE USER", () => {
     it("1 - should delete user and return status code 204", async () => {
-      const users = await userManager.getUsers();
+      await testManager.createUser();
+      const user = await testManager.getUser();
 
-      const res = await request(app)
-        .delete(`${SETTINGS.PATH.USERS}/${users[0].id}`)
+      await request(app)
+        .delete(`${SETTINGS.PATH.USERS}/${user.items[0].id}`)
         .auth("admin", "qwerty")
         .expect(204);
     });
 
     it("2 - shouldn't delete user and return status code 401 if unauthorized", async () => {
-      const users = await userManager.getUsers();
+      await testManager.createUser();
+      const user = await testManager.getUser();
 
-      const res = await request(app)
-        .delete(`${SETTINGS.PATH.USERS}/${users[0].id}`)
+      await request(app)
+        .delete(`${SETTINGS.PATH.USERS}/${user.id}`)
         .auth("admin5662", "qwerty")
         .expect(401);
     });
 
     it("3 - shouldn't delete user and return status code 404 if id is not exist", async () => {
+      await testManager.createUser();
       const usersId = "662bb47c5ea70648a79f7c10";
 
-      const res = await request(app)
+      await request(app)
         .delete(`${SETTINGS.PATH.USERS}/${usersId}`)
         .auth("admin", "qwerty")
         .expect(404);

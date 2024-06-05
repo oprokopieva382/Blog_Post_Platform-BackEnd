@@ -7,7 +7,7 @@ export const commentsService = {
     const foundComment = await commentsRepository.getByIdComment(commentId);
 
     if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
-      throw ApiError.NotFoundError("Forbidden", [
+      throw ApiError.ForbiddenError("Forbidden", [
         "You don't have permission to create comment",
       ]);
     }
@@ -31,7 +31,7 @@ export const commentsService = {
     const foundComment = await commentsRepository.getByIdComment(commentId);
 
     if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
-      throw ApiError.NotFoundError("Forbidden", [
+      throw ApiError.ForbiddenError("Forbidden", [
         "You don't have permission to create comment",
       ]);
     }
