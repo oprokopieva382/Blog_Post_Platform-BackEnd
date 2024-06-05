@@ -177,4 +177,31 @@ describe("auth tests", () => {
         .expect(401);
     });
   });
+
+  describe("REGISTRATION EMAIL RESENDING", () => {
+    it("should resend email with confirmation link, return status code of 204", async () => {
+      await authManager.registerUser();
+
+      const email = {
+        email: "Tina@gmail.com",
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-email-resending`)
+        .send(email)
+        .expect(204);
+    });
+
+    it("should fail the request resend-email with confirmation link, return status code of 400", async () => {
+      await authManager.registerUser();
+      const email = {
+        email: "Tina@gmail", //not valid email, should be in pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-email-resending`)
+        .send(email)
+        .expect(400);
+    });
+  });
 });

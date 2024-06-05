@@ -54,7 +54,7 @@ export const authManager = {
     return res.body.data;
   },
 
-  async getConfirmCode() {
+  async registerUser() {
     const newUser = {
       login: "Tina",
       password: "tina123",
@@ -65,12 +65,16 @@ export const authManager = {
       .post(`${SETTINGS.PATH.AUTH}/registration`)
       .send(newUser)
       .expect(204);
+  },
+
+  async getConfirmCode() {
+    await this.registerUser();
 
     const user = await this.getUser();
     const userWithCode = await usersCollection.findOne({
       _id: new ObjectId(user.items[0].id),
     });
-
+    console.log(userWithCode);
     return userWithCode
       ? userWithCode.emailConfirmation.confirmationCode
       : null;
