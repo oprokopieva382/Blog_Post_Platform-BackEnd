@@ -118,7 +118,7 @@ describe("/comments test", () => {
         .expect(404);
     });
 
-    it("shouldn't update comment if commentId !== user.id & return status code 403", async () => {
+    it("5 - shouldn't update comment if commentId !== user.id & return status code 403", async () => {
       await authManager.createUser();
       const { res, refreshToken } = await authManager.loginUser();
       const accessToken = res.body.data.accessToken;
@@ -153,10 +153,106 @@ describe("/comments test", () => {
       await request(app)
         .put(`${SETTINGS.PATH.COMMENTS}/${comment.id}`)
         .send(newComment)
-        .set("Authorization", `Bearer ${user2tokens.body.accessToken}`)
+        .set("Authorization", `Bearer ${user2tokens.body.data.accessToken}`)
         .expect(403);
     });
+  });
 
-    // describe("DELETE COMMENT BY ID", () => {
+  describe("DELETE COMMENT BY ID", () => {
+    it("1- shouldn't delete comment by id if commentId is not exist & return status code 404", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+      const accessToken = res.body.data.accessToken;
+      const blog = await blogManager.createBlog();
+      const post = await blogManager.createPost(blog.id);
+      await blogManager.createComment(post.id, accessToken);
+      const commentId = "6634e807bcf8ea51a3d4da61";
+
+      const newComment = {
+        content: "Still can't understand, need more info to get how it works?",
+      };
+
+      await request(app)
+        .delete(`${SETTINGS.PATH.COMMENTS}/${commentId}`)
+        .send(newComment)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(404);
+    });
+
+    it("2- shouldn't delete comment by id if user unauthorized & return status code 401", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+      const accessToken = res.body.data.accessToken;
+      const blog = await blogManager.createBlog();
+      const post = await blogManager.createPost(blog.id);
+      const comment = await blogManager.createComment(post.id, accessToken);
+
+      const newComment = {
+        content: "Still can't understand, need more info to get how it works?",
+      };
+
+      await request(app)
+        .delete(`${SETTINGS.PATH.COMMENTS}/${comment.id}`)
+        .send(newComment)
+        .set("Authorization", `Bearer ${accessToken}+1`)
+        .expect(401);
+    });
+
+    it("3- should delete comment by id if user auth & return status code 204", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+      const accessToken = res.body.data.accessToken;
+      const blog = await blogManager.createBlog();
+      const post = await blogManager.createPost(blog.id);
+      const comment = await blogManager.createComment(post.id, accessToken);
+
+      const newComment = {
+        content: "Still can't understand, need more info to get how it works?",
+      };
+      await request(app)
+        .delete(`${SETTINGS.PATH.COMMENTS}/${comment.id}`)
+        .send(newComment)
+        .set("Authorization", `Bearer ${accessToken}`)
+        .expect(204);
+    });
+
+    it("4 - shouldn't delete comment if commentId !== user.id & return status code 403", async () => {
+      await authManager.createUser();
+      const { res, refreshToken } = await authManager.loginUser();
+      const accessToken = res.body.data.accessToken;
+      const blog = await blogManager.createBlog();
+      const post = await blogManager.createPost(blog.id);
+      const comment = await blogManager.createComment(post.id, accessToken);
+
+      const newComment = {
+        content: "Still can't understand, need more info to get how it works?",
+      };
+
+      const user2creds = {
+        login: "Tina2",
+        password: "tina123",
+        email: "Tina2@gmail.com",
+      };
+
+      const user2 = await request(app)
+        .post(SETTINGS.PATH.USERS)
+        .send(user2creds)
+        .auth("admin", "qwerty")
+        .expect(201);
+
+      const user2tokens = await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/login`)
+        .send({
+          loginOrEmail: user2creds.email,
+          password: user2creds.password,
+        })
+        .expect(200);
+
+      await request(app)
+        .delete(`${SETTINGS.PATH.COMMENTS}/${comment.id}`)
+        .send(newComment)
+        .set("Authorization", `Bearer ${user2tokens.body.data.accessToken}`)
+        .expect(403);
+    });
   });
 });
