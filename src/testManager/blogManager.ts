@@ -45,10 +45,12 @@ export const blogManager = {
       content: "Can you, please, explain how it works?",
     };
 
-    await request(app)
+    const res = await request(app)
       .post(`${SETTINGS.PATH.POSTS}/${postId}/comments`)
       .send(comment)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect(201);
+
+    return res.body.data;
   },
 };

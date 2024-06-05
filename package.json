@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "dev": "yarn nodemon --inspect dist/index.js",
     "ngrok:start": "yarn ngrok http 3003",
-    "test": "jest -i --detectOpenHandles --no-cache --watchAll --testPathPattern=__tests__/e2e/posts.e2e.test.ts"
+    "test": "jest -i --detectOpenHandles --no-cache --watchAll --testPathPattern=__tests__/e2e/comments.e2e.test.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

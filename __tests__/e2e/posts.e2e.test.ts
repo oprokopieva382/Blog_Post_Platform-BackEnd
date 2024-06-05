@@ -253,7 +253,6 @@ describe("/posts test", () => {
       const post = await blogManager.createPost(blog.id);
       await blogManager.createComment(post.id, accessToken);
 
-      await blogManager.createPost(blog.id);
       const wrongPostId = "6634e807bcf8ea51a3d4da61";
 
       await request(app)
