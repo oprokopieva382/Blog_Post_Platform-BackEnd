@@ -69,16 +69,6 @@ export const postManager = {
     return newComment;
   },
 
-  async createBlog() {
-    const blog = await blogManager.createBlog();
-
-    const res = await request(app)
-      .post(SETTINGS.PATH.BLOGS)
-      .send(blog)
-      .auth("admin", "qwerty")
-      .expect(201);
-  },
-
   async commentsWithPagination(pageNumber: number = 1, pageSize: number = 10, postId:string ) {
    const comments = await commentsCollection.find({ postId }).toArray();
     const totalCommentsCount = comments.length;

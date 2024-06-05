@@ -2,7 +2,7 @@ import request from "supertest";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
 import { ConnectMongoDB } from "../../src/cloud_DB";
-import { blogManager } from "../../src/testManager";
+import { authManager, blogManager } from "../../src/testManager";
 import { dropCollections } from "../../src/testManager/dropCollections";
 
 describe("/blogs test", () => {
@@ -10,15 +10,20 @@ describe("/blogs test", () => {
     await ConnectMongoDB();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await dropCollections();
   });
 
   describe("CREATE BLOG", () => {
     it("1 - should create blog and return  status code of 201", async () => {
-      const newBlog = await blogManager.createBlog();
+      await authManager.createUser();
+      const newBlog = {
+        name: "Promise",
+        description: "do you know promise?",
+        websiteUrl: "https://google.com",
+      };
 
-      const res = await request(app)
+      await request(app)
         .post(SETTINGS.PATH.BLOGS)
         .send(newBlog)
         .auth("admin", "qwerty")
@@ -26,6 +31,7 @@ describe("/blogs test", () => {
     });
 
     it("2 - shouldn't create blog and return  status code of 400", async () => {
+      await authManager.createUser();
       const newBlog = {
         name: "",
         description: "",
@@ -42,9 +48,14 @@ describe("/blogs test", () => {
     });
 
     it("3 - shouldn't create blog if unauthorized and return  status code of 401", async () => {
-      const newBlog = await blogManager.createBlog();
+      await authManager.createUser();
+      const newBlog = {
+        name: "Promise",
+        description: "do you know promise?",
+        websiteUrl: "https://google.com",
+      };
 
-      const res = await request(app)
+      await request(app)
         .post(SETTINGS.PATH.BLOGS)
         .send(newBlog)
         .auth("admin252", "qwerty5252")
@@ -54,62 +65,62 @@ describe("/blogs test", () => {
 
   describe("GET BLOGS", () => {
     it("1 - should get blogs and return status code 200 and object with pagination", async () => {
-      const blogs = await blogManager.blogsWithPagination(1, 5);
+      await authManager.createUser();
+      await blogManager.createBlog();
 
       const res = await request(app)
-        .get(SETTINGS.PATH.BLOGS)
-        .send(blogs)
-        .auth("admin", "qwerty")
+        .get(`${SETTINGS.PATH.BLOGS}?pageNumber=1&pageSize=5`)
         .expect(200);
-      expect(blogs.page).toBe(1);
-      expect(blogs.pageSize).toBe(5);
+      expect(res.body.data.page).toBe(1);
+      expect(res.body.data.pageSize).toBe(5);
     });
   });
 
   describe("GET BLOG BY ID", () => {
-    it("1 - should get blog and return status code 200 and object", async () => {
-      const blogId = await blogManager.getBlogId();
-      const blog = await blogManager.getBlogById(blogId);
+    it("1 - should get blog by ID and return status code 200 and object", async () => {
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
 
-      const res = await request(app)
-        .get(`${SETTINGS.PATH.BLOGS}/${blogId}`)
-        .send(blog)
-        .auth("admin", "qwerty")
-        .expect(200);
+      await request(app).get(`${SETTINGS.PATH.BLOGS}/${blog.id}`).expect(200);
     });
 
-    it("shouldn't get blog and return status 404 if blogId is not exist", async () => {
+    it("2 - shouldn't get blog by ID and return status 404 if blogId is not exist", async () => {
+      await authManager.createUser();
       const blogId = "662bb47c5ea70648a79f7c10";
-      const blog = await blogManager.getBlogById(blogId);
 
-      const res = await request(app)
-        .get(`${SETTINGS.PATH.BLOGS}/${blogId}`)
-        .send(blog)
-        .auth("admin", "qwerty")
-        .expect(404);
+      await request(app).get(`${SETTINGS.PATH.BLOGS}/${blogId}`).expect(404);
     });
   });
 
   describe("UPDATE BLOG", () => {
     it("1 - should update blog and return status code 204", async () => {
-      const blogId = await blogManager.getBlogId();
-      const update = await blogManager.updateBlog();
-      const res = await request(app)
-        .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
-        .send(update)
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
+
+      const blogToUpdate = {
+        name: "Promise",
+        description: "do you know promise well?",
+        websiteUrl: "https://google.com",
+      };
+
+      await request(app)
+        .put(`${SETTINGS.PATH.BLOGS}/${blog.id}`)
+        .send(blogToUpdate)
         .auth("admin", "qwerty")
         .expect(204);
     });
 
     it("2 - shouldn't update blog and return  status code of 400", async () => {
-      const blogId = await blogManager.getBlogId();
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
       const update = {
         name: "Promise",
         description: "do you know promise well?",
         websiteUrl: "",
       };
+
       const res = await request(app)
-        .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
+        .put(`${SETTINGS.PATH.BLOGS}/${blog.id}`)
         .send(update)
         .auth("admin", "qwerty")
         .expect(400);
@@ -117,19 +128,34 @@ describe("/blogs test", () => {
     });
 
     it("3 - shouldn't update blog and return status code 401 if unauthorized", async () => {
-      const blogId = await blogManager.getBlogId();
-      const update = await blogManager.updateBlog();
-      const res = await request(app)
-        .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
+
+      const update = {
+        name: "Promise",
+        description: "do you know promise well?",
+        websiteUrl: "",
+      };
+
+      await request(app)
+        .put(`${SETTINGS.PATH.BLOGS}/${blog.id}`)
         .send(update)
         .auth("admin00", "qwerty4")
         .expect(401);
     });
 
     it("4 - shouldn't update blog and return status code 404 if Id not found", async () => {
-      const blogId = "662bb47c5ea70648a79f7c10";
-      const update = await blogManager.updateBlog();
-      const res = await request(app)
+      await authManager.createUser();
+      await blogManager.createBlog();
+      const blogId = "665de0b0ed6b88ba049eae66";
+
+      const update = {
+        name: "Promise",
+        description: "do you know promise well?",
+        websiteUrl: "https://google.com",
+      };
+
+      await request(app)
         .put(`${SETTINGS.PATH.BLOGS}/${blogId}`)
         .send(update)
         .auth("admin", "qwerty")
@@ -138,30 +164,42 @@ describe("/blogs test", () => {
   });
 
   describe("CREATE BLOG POST", () => {
-    it("should create blog post and return object with status 201", async () => {
-      const blogId = await blogManager.getBlogId();
-      const newPost = await blogManager.createPost();
+    it("1 - should create blog post and return object with status 201", async () => {
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
 
-      const res = await request(app)
-        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+      const newPost = {
+        title: "Memo",
+        shortDescription: "Learn more about memo in " + new Date(),
+        content: "whole content about memo",
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.BLOGS}/${blog.id}/posts`)
         .send(newPost)
         .auth("admin", "qwerty")
         .expect(201);
     });
 
-    it("shouldn't create blog post and return status 404 if blogId is not exist", async () => {
+    it("2 - shouldn't create blog post and return status 404 if blogId is not exist", async () => {
       const blogId = "662bb47c5ea70648a79f7c10";
-      const newPost = await blogManager.createPost();
 
-      const res = await request(app)
+      const newPost = {
+        title: "Memo",
+        shortDescription: "Learn more about memo in " + new Date(),
+        content: "whole content about memo",
+      };
+
+      await request(app)
         .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
         .send(newPost)
         .auth("admin", "qwerty")
         .expect(404);
     });
 
-    it("shouldn't create blog post and return object with status 400 if incorrect input values ", async () => {
-      const blogId = await blogManager.getBlogId();
+    it("3 - shouldn't create blog post and return object with status 400 if incorrect input values ", async () => {
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
       const newPost = {
         title: "Promise",
         shortDescription: "do you know promise well?",
@@ -169,7 +207,7 @@ describe("/blogs test", () => {
       };
 
       const res = await request(app)
-        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+        .post(`${SETTINGS.PATH.BLOGS}/${blog.id}/posts`)
         .send(newPost)
         .auth("admin", "qwerty")
         .expect(400);
@@ -177,22 +215,35 @@ describe("/blogs test", () => {
       expect(res.body.errorsMessages.length).toBe(1);
     });
 
-    it("shouldn't create blog post and return object with status 401 if unauthorized ", async () => {
-      const blogId = await blogManager.getBlogId();
-      const newPost = await blogManager.createPost();
+    it("4 - shouldn't create blog post and return object with status 401 if unauthorized ", async () => {
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
 
-      const res = await request(app)
-        .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
+      const newPost = {
+        title: "Memo",
+        shortDescription: "Learn more about memo in " + new Date(),
+        content: "whole content about memo",
+      };
+
+      await request(app)
+        .post(`${SETTINGS.PATH.BLOGS}/${blog.id}/posts`)
         .send(newPost)
         .auth("admin55", "qwertycc")
         .expect(401);
     });
 
-    it("shouldn't create blog post and return status 404 if blogId is not exist", async () => {
+    it("5 - shouldn't create blog post and return status 404 if blogId is not exist", async () => {
+      await authManager.createUser();
+      await blogManager.createBlog();
       const blogId = "662bb47c5ea70648a79f7c10";
-      const newPost = await blogManager.createPost();
 
-      const res = await request(app)
+      const newPost = {
+        title: "Memo",
+        shortDescription: "Learn more about memo in " + new Date(),
+        content: "whole content about memo",
+      };
+
+      await request(app)
         .post(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
         .send(newPost)
         .auth("admin", "qwerty")
@@ -201,24 +252,25 @@ describe("/blogs test", () => {
   });
 
   describe("GET BLOG POSTS", () => {
-    it("should get blog posts and return object with pagination & status 200", async () => {
-      const blogId = await blogManager.getBlogId();
-      const posts = await blogManager.blogPostsWithPagination();
+    it("1 - should get blog posts and return object with pagination & status 200", async () => {
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
+      await blogManager.createPost(blog.id);
 
-      const res = await request(app)
-        .get(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-        .send(posts)
+      await request(app)
+        .get(`${SETTINGS.PATH.BLOGS}/${blog.id}/posts`)
         .auth("admin", "qwerty")
         .expect(200);
     });
 
-    it("shouldn't get blog posts and return status 404 if blogId is not exist", async () => {
+    it("2 - shouldn't get blog posts and return status 404 if blogId is not exist", async () => {
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
+      await blogManager.createPost(blog.id);
       const blogId = "662bb47c5ea70648a79f7c10";
-      const posts = await blogManager.blogPostsWithPagination();
 
-      const res = await request(app)
+      await request(app)
         .get(`${SETTINGS.PATH.BLOGS}/${blogId}/posts`)
-        .send(posts)
         .auth("admin", "qwerty")
         .expect(404);
     });
@@ -226,25 +278,32 @@ describe("/blogs test", () => {
 
   describe("DELETE BLOG", () => {
     it("1 - shouldn't delete blog and return status code 401 if unauthorized", async () => {
-      const blogs = await blogManager.getBlogs();
-      const res = await request(app)
-        .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
+
+      await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blog.id}`)
         .auth("admin5662", "qwerty")
         .expect(401);
     });
 
     it("2 - shouldn't delete blog and return status code 404 if id is not exist", async () => {
+      await authManager.createUser();
+      await blogManager.createBlog();
       const blogsId = "662bb47c5ea70648a79f7c10";
-      const res = await request(app)
+
+      await request(app)
         .delete(`${SETTINGS.PATH.BLOGS}/${blogsId}`)
         .auth("admin", "qwerty")
         .expect(404);
     });
 
     it("3 - should delete blog and return status code 204", async () => {
-      const blogs = await blogManager.getBlogs();
-      const res = await request(app)
-        .delete(`${SETTINGS.PATH.BLOGS}/${blogs[0].id}`)
+      await authManager.createUser();
+      const blog = await blogManager.createBlog();
+
+      await request(app)
+        .delete(`${SETTINGS.PATH.BLOGS}/${blog.id}`)
         .auth("admin", "qwerty")
         .expect(204);
     });
