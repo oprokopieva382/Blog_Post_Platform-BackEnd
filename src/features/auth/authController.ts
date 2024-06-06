@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../models";
-import { formatResponse } from "../../output-errors-type";
+import { formatResponse } from "../../utils/responseDTO";
 import { authService } from "../../services";
 import { authDTO, userDTO } from "../../utils/mapDBToView";
 import { jwtTokenService } from "../application";

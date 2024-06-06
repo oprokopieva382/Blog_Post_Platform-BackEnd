@@ -5,14 +5,14 @@ export type FieldError = {
   field: string;
 };
 
-export type ResponseDataType<T> = {
+export type ResponseDataType<T extends object> = {
   status: number;
   data: T | {};
   message?: string;
   errorsMessages?: FieldError[];
 };
 
-export const formatResponse = <T>(
+export const formatResponse = <T extends object>(
   res: Response,
   status: number,
   data: T | {},
@@ -25,9 +25,12 @@ export const formatResponse = <T>(
     message,
     errorsMessages,
   };
-  return res.status(status).json(responseObject);
-};
 
-export type APIErrorResult = {
-  errorsMessages: FieldError[];
+  //best and more common response in real practice
+  //return res.status(status).json(responseObject);
+
+  //Incubator response option (for learning purpose only)
+  return Object.keys(responseObject.data).length === 0
+    ? res.status(status).json({ errorsMessages: responseObject.errorsMessages })
+    : res.status(status).json(responseObject.data);
 };
