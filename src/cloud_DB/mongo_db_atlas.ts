@@ -5,6 +5,7 @@ import {
   BlogDBType,
   CommentDBType,
   PostDBType,
+  SessionsDBType,
   UserDBType,
 } from "./mongo_db_types";
 
@@ -18,8 +19,10 @@ export let usersCollection: Collection<UserDBType> =
   {} as Collection<UserDBType>;
 export let commentsCollection: Collection<CommentDBType> =
   {} as Collection<CommentDBType>;
-  export let blackListTokenCollection: Collection<BlackListTokenDBType> =
-    {} as Collection<BlackListTokenDBType>;
+export let blackListTokenCollection: Collection<BlackListTokenDBType> =
+  {} as Collection<BlackListTokenDBType>;
+export let sessionsCollection: Collection<SessionsDBType> =
+  {} as Collection<SessionsDBType>;
 
 export const ConnectMongoDB = async () => {
   try {
@@ -33,7 +36,10 @@ export const ConnectMongoDB = async () => {
     postsCollection = db.collection(SETTINGS.POSTS_COLLECTION);
     usersCollection = db.collection(SETTINGS.USERS_COLLECTION);
     commentsCollection = db.collection(SETTINGS.COMMENTS_COLLECTION);
-    blackListTokenCollection = db.collection(SETTINGS.BLACK_LIST_TOKEN_COLLECTION);
+    sessionsCollection = db.collection(SETTINGS.SESSIONS_COLLECTION);
+    blackListTokenCollection = db.collection(
+      SETTINGS.BLACK_LIST_TOKEN_COLLECTION
+    );
 
     return true;
   } catch (error) {
