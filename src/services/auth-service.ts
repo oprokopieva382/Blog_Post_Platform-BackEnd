@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { Request } from "express";
 import { bcryptService } from ".";
 import {
   LoginInputModel,
@@ -14,12 +15,13 @@ import { jwtTokenService } from "../features/application";
 import { blackListTokenCollection } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
+import { userDTO } from "../utils/mapDBToView";
 
 export const authService = {
-  async loginUser(data: LoginInputModel) {
-    const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
+  async loginUser(data: LoginInputModel, req: Request) {
+    const userData = await authRepository.getByLoginOrEmail(data.loginOrEmail);
 
-    if (!findUser) {
+    if (!userData) {
       throw ApiError.BadRequestError("Bad request", [
         "Login failed. Can't find user, check your inputs or  register first",
       ]);
@@ -27,7 +29,7 @@ export const authService = {
 
     const isPasswordCorrect = await bcryptService.testPassword(
       data.password,
-      findUser.password
+      userData.password
     );
 
     if (!isPasswordCorrect) {
@@ -36,7 +38,31 @@ export const authService = {
       ]);
     }
 
-    return findUser;
+    const deviceId = randomUUID();
+    const IP = req.ip;
+    const deviceName = req.headers["user-agent"] || "Unknown Device";
+    const user = userDTO(userData);
+
+    const accessToken = await jwtTokenService.createAccessToken(user.id);
+    const refreshToken = await jwtTokenService.createRefreshToken(
+      user.id,
+      deviceId
+    );
+
+    const { iat, exp } = await jwtTokenService.decodeToken(refreshToken);
+
+    const sessionData = {
+      userId: user.id,
+      deviceId,
+      iat: iat!,
+      deviceName,
+      IP: IP || "Unknown IP",
+      exp: exp!,
+    };
+
+    await this.createSession(sessionData);
+
+    return { accessToken, refreshToken };
   },
 
   async logoutUser(refreshToken: string) {
