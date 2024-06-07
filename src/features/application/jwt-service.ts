@@ -13,12 +13,12 @@ export const jwtTokenService = {
     };
   },
 
-  async createRefreshToken(userId: string) {
+  async createRefreshToken(userId: string, deviceId: string) {
     const refreshToken = jwt.sign(
-      { userId },
+      { userId, deviceId },
       SETTINGS.JWT_REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "20s",
+        expiresIn: "1h",
       }
     );
     return refreshToken;
@@ -46,5 +46,9 @@ export const jwtTokenService = {
     } catch (error) {
       throw ApiError.UnauthorizedError("Unauthorized. Invalid refresh token");
     }
+  },
+
+  async decodeToken(token: string) {
+    return jwt.decode(token) as JwtPayload;
   },
 };

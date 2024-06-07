@@ -13,6 +13,7 @@ import { RegistrationEmailResending } from "../types/RegistrationEmailResending"
 import { jwtTokenService } from "../features/application";
 import { blackListTokenCollection } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
+import { SessionData } from "../types/SessionData";
 
 export const authService = {
   async loginUser(data: LoginInputModel) {
@@ -108,13 +109,28 @@ export const authService = {
   },
 
   async addTokenToBlackList(refreshToken: string) {
-    return await blackListTokenCollection.insertOne({refreshToken});
+    return await blackListTokenCollection.insertOne({ refreshToken });
   },
 
-  async refreshToken(refreshToken: string, userId: string) {
+  async refreshToken(refreshToken: string, userId: string, deviceId: string) {
     await this.addTokenToBlackList(refreshToken);
     const newAccessToken = await jwtTokenService.createAccessToken(userId);
-    const newRefreshToken = await jwtTokenService.createRefreshToken(userId);
+    const newRefreshToken = await jwtTokenService.createRefreshToken(
+      userId,
+      deviceId
+    );
     return { newAccessToken, newRefreshToken };
+  },
+
+  async createSession(sessionData: SessionData) {
+    const newSession = {
+      user_id: sessionData.userId,
+      device_id: sessionData.deviceId,
+      iat: new Date(sessionData.iat * 1000).toISOString(),
+      device_name: sessionData.deviceName,
+      ip: sessionData.IP,
+      exp: new Date(sessionData.exp * 1000).toISOString(),
+    };
+    await authRepository.createSession(newSession);
   },
 };

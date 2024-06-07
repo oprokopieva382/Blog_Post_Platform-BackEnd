@@ -6,6 +6,7 @@ import { authDTO, userDTO } from "../../utils/mapDBToView";
 import { jwtTokenService } from "../application";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
+import { randomUUID } from "crypto";
 
 export const authController = {
   login: async (
@@ -14,11 +15,31 @@ export const authController = {
     next: NextFunction
   ) => {
     try {
+      const deviceName = req.headers["user-agent"] || "Unknown Device";
+      const deviceId = randomUUID();
+      const IP = req.ip;
+
       const authResult = await authService.loginUser(req.body);
 
       const user = userDTO(authResult);
       const accessToken = await jwtTokenService.createAccessToken(user.id);
-      const refreshToken = await jwtTokenService.createRefreshToken(user.id);
+      const refreshToken = await jwtTokenService.createRefreshToken(
+        user.id,
+        deviceId
+      );
+
+      const { iat, exp } = await jwtTokenService.decodeToken(refreshToken);
+
+      const sessionData = {
+        userId: user.id,
+        deviceId,
+        iat: iat!,
+        deviceName,
+        IP: IP || "Unknown IP",
+        exp: exp!,
+      };
+
+      await authService.createSession(sessionData);
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -101,9 +122,10 @@ export const authController = {
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const refreshToken = req.cookies.refreshToken;
+      const deviceId = randomUUID();
 
       const { newAccessToken, newRefreshToken } =
-        await authService.refreshToken(refreshToken, req.userId!);
+        await authService.refreshToken(refreshToken, req.userId!, deviceId);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,

@@ -53,11 +53,10 @@ export type BlackListTokenDBType = {
 };
 
 export type SessionsDBType = {
-  _id: ObjectId;
   user_id: string;
   device_id: string;
   iat: string;
   device_name: string;
   ip: string;
-  expiration: string;
+  exp: string;
 };

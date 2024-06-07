@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
-import { usersCollection } from "../cloud_DB/mongo_db_atlas";
+import { sessionsCollection, usersCollection } from "../cloud_DB/mongo_db_atlas";
+import { SessionsDBType } from "../cloud_DB/mongo_db_types";
 
 export const authRepository = {
   async getByLoginOrEmail(data: string): Promise<UserDBType | null> {
@@ -33,5 +34,9 @@ export const authRepository = {
       { $set: { "emailConfirmation.isConfirmed": true } },
       { returnDocument: "after" }
     );
+  },
+
+  async createSession(newSession: SessionsDBType) {
+    const result = await sessionsCollection.insertOne(newSession);
   },
 };
