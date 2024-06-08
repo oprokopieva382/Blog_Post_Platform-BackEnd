@@ -7,7 +7,7 @@ import {
   UserInputModel,
 } from "../models";
 import { authRepository, usersRepository } from "../repositories";
-import { add} from "date-fns/add";
+import { add } from "date-fns/add";
 import { fromUnixTime } from "date-fns/fromUnixTime";
 import { ObjectId } from "mongodb";
 import { emailAdapter } from "../features/adapters";
@@ -66,7 +66,12 @@ export const authService = {
   },
 
   async logoutUser(refreshToken: string) {
-    return await this.addTokenToBlackList(refreshToken);
+    //return await this.addTokenToBlackList(refreshToken);
+
+    const token = await jwtTokenService.decodeToken(refreshToken);
+
+    await authRepository.removeSession(token.deviceId);
+
   },
 
   async registerUser(data: UserInputModel) {
@@ -140,7 +145,6 @@ export const authService = {
 
   //await this.addTokenToBlackList(refreshToken);
   async refreshToken(refreshToken: string, userId: string) {
-
     const token = await jwtTokenService.decodeToken(refreshToken);
 
     const newAccessToken = await jwtTokenService.createAccessToken(userId);
@@ -162,18 +166,33 @@ export const authService = {
       deviceName: sessionData.deviceName,
       ip: sessionData.ip,
       exp: fromUnixTime(sessionData.exp!).toISOString(),
-       };
+    };
     await authRepository.createSession(newSession);
   },
 
   async updateSession(refreshToken: string) {
     const token = await jwtTokenService.decodeToken(refreshToken);
 
-    const result = await authRepository.updateSession({
-      iat: fromUnixTime(token.iat!).toISOString(),
-      exp: fromUnixTime(token.exp!).toISOString(),
-      deviceId: token.deviceId,
-    });
-    console.log(result)
+    const currentSession = await authRepository.getSessionByDeviceId(
+      token.deviceId
+    );
+
+    if (!currentSession) {
+      throw ApiError.BadRequestError("Session not found", [
+        "The session for the given device ID does not exist.",
+      ]);
+    }
+
+    const newIat = fromUnixTime(token.iat!);
+    const currentIat = new Date(currentSession.iat);
+
+    if (newIat > currentIat) {
+      const result = await authRepository.updateSession({
+        iat: newIat.toISOString(),
+        exp: fromUnixTime(token.exp!).toISOString(),
+        deviceId: token.deviceId,
+      });
+      console.log(result);
+    }
   },
 };

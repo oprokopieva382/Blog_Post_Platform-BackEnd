@@ -28,6 +28,8 @@ export const validateRefreshToken = async (
       ]);
     }
 
+    
+
     req.userId = isValid;
     next();
   } catch (error) {

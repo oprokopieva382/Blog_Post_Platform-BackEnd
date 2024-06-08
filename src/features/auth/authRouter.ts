@@ -40,12 +40,12 @@ authRouter.post(
 authRouter.post(
   "/logout",
   validateRefreshToken,
-  checkBlackListTokenMiddleware,
+  //checkBlackListTokenMiddleware,
   authController.logout
 );
 authRouter.post(
   "/refresh-token",
   validateRefreshToken,
-  checkBlackListTokenMiddleware,
+  //checkBlackListTokenMiddleware,
   authController.refreshToken
 );

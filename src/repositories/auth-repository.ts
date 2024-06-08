@@ -55,4 +55,14 @@ export const authRepository = {
       { returnDocument: "after" }
     );
   },
+
+  async getSessionByDeviceId(deviceId: string) {
+    return await sessionsCollection.findOne({ deviceId });
+  },
+
+  async removeSession(deviceId: string) {
+    return await sessionsCollection.findOneAndDelete({
+      deviceId,
+    });
+  },
 };
