@@ -198,7 +198,6 @@ export const authService = {
         exp: fromUnixTime(token.exp!).toISOString(),
         deviceId: token.deviceId,
       });
-      console.log(result);
-    }
+     }
   },
 };
