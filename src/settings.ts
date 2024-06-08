@@ -11,6 +11,7 @@ export const SETTINGS = {
   POSTS_COLLECTION: process.env.POSTS_COLLECTION || "",
   USERS_COLLECTION: process.env.USERS_COLLECTION || "",
   COMMENTS_COLLECTION: process.env.COMMENTS_COLLECTION || "",
+  SESSIONS_COLLECTION: process.env.SESSIONS_COLLECTION || "",
   BLACK_LIST_TOKEN_COLLECTION: process.env.BLACK_LIST_TOKEN_COLLECTION || "",
   JWT_ACCESS_TOKEN_SECRET: process.env.JWT_ACCESS_TOKEN_SECRET || "123bga",
   JWT_REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET || "123456ab",
@@ -24,5 +25,6 @@ export const SETTINGS = {
     USERS: "/users",
     COMMENTS: "/comments",
     AUTH: "/auth",
+    SECURITY_DEVICES: "/security/devices"
   },
 };

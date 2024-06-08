@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../models";
 import { formatResponse } from "../../utils/responseDTO";
 import { authService } from "../../services";
-import { authDTO, userDTO } from "../../utils/mapDBToView";
-import { jwtTokenService } from "../application";
+import { authDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
+import { randomUUID } from "crypto";
 
 export const authController = {
   login: async (
@@ -14,11 +14,10 @@ export const authController = {
     next: NextFunction
   ) => {
     try {
-      const authResult = await authService.loginUser(req.body);
-
-      const user = userDTO(authResult);
-      const accessToken = await jwtTokenService.createAccessToken(user.id);
-      const refreshToken = await jwtTokenService.createRefreshToken(user.id);
+        const { accessToken, refreshToken } = await authService.loginUser(
+        req.body,
+        req
+      );
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -101,9 +100,10 @@ export const authController = {
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const refreshToken = req.cookies.refreshToken;
+      const deviceId = randomUUID();
 
       const { newAccessToken, newRefreshToken } =
-        await authService.refreshToken(refreshToken, req.userId!);
+        await authService.refreshToken(refreshToken, req.userId!, deviceId);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,

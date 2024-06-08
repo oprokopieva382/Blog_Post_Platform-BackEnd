@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { Request } from "express";
 import { bcryptService } from ".";
 import {
   LoginInputModel,
@@ -13,12 +14,15 @@ import { RegistrationEmailResending } from "../types/RegistrationEmailResending"
 import { jwtTokenService } from "../features/application";
 import { blackListTokenCollection } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
+import { userDTO } from "../utils/mapDBToView";
+import { SessionsDBType } from "../cloud_DB/mongo_db_types";
+import { SessionData } from "../types/SessionData";
 
 export const authService = {
-  async loginUser(data: LoginInputModel) {
-    const findUser = await authRepository.getByLoginOrEmail(data.loginOrEmail);
+  async loginUser(data: LoginInputModel, req: Request) {
+    const userData = await authRepository.getByLoginOrEmail(data.loginOrEmail);
 
-    if (!findUser) {
+    if (!userData) {
       throw ApiError.BadRequestError("Bad request", [
         "Login failed. Can't find user, check your inputs or  register first",
       ]);
@@ -26,7 +30,7 @@ export const authService = {
 
     const isPasswordCorrect = await bcryptService.testPassword(
       data.password,
-      findUser.password
+      userData.password
     );
 
     if (!isPasswordCorrect) {
@@ -35,7 +39,29 @@ export const authService = {
       ]);
     }
 
-    return findUser;
+    const deviceId = randomUUID();
+    const IP = req.ip;
+    const deviceName = req.headers["user-agent"] || "Unknown Device";
+    const user = userDTO(userData);
+
+    const accessToken = await jwtTokenService.createAccessToken(user.id);
+    const refreshToken = await jwtTokenService.createRefreshToken(
+      user.id,
+      deviceId
+    );
+
+    const { iat, exp } = await jwtTokenService.decodeToken(refreshToken);
+
+    await this.createSession({
+      userId: user.id,
+      deviceId,
+      iat: iat!,
+      deviceName,
+      ip: IP!,
+      exp: exp!,
+    });
+
+    return { accessToken, refreshToken };
   },
 
   async logoutUser(refreshToken: string) {
@@ -108,13 +134,29 @@ export const authService = {
   },
 
   async addTokenToBlackList(refreshToken: string) {
-    return await blackListTokenCollection.insertOne({refreshToken});
+    return await blackListTokenCollection.insertOne({ refreshToken });
   },
 
-  async refreshToken(refreshToken: string, userId: string) {
+  async refreshToken(refreshToken: string, userId: string, deviceId: string) {
     await this.addTokenToBlackList(refreshToken);
     const newAccessToken = await jwtTokenService.createAccessToken(userId);
-    const newRefreshToken = await jwtTokenService.createRefreshToken(userId);
+    const newRefreshToken = await jwtTokenService.createRefreshToken(
+      userId,
+      deviceId
+    );
     return { newAccessToken, newRefreshToken };
+  },
+
+  async createSession(sessionData: SessionData) {
+    const newSession = {
+      _id: new ObjectId(),
+      userId: sessionData.userId,
+      deviceId: sessionData.deviceId,
+      iat: new Date(sessionData.iat).toISOString(),
+      deviceName: sessionData.deviceName,
+      ip: sessionData.ip,
+      exp: new Date(sessionData.exp).toISOString(),
+    };
+    await authRepository.createSession(newSession);
   },
 };
