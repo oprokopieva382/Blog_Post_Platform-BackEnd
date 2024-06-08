@@ -100,10 +100,9 @@ export const authController = {
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const refreshToken = req.cookies.refreshToken;
-      const deviceId = randomUUID();
-
+     
       const { newAccessToken, newRefreshToken } =
-        await authService.refreshToken(refreshToken, req.userId!, deviceId);
+        await authService.refreshToken(refreshToken, req.userId!);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,

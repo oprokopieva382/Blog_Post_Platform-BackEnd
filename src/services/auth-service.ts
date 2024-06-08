@@ -7,7 +7,8 @@ import {
   UserInputModel,
 } from "../models";
 import { authRepository, usersRepository } from "../repositories";
-import { add } from "date-fns/add";
+import { add} from "date-fns/add";
+import { fromUnixTime } from "date-fns/fromUnixTime";
 import { ObjectId } from "mongodb";
 import { emailAdapter } from "../features/adapters";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
@@ -88,7 +89,7 @@ export const authService = {
       createdAt: new Date().toISOString(),
       emailConfirmation: {
         confirmationCode: randomUUID(),
-        expirationDate: add(new Date(), {
+        expirationDate: add(new Date().toISOString(), {
           hours: 1,
         }),
         isConfirmed: false,
@@ -137,13 +138,18 @@ export const authService = {
     return await blackListTokenCollection.insertOne({ refreshToken });
   },
 
-  async refreshToken(refreshToken: string, userId: string, deviceId: string) {
-    await this.addTokenToBlackList(refreshToken);
+  //await this.addTokenToBlackList(refreshToken);
+  async refreshToken(refreshToken: string, userId: string) {
+
+    const token = await jwtTokenService.decodeToken(refreshToken);
+
     const newAccessToken = await jwtTokenService.createAccessToken(userId);
     const newRefreshToken = await jwtTokenService.createRefreshToken(
       userId,
-      deviceId
+      token.deviceId
     );
+
+    await this.updateSession(newRefreshToken);
     return { newAccessToken, newRefreshToken };
   },
 
@@ -152,11 +158,22 @@ export const authService = {
       _id: new ObjectId(),
       userId: sessionData.userId,
       deviceId: sessionData.deviceId,
-      iat: new Date(sessionData.iat).toISOString(),
+      iat: fromUnixTime(sessionData.iat!).toISOString(),
       deviceName: sessionData.deviceName,
       ip: sessionData.ip,
-      exp: new Date(sessionData.exp).toISOString(),
-    };
+      exp: fromUnixTime(sessionData.exp!).toISOString(),
+       };
     await authRepository.createSession(newSession);
+  },
+
+  async updateSession(refreshToken: string) {
+    const token = await jwtTokenService.decodeToken(refreshToken);
+
+    const result = await authRepository.updateSession({
+      iat: fromUnixTime(token.iat!).toISOString(),
+      exp: fromUnixTime(token.exp!).toISOString(),
+      deviceId: token.deviceId,
+    });
+    console.log(result)
   },
 };
