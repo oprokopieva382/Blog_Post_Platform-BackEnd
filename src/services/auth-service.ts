@@ -69,9 +69,17 @@ export const authService = {
     //return await this.addTokenToBlackList(refreshToken);
 
     const token = await jwtTokenService.decodeToken(refreshToken);
+    const isSessionExist = await authRepository.getSessionByDeviceId(
+      token.deviceId
+    );
+
+    if (!isSessionExist) {
+      throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
+        "The session for the given device ID does not exist.",
+      ]);
+    }
 
     await authRepository.removeSession(token.deviceId);
-
   },
 
   async registerUser(data: UserInputModel) {
@@ -173,22 +181,20 @@ export const authService = {
   async updateSession(refreshToken: string) {
     const token = await jwtTokenService.decodeToken(refreshToken);
 
-    const currentSession = await authRepository.getSessionByDeviceId(
-      token.deviceId
-    );
+    const session = await authRepository.getSessionByDeviceId(token.deviceId);
 
-    if (!currentSession) {
-      throw ApiError.BadRequestError("Session not found", [
+    if (!session) {
+      throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
         "The session for the given device ID does not exist.",
       ]);
     }
 
-    const newIat = fromUnixTime(token.iat!);
-    const currentIat = new Date(currentSession.iat);
+    const tokenIat = fromUnixTime(token.iat!);
+    const dbIat = new Date(session.iat);
 
-    if (newIat > currentIat) {
+    if (tokenIat > dbIat) {
       const result = await authRepository.updateSession({
-        iat: newIat.toISOString(),
+        iat: tokenIat.toISOString(),
         exp: fromUnixTime(token.exp!).toISOString(),
         deviceId: token.deviceId,
       });
