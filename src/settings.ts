@@ -25,5 +25,6 @@ export const SETTINGS = {
     USERS: "/users",
     COMMENTS: "/comments",
     AUTH: "/auth",
+    SECURITY_DEVICES: "/security/devices"
   },
 };

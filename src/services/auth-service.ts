@@ -14,8 +14,9 @@ import { RegistrationEmailResending } from "../types/RegistrationEmailResending"
 import { jwtTokenService } from "../features/application";
 import { blackListTokenCollection } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
-import { SessionData } from "../types/SessionData";
 import { userDTO } from "../utils/mapDBToView";
+import { SessionsDBType } from "../cloud_DB/mongo_db_types";
+import { SessionData } from "../types/SessionData";
 
 export const authService = {
   async loginUser(data: LoginInputModel, req: Request) {
@@ -51,16 +52,14 @@ export const authService = {
 
     const { iat, exp } = await jwtTokenService.decodeToken(refreshToken);
 
-    const sessionData = {
+    await this.createSession({
       userId: user.id,
       deviceId,
       iat: iat!,
       deviceName,
-      IP: IP || "Unknown IP",
+      ip: IP!,
       exp: exp!,
-    };
-
-    await this.createSession(sessionData);
+    });
 
     return { accessToken, refreshToken };
   },
@@ -150,12 +149,13 @@ export const authService = {
 
   async createSession(sessionData: SessionData) {
     const newSession = {
-      user_id: sessionData.userId,
-      device_id: sessionData.deviceId,
-      iat: new Date(sessionData.iat * 1000).toISOString(),
-      device_name: sessionData.deviceName,
-      ip: sessionData.IP,
-      exp: new Date(sessionData.exp * 1000).toISOString(),
+      _id: new ObjectId(),
+      userId: sessionData.userId,
+      deviceId: sessionData.deviceId,
+      iat: new Date(sessionData.iat).toISOString(),
+      deviceName: sessionData.deviceName,
+      ip: sessionData.ip,
+      exp: new Date(sessionData.exp).toISOString(),
     };
     await authRepository.createSession(newSession);
   },

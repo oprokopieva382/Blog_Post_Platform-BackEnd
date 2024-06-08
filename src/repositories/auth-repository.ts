@@ -37,6 +37,6 @@ export const authRepository = {
   },
 
   async createSession(newSession: SessionsDBType) {
-    const result = await sessionsCollection.insertOne(newSession);
+    return await sessionsCollection.insertOne(newSession);
   },
 };

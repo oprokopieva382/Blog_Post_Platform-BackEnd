@@ -3,6 +3,6 @@ export type SessionData = {
   deviceId: string;
   iat: number;
   deviceName: string;
-  IP: string;
+  ip: string;
   exp: number;
 };
