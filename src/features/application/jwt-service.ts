@@ -5,7 +5,7 @@ import { ApiError } from "../../helper/api-errors";
 export const jwtTokenService = {
   async createAccessToken(userId: string) {
     const aToken = jwt.sign({ userId }, SETTINGS.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "5s",
+      expiresIn: "1h",
     });
 
     return {
@@ -18,7 +18,7 @@ export const jwtTokenService = {
       { userId, deviceId },
       SETTINGS.JWT_REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "10s",
+        expiresIn: "1h",
       }
     );
     return refreshToken;
@@ -44,10 +44,9 @@ export const jwtTokenService = {
       ) as JwtPayload;
       return result.userId;
     } catch (error) {
-      throw ApiError.UnauthorizedError(
-        "Unauthorized. Session already expired",
-        ["The session with given device ID already expired."]
-      );
+      throw ApiError.UnauthorizedError("Unauthorized", [
+        "Unauthorized. No access to the session.",
+      ]);
     }
   },
 
