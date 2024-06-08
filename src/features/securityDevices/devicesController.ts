@@ -21,7 +21,11 @@ export const devicesController = {
 
   deleteById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await devicesService.delete(req.params.deviceId);
+      const refreshToken = req.cookies.refreshToken;
+      const result = await devicesService.delete(
+        req.params.deviceId,
+        refreshToken
+      );
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);
