@@ -5,7 +5,7 @@ import { ApiError } from "../../helper/api-errors";
 export const jwtTokenService = {
   async createAccessToken(userId: string) {
     const aToken = jwt.sign({ userId }, SETTINGS.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "10s",
+      expiresIn: "1h",
     });
 
     return {
