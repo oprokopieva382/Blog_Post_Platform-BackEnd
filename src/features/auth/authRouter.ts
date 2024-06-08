@@ -10,7 +10,7 @@ import {
   validateEmailResending,
   validateUserEmailUnique,
   validateUserLoginUnique,
-  validateRefreshToken,
+  iaAuthorizedRefreshToken,
   checkBlackListTokenMiddleware,
 } from "../../middlewares";
 
@@ -39,13 +39,13 @@ authRouter.post(
 );
 authRouter.post(
   "/logout",
-  validateRefreshToken,
-  checkBlackListTokenMiddleware,
+  iaAuthorizedRefreshToken,
+  //checkBlackListTokenMiddleware,
   authController.logout
 );
 authRouter.post(
   "/refresh-token",
-  validateRefreshToken,
-  checkBlackListTokenMiddleware,
+  iaAuthorizedRefreshToken,
+  //checkBlackListTokenMiddleware,
   authController.refreshToken
 );

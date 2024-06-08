@@ -39,4 +39,30 @@ export const authRepository = {
   async createSession(newSession: SessionsDBType) {
     return await sessionsCollection.insertOne(newSession);
   },
+
+  async updateSession({
+    iat,
+    exp,
+    deviceId,
+  }: {
+    iat: string;
+    exp: string;
+    deviceId: string;
+  }) {
+    return await sessionsCollection.findOneAndUpdate(
+      { deviceId },
+      { $set: { iat, exp } },
+      { returnDocument: "after" }
+    );
+  },
+
+  async getSessionByDeviceId(deviceId: string) {
+    return await sessionsCollection.findOne({ deviceId });
+  },
+
+  async removeSession(deviceId: string) {
+    return await sessionsCollection.findOneAndDelete({
+      deviceId,
+    });
+  },
 };

@@ -15,6 +15,7 @@ export const app = express();
 //use middleware to be able have access to body and query of all needed requests
 app.use(cookieParser());
 app.use(express.json());
+app.set("trust proxy", true); // ???????????? under question
 app.use(SETTINGS.PATH.TESTING, testingRouter);
 app.use(SETTINGS.PATH.AUTH, authRouter);
 app.use(SETTINGS.PATH.POSTS, postsRouter);

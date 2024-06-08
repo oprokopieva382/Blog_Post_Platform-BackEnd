@@ -5,7 +5,7 @@ import { ApiError } from "../../helper/api-errors";
 export const jwtTokenService = {
   async createAccessToken(userId: string) {
     const aToken = jwt.sign({ userId }, SETTINGS.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "10s",
+      expiresIn: "1h",
     });
 
     return {
@@ -44,7 +44,9 @@ export const jwtTokenService = {
       ) as JwtPayload;
       return result.userId;
     } catch (error) {
-      throw ApiError.UnauthorizedError("Unauthorized. Invalid refresh token");
+      throw ApiError.UnauthorizedError("Unauthorized", [
+        "Unauthorized. No access to the session.",
+      ]);
     }
   },
 

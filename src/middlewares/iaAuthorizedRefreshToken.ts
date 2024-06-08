@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from "express";
 import { jwtTokenService } from "../features/application";
 import { ApiError } from "../helper/api-errors";
 
-export const validateRefreshToken = async (
+export const iaAuthorizedRefreshToken = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -14,9 +14,7 @@ export const validateRefreshToken = async (
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
     }
 
-    const isValid = await jwtTokenService.validateRefreshToken(
-      refreshToken
-    );
+    const isValid = await jwtTokenService.validateRefreshToken(refreshToken);
 
     if (!isValid) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
