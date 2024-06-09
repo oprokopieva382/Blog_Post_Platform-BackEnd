@@ -10,7 +10,9 @@ export const isAuthorizedMiddleware = async (
 ) => {
   try {
     if (!req.headers.authorization) {
-      throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
+      throw ApiError.UnauthorizedError("Not authorized", [
+        "Authorization failed. Access token is incorrect or expired",
+      ]);
     }
 
     const token = req.headers.authorization.split(" ")[1];
