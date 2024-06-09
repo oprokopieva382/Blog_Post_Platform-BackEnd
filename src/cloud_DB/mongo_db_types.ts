@@ -61,3 +61,10 @@ export type SessionsDBType = {
   ip: string;
   exp: string;
 };
+
+export type ApiDBType = {
+  _id: ObjectId;
+  IP: string;
+  URL: string;
+  date: Date;
+};

@@ -16,7 +16,6 @@ import { jwtTokenService } from "../features/application";
 import { blackListTokenCollection } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { userDTO } from "../utils/mapDBToView";
-import { SessionsDBType } from "../cloud_DB/mongo_db_types";
 import { SessionData } from "../types/SessionData";
 
 export const authService = {
