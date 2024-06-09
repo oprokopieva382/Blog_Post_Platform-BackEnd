@@ -12,14 +12,21 @@ import {
   validateUserLoginUnique,
   iaAuthorizedRefreshToken,
   checkBlackListTokenMiddleware,
+  rateLimitMiddleware,
 } from "../../middlewares";
 
 export const authRouter = Router();
 
-authRouter.post("/login", validateLoginInputs, authController.login);
+authRouter.post(
+  "/login",
+  rateLimitMiddleware,
+  validateLoginInputs,
+  authController.login
+);
 authRouter.get("/me", isAuthorizedMiddleware, authController.me);
 authRouter.post(
   "/registration",
+  rateLimitMiddleware,
   validateRegistrationInput,
   validateUserLoginUnique,
   validateUserEmailUnique,
@@ -27,12 +34,14 @@ authRouter.post(
 );
 authRouter.post(
   "/registration-confirmation",
+  rateLimitMiddleware,
   validateRegistrationCode,
   validateEmailConfirmation,
   authController.registrationConfirmation
 );
 authRouter.post(
   "/registration-email-resending",
+  rateLimitMiddleware,
   validateEmail,
   validateEmailResending,
   authController.registrationResending
