@@ -10,7 +10,12 @@ import { ApiError } from "../helper/api-errors";
 const validateBlogId = async (blogId: string) => {
   const blog = await blogsRepository.getByIdBlog(blogId);
   if (!blog) {
-    throw new Error("No blog exists with the provided ID");
+    throw ApiError.BadRequestError("Validation failed", [
+      {
+        message: "No blog exists with the provided ID",
+        field: "blogId",
+      },
+    ]);
   }
   return true;
 };
