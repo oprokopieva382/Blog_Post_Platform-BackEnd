@@ -10,8 +10,7 @@ export const validateUserLoginUnique = async (
   try {
     const result = await authRepository.getByLoginOrEmail(req.body.login);
     if (!result) {
-      next();
-      return;
+      return next();
     }
 
     throw ApiError.BadRequestError("User already exists", [

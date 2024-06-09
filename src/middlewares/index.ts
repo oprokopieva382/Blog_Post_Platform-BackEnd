@@ -7,6 +7,7 @@ export { validateLoginInputs } from "./validateLoginInputs";
 export { validateComment } from "./validateComment";
 export { validateRegistrationCode } from "./validateRegistrationCode";
 export { validateEmail } from "./validateEmail";
+export { rateLimitMiddleware } from "./rateLimitMiddleware";
 export { validateUserLoginUnique } from "./validateUserLoginUnique";
 export { validateUserEmailUnique } from "./validateUserEmailUnique";
 export { validateEmailResending } from "./validateEmailResending";

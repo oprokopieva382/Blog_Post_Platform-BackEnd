@@ -23,4 +23,8 @@ export class ApiError extends Error {
   static ForbiddenError(message: string, errorsMessages: any[] = []) {
     return new ApiError(403, message, errorsMessages);
   }
+
+  static TooManyRequestsError(message: string, errorsMessages: any[] = []) {
+    return new ApiError(429, message, errorsMessages);
+  }
 }

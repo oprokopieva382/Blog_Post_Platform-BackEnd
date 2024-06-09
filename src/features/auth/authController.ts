@@ -5,7 +5,6 @@ import { authService } from "../../services";
 import { authDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
-import { randomUUID } from "crypto";
 
 export const authController = {
   login: async (
