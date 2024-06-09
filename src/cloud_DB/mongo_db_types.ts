@@ -48,8 +48,7 @@ export type CommentDBType = {
 };
 
 export type BlackListTokenDBType = {
-  //_id: ObjectId;
-  refreshToken: string;
+   refreshToken: string;
 };
 
 export type SessionsDBType = {
@@ -63,7 +62,6 @@ export type SessionsDBType = {
 };
 
 export type ApiDBType = {
-  _id: ObjectId;
   IP: string;
   URL: string;
   date: Date;
