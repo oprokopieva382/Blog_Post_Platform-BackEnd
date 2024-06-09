@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from "express";
 import { jwtTokenService } from "../features/application";
 import { ApiError } from "../helper/api-errors";
 
-export const iaAuthorizedRefreshToken = async (
+export const isAuthorizedRefreshToken = async (
   req: Request,
   res: Response,
   next: NextFunction
