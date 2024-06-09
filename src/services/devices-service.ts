@@ -10,7 +10,7 @@ export const devicesService = {
     );
 
     if (!currentSession) {
-      throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
+      throw ApiError.NotFoundError("Session not found", [
         "The session for the given device ID does not exist.",
       ]);
     }
@@ -30,7 +30,7 @@ export const devicesService = {
     );
 
     if (!currentSession) {
-      throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
+      throw ApiError.NotFoundError("Session not found", [
         "The session for the given device ID does not exist.",
       ]);
     }

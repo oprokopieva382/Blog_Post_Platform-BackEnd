@@ -9,6 +9,7 @@ export const isAuthorizedRefreshToken = async (
 ) => {
   try {
     const refreshToken = req.cookies.refreshToken;
+    console.log(refreshToken);
 
     if (!refreshToken) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
