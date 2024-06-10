@@ -11,16 +11,14 @@ export const isAuthorizedRefreshToken = async (
 ) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    const token = await jwtTokenService.decodeToken(refreshToken);
-    //console.log(refreshToken);
 
     if (!refreshToken) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
     }
 
-    const isValid = await jwtTokenService.validateRefreshToken(refreshToken);
+    const token = await jwtTokenService.validateRefreshToken(refreshToken);
 
-    if (!isValid) {
+    if (!token.userId) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
     }
 
@@ -28,11 +26,14 @@ export const isAuthorizedRefreshToken = async (
       token.deviceId
     );
 
-    // console.log(currentSession);
-    // console.log(token);
-
     if (currentSession?.iat !== fromUnixTime(token.iat!).toISOString()) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
+    }
+
+    if (!currentSession) {
+      throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
+        "The session for the given device ID does not exist.",
+      ]);
     }
 
     if (typeof refreshToken !== "string") {
@@ -41,7 +42,8 @@ export const isAuthorizedRefreshToken = async (
       ]);
     }
 
-    req.userId = isValid;
+    req.userId = token.userId;
+    req.deviceId = token.deviceId;
     next();
   } catch (error) {
     next(error);

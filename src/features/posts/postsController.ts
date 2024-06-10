@@ -31,9 +31,11 @@ export const postsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = (await postsQueryRepository.getByIdPost(
-        req.params.id
-      )) as PostViewModel;
+      const result = await postsQueryRepository.getByIdPost(req.params.id) as PostViewModel;
+
+      if (!result) {
+        throw ApiError.NotFoundError("Not found", ["No post found"]);
+      }
 
       formatResponse(res, 200, result, "Post retrieved successfully");
     } catch (error) {

@@ -3,14 +3,11 @@ import { ApiError } from "../../helper/api-errors";
 import { formatResponse } from "../../utils/responseDTO";
 import { devicesQueryRepository } from "../../query_repositories";
 import { devicesService } from "../../services";
-import { jwtTokenService } from "../application";
 
 export const devicesController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refreshToken = req.cookies.refreshToken;
-      const token = await jwtTokenService.decodeToken(refreshToken);
-      const result = await devicesQueryRepository.getAllDevices(token.userId);
+      const result = await devicesQueryRepository.getAllDevices(req.userId);
 
       if (result.length === 0) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);
@@ -24,12 +21,11 @@ export const devicesController = {
 
   deleteById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refreshToken = req.cookies.refreshToken;
       const result = await devicesService.delete(
         req.params.deviceId,
-        refreshToken
+        req.userId
       );
-     
+
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);
       }
@@ -42,8 +38,7 @@ export const devicesController = {
 
   delete: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refreshToken = req.cookies.refreshToken;
-      const result = await devicesService.deleteRest(refreshToken);
+      const result = await devicesService.deleteRest(req.deviceId, req.userId);
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);

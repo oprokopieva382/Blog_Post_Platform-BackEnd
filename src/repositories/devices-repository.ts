@@ -7,9 +7,10 @@ export const devicesRepository = {
     });
   },
 
-  async removeDevices(currentSession: string) {
+  async removeDevices(currentSessionDeviceId: string, userId: string) {
     return await sessionsCollection.deleteMany({
-      deviceId: { $ne: currentSession },
+      userId,
+      deviceId: { $ne: currentSessionDeviceId },
     });
   },
 };

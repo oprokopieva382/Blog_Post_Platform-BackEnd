@@ -41,11 +41,8 @@ export const usersQueryRepository = {
     const foundUser = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
-    if (!foundUser) {
-      throw ApiError.NotFoundError("Not found", ["No user found"]);
-    }
-
-    return this._userDTO(foundUser);
+   
+    return foundUser ? this._userDTO(foundUser) : null;
   },
 
   _userDTO(user: UserDBType): UserViewModel {

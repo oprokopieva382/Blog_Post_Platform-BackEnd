@@ -6,9 +6,10 @@ import { commentsCollection } from "./../cloud_DB/mongo_db_atlas";
 
 export const postsRepository = {
   async getByIdPost(postId: string): Promise<PostDBType | null> {
-    return await postsCollection.findOne({
+    const post = await postsCollection.findOne({
       _id: new ObjectId(postId),
     });
+    return post ? post : null;
   },
 
   async removePost(id: string) {

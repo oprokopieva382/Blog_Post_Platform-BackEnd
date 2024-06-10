@@ -42,15 +42,12 @@ export const jwtTokenService = {
         refreshToken,
         SETTINGS.JWT_REFRESH_TOKEN_SECRET
       ) as JwtPayload;
-      return result.userId;
+      console.log(result)
+      return result;
     } catch (error) {
       throw ApiError.UnauthorizedError("Unauthorized", [
         "Unauthorized. No access to the session.",
       ]);
     }
-  },
-
-  async decodeToken(token: string) {
-    return jwt.decode(token) as JwtPayload;
   },
 };

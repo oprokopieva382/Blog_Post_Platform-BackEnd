@@ -33,7 +33,13 @@ export const postsService = {
     const createdPost = await postsRepository.createPost(newPost);
     const insertedId = createdPost.insertedId;
 
-    return postsRepository.getByIdPost(insertedId.toString());
+    const post = postsRepository.getByIdPost(insertedId.toString());
+
+    if (!post) {
+      throw ApiError.NotFoundError("Not found", ["No post found"]);
+    }
+
+    return post;
   },
 
   async updatePost(data: PostInputModel, id: string) {
@@ -46,7 +52,12 @@ export const postsService = {
     }
     await postsRepository.updatePost(data, id, isBlogExist.name);
 
-    return await postsRepository.getByIdPost(id);
+    const post = await postsRepository.getByIdPost(id);
+
+    if (!post) {
+      throw ApiError.NotFoundError("Not found", ["No post found"]);
+    }
+    return post;
   },
 
   async createPostComment(
