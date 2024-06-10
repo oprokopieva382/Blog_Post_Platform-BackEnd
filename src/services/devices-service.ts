@@ -9,12 +9,20 @@ export const devicesService = {
       token.deviceId
     );
 
-    if (!currentSession) {
+    const isSessionExist = await authRepository.getSessionByDeviceId(deviceId);
+
+    if (!isSessionExist) {
       throw ApiError.NotFoundError("Session not found", [
-        "The session for the given device ID does not exist.",
+        `The session for the searched device ID ${deviceId} does not exist.`,
       ]);
     }
-    
+
+    if (!currentSession) {
+      throw ApiError.NotFoundError("Session not found", [
+        "The session with device ID does not exist.",
+      ]);
+    }
+
     if (currentSession.deviceId !== deviceId) {
       throw ApiError.ForbiddenError("Forbidden", [
         "You are not allowed to delete this session.",
