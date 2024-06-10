@@ -23,7 +23,7 @@ export const devicesService = {
       ]);
     }
 
-    if (currentSession.deviceId !== deviceId) {
+    if (currentSession.userId !== isSessionExist.userId) {
       throw ApiError.ForbiddenError("Forbidden", [
         "You are not allowed to delete this session.",
       ]);

@@ -28,8 +28,8 @@ export const isAuthorizedRefreshToken = async (
       token.deviceId
     );
 
-    console.log(currentSession);
-    console.log(token);
+    // console.log(currentSession);
+    // console.log(token);
 
     if (currentSession?.iat !== fromUnixTime(token.iat!).toISOString()) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
