@@ -14,8 +14,8 @@ export const devicesService = {
         "The session for the given device ID does not exist.",
       ]);
     }
-
-    if (currentSession.userId !== token.userId) {
+    
+    if (currentSession.deviceId !== deviceId) {
       throw ApiError.ForbiddenError("Forbidden", [
         "You are not allowed to delete this session.",
       ]);

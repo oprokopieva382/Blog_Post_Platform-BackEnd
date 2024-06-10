@@ -26,7 +26,7 @@ export const devicesController = {
         req.params.deviceId,
         refreshToken
       );
-
+     
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);
       }
