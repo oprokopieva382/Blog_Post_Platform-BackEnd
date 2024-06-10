@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseDTO";
 import { ParamType } from ".";
-import { PostInputModel } from "../../models";
+import { PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
 import {
   commentsQueryRepository,
@@ -31,7 +31,9 @@ export const postsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await postsQueryRepository.getByIdPost(req.params.id);
+      const result = (await postsQueryRepository.getByIdPost(
+        req.params.id
+      )) as PostViewModel;
 
       formatResponse(res, 200, result, "Post retrieved successfully");
     } catch (error) {
