@@ -11,5 +11,5 @@ export { CommentViewModel } from "./CommentViewModel";
 export { CommentInputModel } from "./CommentInputModel";
 export { LoginSuccessViewModel } from "./LoginSuccessViewModel";
 export { MeViewModel } from "./MeViewModel";
-export { DeviceViewModel.ts } from "./DeviceViewModel.ts";
+export { DeviceViewModel } from "./DeviceViewModel";
 export { RegistrationConfirmationCodeModel } from "./RegistrationConfirmationCodeModel";
