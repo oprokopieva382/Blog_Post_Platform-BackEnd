@@ -5,7 +5,7 @@ import { ApiError } from "../../helper/api-errors";
 export const jwtTokenService = {
   async createAccessToken(userId: string) {
     const aToken = jwt.sign({ userId }, SETTINGS.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "20m",
+      expiresIn: "10s",
     });
 
     return {
@@ -18,7 +18,7 @@ export const jwtTokenService = {
       { userId, deviceId },
       SETTINGS.JWT_REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "21m",
+        expiresIn: "20s",
       }
     );
     return refreshToken;

@@ -3,10 +3,12 @@ import { SessionsDBType } from "../cloud_DB/mongo_db_types";
 import { DeviceViewModel } from "../models";
 
 export const devicesQueryRepository = {
-  async getAllDevices(): Promise<DeviceViewModel[]> {
-    const devices: SessionsDBType[] = await sessionsCollection.find().toArray();
+  async getAllDevices(userId: string): Promise<DeviceViewModel[]> {
+    const devices: SessionsDBType[] = await sessionsCollection
+      .find({ userId })
+      .toArray();
     const devicesToView = devices.map((d) => this._deviceDTO(d));
- 
+
     return devicesToView;
   },
 
