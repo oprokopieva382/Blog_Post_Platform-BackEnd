@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from "express";
 import { jwtTokenService } from "../features/application";
 import { ApiError } from "../helper/api-errors";
+import { authRepository } from "../repositories";
+import { fromUnixTime } from "date-fns/fromUnixTime";
 
 export const isAuthorizedRefreshToken = async (
   req: Request,
@@ -9,6 +11,7 @@ export const isAuthorizedRefreshToken = async (
 ) => {
   try {
     const refreshToken = req.cookies.refreshToken;
+    const token = await jwtTokenService.decodeToken(refreshToken);
     //console.log(refreshToken);
 
     if (!refreshToken) {
@@ -18,6 +21,17 @@ export const isAuthorizedRefreshToken = async (
     const isValid = await jwtTokenService.validateRefreshToken(refreshToken);
 
     if (!isValid) {
+      throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
+    }
+
+    const currentSession = await authRepository.getSessionByDeviceId(
+      token.deviceId
+    );
+
+    console.log(currentSession);
+    console.log(token);
+
+    if (currentSession?.iat !== fromUnixTime(token.iat!).toISOString()) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
     }
 
