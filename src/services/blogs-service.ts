@@ -54,6 +54,13 @@ export const blogsService = {
     }
 
     const insertedId = createdPost.insertedId;
-    return await postsRepository.getByIdPost(insertedId.toString());
+
+    const result = await postsRepository.getByIdPost(insertedId.toString());
+
+    if (!result) {
+      throw ApiError.NotFoundError("Not found", ["No post found"]);
+    }
+
+    return result;
   },
 };

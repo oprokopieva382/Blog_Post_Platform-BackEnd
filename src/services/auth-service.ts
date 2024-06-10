@@ -23,9 +23,9 @@ export const authService = {
     const userData = await authRepository.getByLoginOrEmail(data.loginOrEmail);
 
     if (!userData) {
-       throw ApiError.UnauthorizedError("Not authorized", [
-         "Login failed. Password is incorrect.",
-       ]);
+      throw ApiError.UnauthorizedError("Not authorized", [
+        "Login failed. No user found.",
+      ]);
     }
 
     const isPasswordCorrect = await bcryptService.testPassword(
@@ -50,7 +50,9 @@ export const authService = {
       deviceId
     );
 
-    const { iat, exp } = await jwtTokenService.decodeToken(refreshToken);
+    const { iat, exp } = await jwtTokenService.validateRefreshToken(
+      refreshToken
+    );
 
     await this.createSession({
       userId: user.id,
@@ -64,21 +66,8 @@ export const authService = {
     return { accessToken, refreshToken };
   },
 
-  async logoutUser(refreshToken: string) {
-    //return await this.addTokenToBlackList(refreshToken);
-
-    const token = await jwtTokenService.decodeToken(refreshToken);
-    const isSessionExist = await authRepository.getSessionByDeviceId(
-      token.deviceId
-    );
-
-    if (!isSessionExist) {
-      throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
-        "The session for the given device ID does not exist.",
-      ]);
-    }
-
-    await authRepository.removeSession(token.deviceId);
+  async logoutUser(deviceId: string) {
+    await authRepository.removeSession(deviceId);
   },
 
   async registerUser(data: UserInputModel) {
@@ -150,17 +139,14 @@ export const authService = {
     return await blackListTokenCollection.insertOne({ refreshToken });
   },
 
-  //await this.addTokenToBlackList(refreshToken);
-  async refreshToken(refreshToken: string, userId: string) {
-    const token = await jwtTokenService.decodeToken(refreshToken);
-
+  async refreshToken(deviceId: string, userId: string) {
     const newAccessToken = await jwtTokenService.createAccessToken(userId);
     const newRefreshToken = await jwtTokenService.createRefreshToken(
       userId,
-      token.deviceId
+      deviceId
     );
 
-    await this.updateSession(newRefreshToken);
+    await this.updateSession(deviceId);
     return { newAccessToken, newRefreshToken };
   },
 
@@ -177,10 +163,8 @@ export const authService = {
     await authRepository.createSession(newSession);
   },
 
-  async updateSession(refreshToken: string) {
-    const token = await jwtTokenService.decodeToken(refreshToken);
-
-    const session = await authRepository.getSessionByDeviceId(token.deviceId);
+  async updateSession(deviceId: string) {
+    const session = await authRepository.getSessionByDeviceId(deviceId);
 
     if (!session) {
       throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
@@ -188,15 +172,15 @@ export const authService = {
       ]);
     }
 
-    const tokenIat = fromUnixTime(token.iat!);
+    const tokenIat = fromUnixTime(+session.iat!);
     const dbIat = new Date(session.iat);
 
     if (tokenIat > dbIat) {
-      const result = await authRepository.updateSession({
+      await authRepository.updateSession({
         iat: tokenIat.toISOString(),
-        exp: fromUnixTime(token.exp!).toISOString(),
-        deviceId: token.deviceId,
+        exp: fromUnixTime(+session.exp!).toISOString(),
+        deviceId: deviceId,
       });
-     }
+    }
   },
 };

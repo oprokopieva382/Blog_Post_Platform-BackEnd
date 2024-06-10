@@ -2,7 +2,6 @@ import { ObjectId } from "mongodb";
 import { PostDBType, postsCollection } from "../cloud_DB";
 import { Paginator, PostViewModel } from "../models";
 import { QueryType } from "../query-type";
-import { ApiError } from "../helper/api-errors";
 
 export const postsQueryRepository = {
   async getAllPosts(query: QueryType): Promise<Paginator<PostViewModel>> {
@@ -28,11 +27,7 @@ export const postsQueryRepository = {
 
   async getByIdPost(id: string): Promise<PostViewModel | null> {
     const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
-    if (!foundPost) {
-      throw ApiError.NotFoundError("Not found", ["No post found"]);
-    }
-
-    return this._postDTO(foundPost);
+    return foundPost ? this._postDTO(foundPost) : null;
   },
 
   _postDTO(post: PostDBType): PostViewModel {

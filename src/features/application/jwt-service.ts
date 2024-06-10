@@ -5,7 +5,7 @@ import { ApiError } from "../../helper/api-errors";
 export const jwtTokenService = {
   async createAccessToken(userId: string) {
     const aToken = jwt.sign({ userId }, SETTINGS.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "10s",
+      expiresIn: "10m",
     });
 
     return {
@@ -18,7 +18,7 @@ export const jwtTokenService = {
       { userId, deviceId },
       SETTINGS.JWT_REFRESH_TOKEN_SECRET,
       {
-        expiresIn: "20s",
+        expiresIn: "20m",
       }
     );
     return refreshToken;
@@ -42,15 +42,12 @@ export const jwtTokenService = {
         refreshToken,
         SETTINGS.JWT_REFRESH_TOKEN_SECRET
       ) as JwtPayload;
-      return result.userId;
+      console.log(result)
+      return result;
     } catch (error) {
       throw ApiError.UnauthorizedError("Unauthorized", [
         "Unauthorized. No access to the session.",
       ]);
     }
-  },
-
-  async decodeToken(token: string) {
-    return jwt.decode(token) as JwtPayload;
   },
 };

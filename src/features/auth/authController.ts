@@ -86,9 +86,7 @@ export const authController = {
 
   logout: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refreshToken = req.cookies.refreshToken;
-
-      await authService.logoutUser(refreshToken);
+      await authService.logoutUser(req.deviceId);
 
       formatResponse(res, 204, {}, "User logout successfully");
     } catch (error) {
@@ -98,10 +96,9 @@ export const authController = {
 
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refreshToken = req.cookies.refreshToken;
-     
+      
       const { newAccessToken, newRefreshToken } =
-        await authService.refreshToken(refreshToken, req.userId!);
+        await authService.refreshToken(req.deviceId, req.userId!);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,

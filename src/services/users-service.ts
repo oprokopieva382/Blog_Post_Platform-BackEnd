@@ -4,6 +4,7 @@ import { usersRepository } from "../repositories";
 import { bcryptService } from "./bcrypt-service";
 import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
+import { ApiError } from "../helper/api-errors";
 
 export const usersService = {
   async createUser(data: UserInputModel) {
@@ -29,7 +30,15 @@ export const usersService = {
     const createdUser = await usersRepository.createUser(newUser);
     const insertedId = createdUser.insertedId;
 
-    return usersRepository.getByIdUser(insertedId.toString());
+    const user = usersRepository.getByIdUser(insertedId.toString());
+
+    if (!user) {
+      throw ApiError.UnauthorizedError("Not authorized", [
+        "Authorization failed. Can't find user with such id",
+      ]);
+    }
+
+    return user;
   },
 
   async removeUser(id: string) {
