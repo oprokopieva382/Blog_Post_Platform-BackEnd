@@ -3,11 +3,14 @@ import { ApiError } from "../../helper/api-errors";
 import { formatResponse } from "../../utils/responseDTO";
 import { devicesQueryRepository } from "../../query_repositories";
 import { devicesService } from "../../services";
+import { jwtTokenService } from "../application";
 
 export const devicesController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await devicesQueryRepository.getAllDevices();
+      const refreshToken = req.cookies.refreshToken;
+      const token = await jwtTokenService.decodeToken(refreshToken);
+      const result = await devicesQueryRepository.getAllDevices(token.userId);
 
       if (result.length === 0) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);
