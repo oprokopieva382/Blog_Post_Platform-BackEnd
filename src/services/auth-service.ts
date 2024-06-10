@@ -23,9 +23,9 @@ export const authService = {
     const userData = await authRepository.getByLoginOrEmail(data.loginOrEmail);
 
     if (!userData) {
-      throw ApiError.BadRequestError("Bad request", [
-        "Login failed. Can't find user, check your inputs or  register first",
-      ]);
+       throw ApiError.UnauthorizedError("Not authorized", [
+         "Login failed. Password is incorrect.",
+       ]);
     }
 
     const isPasswordCorrect = await bcryptService.testPassword(
