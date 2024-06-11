@@ -146,7 +146,7 @@ export const authService = {
       deviceId
     );
 
-    await this.updateSession(deviceId);
+    await this.updateSession(newRefreshToken);
     return { newAccessToken, newRefreshToken };
   },
 
@@ -163,22 +163,18 @@ export const authService = {
     await authRepository.createSession(newSession);
   },
 
-  async updateSession(deviceId: string) {
-    const session = await authRepository.getSessionByDeviceId(deviceId);
-
-    if (!session) {
-      throw ApiError.UnauthorizedError("Unauthorized. Session not found", [
-        "The session for the given device ID does not exist.",
-      ]);
-    }
-
-    const tokenIat = fromUnixTime(+session.iat!);
-    const dbIat = new Date(session.iat);
+  async updateSession(newRefreshToken: string) {
+    const { iat, exp, deviceId } = await jwtTokenService.validateRefreshToken(
+      newRefreshToken
+    );
+    
+    const tokenIat = fromUnixTime(+iat!);
+    const dbIat = new Date(iat!);
 
     if (tokenIat > dbIat) {
       await authRepository.updateSession({
         iat: tokenIat.toISOString(),
-        exp: fromUnixTime(+session.exp!).toISOString(),
+        exp: fromUnixTime(+exp!).toISOString(),
         deviceId: deviceId,
       });
     }

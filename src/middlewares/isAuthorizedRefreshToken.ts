@@ -19,7 +19,7 @@ export const isAuthorizedRefreshToken = async (
     const token = await jwtTokenService.validateRefreshToken(refreshToken);
 
     if (!token.userId) {
-      throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
+      throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized user"]);
     }
 
     const currentSession = await authRepository.getSessionByDeviceId(
@@ -27,7 +27,9 @@ export const isAuthorizedRefreshToken = async (
     );
 
     if (currentSession?.iat !== fromUnixTime(token.iat!).toISOString()) {
-      throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
+      throw ApiError.UnauthorizedError("Not authorized", [
+        "Unauthorized token",
+      ]);
     }
 
     if (!currentSession) {
