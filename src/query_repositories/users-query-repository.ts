@@ -3,7 +3,6 @@ import { Paginator, UserViewModel } from "../models";
 import { QueryUserType } from "../query-type";
 import { usersCollection } from "../cloud_DB/mongo_db_atlas";
 import { ObjectId } from "mongodb";
-import { ApiError } from "../helper/api-errors";
 
 export const usersQueryRepository = {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
