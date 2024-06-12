@@ -14,5 +14,4 @@ export { validateEmailResending } from "./validateEmailResending";
 export { validateEmailConfirmation } from "./validateEmailConfirmation";
 export { isAuthorizedMiddleware } from "./isAuthorizedMiddleware";
 export { isAuthorizedRefreshToken } from "./isAuthorizedRefreshToken";
-export { checkBlackListTokenMiddleware } from "./checkBlackListTokenMiddleware";
 export { errorHandlerMiddleware } from "./errorHandlerMiddleware";

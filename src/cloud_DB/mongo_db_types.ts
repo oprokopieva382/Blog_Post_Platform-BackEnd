@@ -47,10 +47,6 @@ export type CommentDBType = {
   createdAt: string;
 };
 
-export type BlackListTokenDBType = {
-   refreshToken: string;
-};
-
 export type SessionsDBType = {
   _id: ObjectId;
   userId: string;

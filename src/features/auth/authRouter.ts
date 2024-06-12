@@ -11,7 +11,6 @@ import {
   validateUserEmailUnique,
   validateUserLoginUnique,
   isAuthorizedRefreshToken,
-  checkBlackListTokenMiddleware,
   rateLimitMiddleware,
 } from "../../middlewares";
 
@@ -49,12 +48,10 @@ authRouter.post(
 authRouter.post(
   "/logout",
   isAuthorizedRefreshToken,
-  //checkBlackListTokenMiddleware,
   authController.logout
 );
 authRouter.post(
   "/refresh-token",
   isAuthorizedRefreshToken,
-  //checkBlackListTokenMiddleware,
   authController.refreshToken
 );
