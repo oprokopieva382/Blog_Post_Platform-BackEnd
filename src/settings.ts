@@ -18,6 +18,7 @@ export const SETTINGS = {
   REGISTRATION_EMAIL: process.env.REGISTRATION_EMAIL || "",
   REGISTRATION_PASS: process.env.REGISTRATION_PASS || "",
   ADMIN_AUTH: "admin:qwerty",
+  VERSION: process.env.VERSION || "",
   PATH: {
     TESTING: "/testing",
     POSTS: "/posts",

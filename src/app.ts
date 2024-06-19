@@ -1,5 +1,4 @@
 import express from "express";
-import { version } from "../package.json";
 import { SETTINGS } from "./settings";
 import { postsRouter } from "./features/posts/postsRouter";
 import { blogsRouter } from "./features/blogs/blogsRouter";
@@ -28,5 +27,5 @@ app.use(errorHandlerMiddleware);
 
 app.get("/", (req, res) => {
   //endpoint to display backend version in use
-  res.status(200).json({ version});
+  res.status(200).json({ version: SETTINGS.VERSION });
 });
