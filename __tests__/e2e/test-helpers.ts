@@ -47,7 +47,7 @@ export const testManager = {
     const res = await request(app)
       .get(SETTINGS.PATH.USERS)
       .auth("admin", "qwerty");
-    return res.body.data;
+    return res.body;
   },
 
   async registerUser() {
@@ -70,7 +70,7 @@ export const testManager = {
     const userWithCode = await usersCollection.findOne({
       _id: new ObjectId(user.items[0].id),
     });
-    console.log(userWithCode);
+   
     return userWithCode
       ? userWithCode.emailConfirmation.confirmationCode
       : null;
@@ -89,12 +89,12 @@ export const testManager = {
       .auth("admin", "qwerty")
       .expect(201);
 
-    return res.body.data;
+    return res.body;
   },
 
   async getBlogs() {
     const res = await request(app).get(SETTINGS.PATH.BLOGS).expect(200);
-    return res.body.data.items;
+    return res.body.items;
   },
 
   async createPost(blogId: string) {
@@ -110,7 +110,7 @@ export const testManager = {
       .auth("admin", "qwerty")
       .expect(201);
 
-    return res.body.data;
+    return res.body;
   },
 
   async createComment(postId: string, accessToken: string) {
@@ -124,7 +124,7 @@ export const testManager = {
       .set("Authorization", `Bearer ${accessToken}`)
       .expect(201);
 
-    return res.body.data;
+    return res.body;
   },
   
 };

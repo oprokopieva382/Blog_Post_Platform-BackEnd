@@ -1,7 +1,6 @@
 import { ConnectMongoDB } from "../../src/cloud_DB";
-import { authService } from "../../src/services";
+import { authService, emailService } from "../../src/services";
 import { user } from "./seeder";
-import { emailAdapter } from "../../src/features/adapters";
 import { ObjectId } from "mongodb";
 import { dropCollections } from "../e2e/dropCollections";
 
@@ -21,7 +20,7 @@ describe("auth tests", () => {
   describe("USER REGISTRATION", () => {
     const registerUser = authService.registerUser;
 
-    emailAdapter.sendEmail = jest
+    emailService.sendEmail = jest
       .fn()
       .mockImplementation((email: string, code: string) => {
         return true;
@@ -43,8 +42,8 @@ describe("auth tests", () => {
         },
       });
 
-      expect(emailAdapter.sendEmail).toHaveBeenCalled();
-      expect(emailAdapter.sendEmail).toHaveBeenCalledTimes(1);
+      expect(emailService.sendEmail).toHaveBeenCalled();
+      expect(emailService.sendEmail).toHaveBeenCalledTimes(1);
     });
 
     it.skip("2- shouldn't register user and if the user with the given email or login already exists return status code 400", async () => {
@@ -58,7 +57,7 @@ describe("auth tests", () => {
   describe("USER REGISTRATION CONFIRMATION", () => {
     const registerUser = authService.registerUser;
 
-    emailAdapter.sendEmail = jest
+    emailService.sendEmail = jest
       .fn()
       .mockImplementation((email: string, code: string) => {
         return true;
@@ -66,15 +65,13 @@ describe("auth tests", () => {
 
     it("1- should confirm user registration and return status code 204", async () => {
       const result: any = await registerUser(user);
-      console.log("Registered User:", result);
-
+   
       expect(result.emailConfirmation).toBeDefined();
       const data = {
         code: result.emailConfirmation.confirmationCode,
       };
       const userConfirmed = await authService.confirmUser(data);
-      console.log("Confirmed User:", userConfirmed);
-
+     
       expect(userConfirmed?.emailConfirmation.isConfirmed).toBe(true);
     });
 

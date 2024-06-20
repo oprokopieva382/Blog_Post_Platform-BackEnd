@@ -28,7 +28,7 @@ describe("/users test", () => {
         .auth("admin", "qwerty")
         .expect(201);
 
-      expect(res.body.data).toEqual({
+      expect(res.body).toEqual({
         email: newUser.email,
         login: newUser.login,
         createdAt: expect.any(String),
@@ -75,8 +75,9 @@ describe("/users test", () => {
         .get(SETTINGS.PATH.USERS)
         .auth("admin", "qwerty")
         .expect(200);
-      expect(res.body.data.page).toBe(1);
-      expect(res.body.data.pageSize).toBe(10);
+
+      expect(res.body.page).toBe(1);
+      expect(res.body.pageSize).toBe(10);
     });
 
     it("2 - shouldn't get users and return status code 401 if unauthorized", async () => {
