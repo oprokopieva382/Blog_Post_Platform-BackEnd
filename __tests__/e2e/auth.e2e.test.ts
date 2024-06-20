@@ -57,6 +57,25 @@ describe("auth tests", () => {
         .send(loginInput)
         .expect(400);
     });
+
+    it("4 - should fail the request because more than 5 attempts from one IP-address during 10 seconds, return status code of 429", async () => {
+      await testManager.createUser();
+      const loginInput = {
+        loginOrEmail: "Tina@gmail.com",
+        password: "tina123",
+      };
+      for (let i = 0; i < 5; i++) {
+        await request(app)
+          .post(`${SETTINGS.PATH.AUTH}/login`)
+          .send(loginInput)
+          .expect(200);
+      }
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/login`)
+        .send(loginInput)
+        .expect(429);
+    });
   });
 
   describe("AUTH ME", () => {
@@ -131,6 +150,20 @@ describe("auth tests", () => {
         .send(newUser)
         .expect(400);
     });
+
+    it("3 - should fail the request because more than 5 attempts from one IP-address during 10 seconds, return status code of 429", async () => {
+      const newUser = {
+        login: "Tina",
+        password: "tina123",
+        email: "Tina@gmail.com",
+      };
+      await testManager.registerFiveUsers();
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration`)
+        .send(newUser)
+        .expect(429);
+    });
   });
 
   describe("REGISTRATION CONFIRMATION", () => {
@@ -201,6 +234,26 @@ describe("auth tests", () => {
         .post(`${SETTINGS.PATH.AUTH}/registration-email-resending`)
         .send(email)
         .expect(400);
+    });
+
+    it("3 - should fail the request because more than 5 attempts from one IP-address during 10 seconds, return status code of 429", async () => {
+      await testManager.registerUser();
+
+      const email = {
+        email: "Tina@gmail.com",
+      };
+
+      for (let i = 0; i < 5; i++) {
+        await request(app)
+          .post(`${SETTINGS.PATH.AUTH}/registration-email-resending`)
+          .send(email)
+          .expect(204);
+      }
+
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration-email-resending`)
+        .send(email)
+        .expect(429);
     });
   });
 });
