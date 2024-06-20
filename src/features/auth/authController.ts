@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../models";
-import { formatResponse } from "../../utils/responseDTO";
+import { formatResponse } from "../../utils/responseFormatter";
 import { authService } from "../../services";
-import { authDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
+import { authDTO } from "../../DTO";
 
 export const authController = {
   login: async (
@@ -13,7 +13,7 @@ export const authController = {
     next: NextFunction
   ) => {
     try {
-        const { accessToken, refreshToken } = await authService.loginUser(
+      const { accessToken, refreshToken } = await authService.loginUser(
         req.body,
         req
       );
@@ -96,7 +96,6 @@ export const authController = {
 
   refreshToken: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      
       const { newAccessToken, newRefreshToken } =
         await authService.refreshToken(req.deviceId, req.userId!);
 

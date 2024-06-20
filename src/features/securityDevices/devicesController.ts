@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { ApiError } from "../../helper/api-errors";
-import { formatResponse } from "../../utils/responseDTO";
+import { formatResponse } from "../../utils/responseFormatter";
 import { devicesQueryRepository } from "../../query_repositories";
 import { devicesService } from "../../services";
 

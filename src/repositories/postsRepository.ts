@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { PostInputModel } from "../models";
 import { PostDBType, postsCollection } from "../cloud_DB";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
-import { commentsCollection } from "./../cloud_DB/mongo_db_atlas";
+import { commentsCollection } from "../cloud_DB/mongo_db_atlas";
 
 export const postsRepository = {
   async getByIdPost(postId: string): Promise<PostDBType | null> {

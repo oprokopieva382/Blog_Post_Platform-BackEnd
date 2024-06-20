@@ -1,8 +1,8 @@
 import { Response, Request, NextFunction } from "express";
-import { jwtTokenService } from "../features/application";
 import { ApiError } from "../helper/api-errors";
 import { authRepository } from "../repositories";
 import { fromUnixTime } from "date-fns/fromUnixTime";
+import { jwtService } from "../features/application";
 
 export const isAuthorizedRefreshToken = async (
   req: Request,
@@ -16,7 +16,7 @@ export const isAuthorizedRefreshToken = async (
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized"]);
     }
 
-    const token = await jwtTokenService.validateRefreshToken(refreshToken);
+    const token = await jwtService.validateRefreshToken(refreshToken);
 
     if (!token.userId) {
       throw ApiError.UnauthorizedError("Not authorized", ["Unauthorized user"]);

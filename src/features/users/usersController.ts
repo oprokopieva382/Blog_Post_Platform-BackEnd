@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { UserInputModel } from "../../models";
-import { formatResponse } from "../../utils/responseDTO";
+import { formatResponse } from "../../utils/responseFormatter";
 import { usersService } from "../../services";
-import { userDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
 import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
+import { userDTO } from "../../DTO";
 
 export const usersController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {

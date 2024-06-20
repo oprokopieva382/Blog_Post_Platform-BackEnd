@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { formatResponse } from "../../utils/responseDTO";
+import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../models";
 import { postsService } from "../../services";
@@ -8,9 +8,9 @@ import {
   postsQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
-import { commentDTO, postDTO } from "../../utils/mapDBToView";
 import { CommentInputModel } from "../../models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
+import { commentDTO, postDTO } from "../../DTO";
 
 export const postsController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
@@ -31,7 +31,9 @@ export const postsController = {
 
   getById: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await postsQueryRepository.getByIdPost(req.params.id) as PostViewModel;
+      const result = (await postsQueryRepository.getByIdPost(
+        req.params.id
+      )) as PostViewModel;
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No post found"]);

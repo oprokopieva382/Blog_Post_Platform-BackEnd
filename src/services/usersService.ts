@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { UserInputModel } from "../models";
 import { usersRepository } from "../repositories";
-import { bcryptService } from "./bcrypt-service";
+import { bcryptService } from "./bcryptService";
 import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
 import { ApiError } from "../helper/api-errors";
