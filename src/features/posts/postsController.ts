@@ -8,9 +8,9 @@ import {
   postsQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
-import { commentDTO, postDTO } from "../../utils/mapDBToView";
 import { CommentInputModel } from "../../models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
+import { commentDTO, postDTO } from "../../DTO";
 
 export const postsController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {

@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../models";
 import { formatResponse } from "../../utils/responseFormatter";
 import { authService } from "../../services";
-import { authDTO } from "../../utils/mapDBToView";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
+import { authDTO } from "../../DTO";
 
 export const authController = {
   login: async (

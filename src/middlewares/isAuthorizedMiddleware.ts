@@ -18,7 +18,7 @@ export const isAuthorizedMiddleware = async (
     const token = req.headers.authorization.split(" ")[1];
 
     const userId = await jwtService.getUserIdByAccessToken(token);
-
+  
     if (!userId) {
       throw ApiError.UnauthorizedError("Not authorized", [
         "Authorization failed. Access token is incorrect or expired",

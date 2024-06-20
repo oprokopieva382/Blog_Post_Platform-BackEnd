@@ -5,8 +5,8 @@ import { BlogInputModel, BlogPostInputModel } from "../../models";
 import { blogsService } from "../../services";
 import { blogsQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
-import { blogDTO, postDTO } from "../../utils/mapDBToView";
 import { ApiError } from "../../helper/api-errors";
+import { blogDTO, postDTO } from "../../DTO";
 
 export const blogsController = {
   getAll: async (req: Request, res: Response, next: NextFunction) => {
