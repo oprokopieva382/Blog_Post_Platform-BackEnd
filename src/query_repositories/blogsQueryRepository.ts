@@ -8,6 +8,7 @@ import {
 import { BlogViewModel, Paginator, PostViewModel } from "../models";
 import { QueryType } from "../query-type";
 import { ApiError } from "../helper/api-errors";
+import { blogDTO, postDTO } from "../DTO";
 
 export const blogsQueryRepository = {
   async getPostsOfBlog(
@@ -30,7 +31,7 @@ export const blogsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => this._postDTO(p)),
+      items: posts.map((p) => postDTO(p)),
     };
 
     return postsToView;
@@ -57,7 +58,7 @@ export const blogsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalBlogsCount,
-      items: blogs.map((b) => this._blogDTO(b)),
+      items: blogs.map((b) => blogDTO(b)),
     };
 
     return blogsToView;
@@ -72,31 +73,6 @@ export const blogsQueryRepository = {
       throw ApiError.NotFoundError("Not found", ["No blog found"]);
     }
 
-    return this._blogDTO(foundBlog);
-  },
-
-  _blogDTO(blog: BlogDBType): BlogViewModel {
-    return {
-      // Convert ObjectId to string
-      id: blog._id.toString(),
-      name: blog.name,
-      description: blog.description,
-      websiteUrl: blog.websiteUrl,
-      createdAt: blog.createdAt,
-      isMembership: false,
-    };
-  },
-
-  _postDTO(post: PostDBType): PostViewModel {
-    return {
-      // Convert ObjectId to string
-      id: post._id.toString(),
-      title: post.title,
-      shortDescription: post.shortDescription,
-      content: post.content,
-      blogId: post.blogId.toString(),
-      blogName: post.blogName,
-      createdAt: post.createdAt,
-    };
+    return blogDTO(foundBlog);
   },
 };

@@ -1,6 +1,6 @@
-export { blogsRepository } from "./blogs-repository";
-export { postsRepository } from "./posts-repository";
-export { usersRepository } from "./users-repository";
-export { authRepository } from "./auth-repository";
-export { devicesRepository } from "./devices-repository";
-export { commentsRepository } from "./comments-repository";
+export { blogsRepository } from "./blogsRepository";
+export { postsRepository } from "./postsRepository";
+export { usersRepository } from "./usersRepository";
+export { authRepository } from "./authRepository";
+export { devicesRepository } from "./devicesRepository";
+export { commentsRepository } from "./commentsRepository";

@@ -3,6 +3,7 @@ import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { commentsCollection } from "../cloud_DB/mongo_db_atlas";
 import { QueryCommentsType } from "../query-type";
 import { ObjectId } from "mongodb";
+import { commentDTO } from "../DTO";
 
 export const commentsQueryRepository = {
   async getCommentsOfPost(
@@ -25,7 +26,7 @@ export const commentsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCommentsCount,
-      items: comments.map((c) => this._commentDTO(c)),
+      items: comments.map((c) => commentDTO(c)),
     };
 
     return commentsToView;
@@ -35,18 +36,5 @@ export const commentsQueryRepository = {
     return await commentsCollection.findOne({
       _id: new ObjectId(id),
     });
-  },
-
-  _commentDTO(comment: CommentDBType): CommentViewModel {
-    return {
-      // Convert ObjectId to string
-      id: comment._id.toString(),
-      content: comment.content,
-      commentatorInfo: {
-        userId: comment.commentatorInfo.userId,
-        userLogin: comment.commentatorInfo.userLogin,
-      },
-      createdAt: comment.createdAt,
-    };
   },
 };

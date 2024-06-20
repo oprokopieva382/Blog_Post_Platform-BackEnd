@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { formatResponse } from "../../utils/responseDTO";
+import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { BlogInputModel, BlogPostInputModel } from "../../models";
 import { blogsService } from "../../services";

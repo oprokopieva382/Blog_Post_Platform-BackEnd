@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { formatResponse } from "../../utils/responseDTO";
+import { formatResponse } from "../../utils/responseFormatter";
 import { CommentInputModel } from "../../models";
 import { commentsQueryRepository } from "../../query_repositories";
 import { commentDTO } from "../../utils/mapDBToView";

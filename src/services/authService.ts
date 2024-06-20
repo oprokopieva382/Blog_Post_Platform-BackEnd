@@ -12,9 +12,9 @@ import {
 import { authRepository, usersRepository } from "../repositories";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { ApiError } from "../helper/api-errors";
-import { userDTO } from "../utils/mapDBToView";
 import { SessionData } from "../types/SessionData";
 import { jwtService } from "../features/application";
+import { userDTO } from "../DTO";
 
 export const authService = {
   async loginUser(data: LoginInputModel, req: Request) {
