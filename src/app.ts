@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import { SETTINGS } from "./settings";
 import { postsRouter } from "./features/posts/postsRouter";
 import { blogsRouter } from "./features/blogs/blogsRouter";
@@ -6,9 +7,9 @@ import { testingRouter } from "./features/dbCleanUp/testingRouter";
 import { usersRouter } from "./features/users/usersRouter";
 import { authRouter } from "./features/auth/authRouter";
 import { commentsRouter } from "./features/comments/commentsRouter";
-import cookieParser from "cookie-parser";
 import { errorHandlerMiddleware } from "./middlewares";
 import { devicesRouter } from "./features/securityDevices/devicesRouter";
+import { logger } from "./utils/logger";
 
 export const app = express();
 

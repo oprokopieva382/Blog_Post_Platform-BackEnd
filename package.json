@@ -22,7 +22,8 @@
     "mongodb": "^6.5.0",
     "ngrok": "^5.0.0-beta.2",
     "nodemailer": "^6.9.13",
-    "redis": "^4.6.14"
+    "redis": "^4.6.14",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

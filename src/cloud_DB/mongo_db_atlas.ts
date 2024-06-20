@@ -8,6 +8,7 @@ import {
   SessionsDBType,
   UserDBType,
 } from "./mongo_db_types";
+import { logger } from "../utils/logger";
 
 let client: MongoClient = {} as MongoClient;
 export let db: Db = {} as Db;
@@ -28,7 +29,7 @@ export const ConnectMongoDB = async () => {
   try {
     client = new MongoClient(SETTINGS.MONGO_DB_ATLAS);
     await client.connect();
-    console.log("Connected to MongoDB Atlas");
+    logger.info("Connected to MongoDB Atlas");
 
     db = client.db(SETTINGS.DB_NAME);
 
@@ -41,7 +42,7 @@ export const ConnectMongoDB = async () => {
   
     return true;
   } catch (error) {
-    console.log(error);
+    logger.error(`Failed to connect MongoDB: ${error}`);
     await client.close();
     return false;
   }
