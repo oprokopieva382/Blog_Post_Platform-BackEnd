@@ -18,7 +18,7 @@ describe("/comments test", () => {
     it("1 - should get comment by id & return status code 200", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -31,7 +31,7 @@ describe("/comments test", () => {
     it("2 - shouldn't get comment if id is not found & return status code 404", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       await testManager.createComment(post.id, accessToken);
@@ -45,7 +45,7 @@ describe("/comments test", () => {
     it("1- should update comment by id if user auth & return status code 204", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -63,7 +63,7 @@ describe("/comments test", () => {
     it("2- shouldn't update comment by id if user auth and if incorrect values & return status code 400", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -82,7 +82,7 @@ describe("/comments test", () => {
     it("3- shouldn't update comment by id if user unauthorized & return status code 401", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -101,7 +101,7 @@ describe("/comments test", () => {
     it("4- shouldn't update comment by id if commentId is not exist & return status code 404", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       await testManager.createComment(post.id, accessToken);
@@ -121,7 +121,7 @@ describe("/comments test", () => {
     it("5 - shouldn't update comment if commentId !== user.id & return status code 403", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -153,7 +153,7 @@ describe("/comments test", () => {
       await request(app)
         .put(`${SETTINGS.PATH.COMMENTS}/${comment.id}`)
         .send(newComment)
-        .set("Authorization", `Bearer ${user2tokens.body.data.accessToken}`)
+        .set("Authorization", `Bearer ${user2tokens.body.accessToken}`)
         .expect(403);
     });
   });
@@ -162,7 +162,7 @@ describe("/comments test", () => {
     it("1- shouldn't delete comment by id if commentId is not exist & return status code 404", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       await testManager.createComment(post.id, accessToken);
@@ -182,7 +182,7 @@ describe("/comments test", () => {
     it("2- shouldn't delete comment by id if user unauthorized & return status code 401", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -201,7 +201,7 @@ describe("/comments test", () => {
     it("3- should delete comment by id if user auth & return status code 204", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -219,7 +219,7 @@ describe("/comments test", () => {
     it("4 - shouldn't delete comment if commentId !== user.id & return status code 403", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       const comment = await testManager.createComment(post.id, accessToken);
@@ -251,7 +251,7 @@ describe("/comments test", () => {
       await request(app)
         .delete(`${SETTINGS.PATH.COMMENTS}/${comment.id}`)
         .send(newComment)
-        .set("Authorization", `Bearer ${user2tokens.body.data.accessToken}`)
+        .set("Authorization", `Bearer ${user2tokens.body.accessToken}`)
         .expect(403);
     });
   });

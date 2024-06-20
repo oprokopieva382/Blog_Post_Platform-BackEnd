@@ -71,8 +71,8 @@ describe("/blogs test", () => {
       const res = await request(app)
         .get(`${SETTINGS.PATH.BLOGS}?pageNumber=1&pageSize=5`)
         .expect(200);
-      expect(res.body.data.page).toBe(1);
-      expect(res.body.data.pageSize).toBe(5);
+      expect(res.body.page).toBe(1);
+      expect(res.body.pageSize).toBe(5);
     });
   });
 

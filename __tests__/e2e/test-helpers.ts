@@ -70,7 +70,7 @@ export const testManager = {
     const userWithCode = await usersCollection.findOne({
       _id: new ObjectId(user.items[0].id),
     });
-   
+
     return userWithCode
       ? userWithCode.emailConfirmation.confirmationCode
       : null;
@@ -123,8 +123,6 @@ export const testManager = {
       .send(comment)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect(201);
-
     return res.body;
   },
-  
 };
