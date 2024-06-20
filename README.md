@@ -32,15 +32,15 @@ This repository contains the backend implementation for a blog posts platform. T
 
 ## Used Coding Principals
 
--✔️ SOLID
--✔️ DRY
--✔️ KISS
+- ✔️ SOLID
+- ✔️ DRY
+- ✔️ KISS
 
 ## The Three Layered Architecture
 
--✔️ Presentation Layer
--✔️ Business Logic Layer (BLL)
--✔️ Data Access Layer (DAL)
+- ✔️ Presentation Layer
+- ✔️ Business Logic Layer (BLL)
+- ✔️ Data Access Layer (DAL)
 
 ## License
 
