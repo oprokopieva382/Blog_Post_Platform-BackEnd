@@ -1,22 +1,20 @@
 import { randomUUID } from "crypto";
 import { Request } from "express";
-import { bcryptService } from ".";
+import { add } from "date-fns/add";
+import { fromUnixTime } from "date-fns/fromUnixTime";
+import { ObjectId } from "mongodb";
+import { bcryptService, emailService } from ".";
 import {
   LoginInputModel,
   RegistrationConfirmationCodeModel,
   UserInputModel,
 } from "../models";
 import { authRepository, usersRepository } from "../repositories";
-import { add } from "date-fns/add";
-import { fromUnixTime } from "date-fns/fromUnixTime";
-import { ObjectId } from "mongodb";
-import { emailAdapter } from "../features/adapters";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
-import { jwtTokenService } from "../features/application";
-import { blackListTokenCollection } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { userDTO } from "../utils/mapDBToView";
 import { SessionData } from "../types/SessionData";
+import { jwtService } from "../features/application";
 
 export const authService = {
   async loginUser(data: LoginInputModel, req: Request) {
@@ -44,15 +42,10 @@ export const authService = {
     const deviceName = req.headers["user-agent"] || "Unknown Device";
     const user = userDTO(userData);
 
-    const accessToken = await jwtTokenService.createAccessToken(user.id);
-    const refreshToken = await jwtTokenService.createRefreshToken(
-      user.id,
-      deviceId
-    );
+    const accessToken = await jwtService.createAccessToken(user.id);
+    const refreshToken = await jwtService.createRefreshToken(user.id, deviceId);
 
-    const { iat, exp } = await jwtTokenService.validateRefreshToken(
-      refreshToken
-    );
+    const { iat, exp } = await jwtService.validateRefreshToken(refreshToken);
 
     await this.createSession({
       userId: user.id,
@@ -99,7 +92,7 @@ export const authService = {
 
     await usersRepository.createUser(newUser);
 
-    await emailAdapter.sendEmail(
+    await emailService.sendEmail(
       newUser.email,
       newUser.emailConfirmation.confirmationCode
     );
@@ -130,18 +123,14 @@ export const authService = {
     const newCode = randomUUID();
     await authRepository.updateCode(findUser._id, newCode);
 
-    emailAdapter.sendEmail(data.email, newCode);
+    emailService.sendEmail(data.email, newCode);
 
     return findUser;
   },
 
-  async addTokenToBlackList(refreshToken: string) {
-    return await blackListTokenCollection.insertOne({ refreshToken });
-  },
-
   async refreshToken(deviceId: string, userId: string) {
-    const newAccessToken = await jwtTokenService.createAccessToken(userId);
-    const newRefreshToken = await jwtTokenService.createRefreshToken(
+    const newAccessToken = await jwtService.createAccessToken(userId);
+    const newRefreshToken = await jwtService.createRefreshToken(
       userId,
       deviceId
     );
@@ -164,10 +153,10 @@ export const authService = {
   },
 
   async updateSession(newRefreshToken: string) {
-    const { iat, exp, deviceId } = await jwtTokenService.validateRefreshToken(
+    const { iat, exp, deviceId } = await jwtService.validateRefreshToken(
       newRefreshToken
     );
-    
+
     const tokenIat = fromUnixTime(+iat!);
     const dbIat = new Date(iat!);
 

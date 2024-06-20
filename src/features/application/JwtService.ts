@@ -1,8 +1,9 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { SETTINGS } from "../../settings";
 import { ApiError } from "../../helper/api-errors";
+import { IJwtService } from "../../interfaces/IJwtService";
 
-export const jwtTokenService = {
+export class JwtService implements IJwtService {
   async createAccessToken(userId: string) {
     const aToken = jwt.sign({ userId }, SETTINGS.JWT_ACCESS_TOKEN_SECRET, {
       expiresIn: "10m",
@@ -11,18 +12,13 @@ export const jwtTokenService = {
     return {
       accessToken: aToken,
     };
-  },
+  }
 
   async createRefreshToken(userId: string, deviceId: string) {
-    const refreshToken = jwt.sign(
-      { userId, deviceId },
-      SETTINGS.JWT_REFRESH_TOKEN_SECRET,
-      {
-        expiresIn: "20m",
-      }
-    );
-    return refreshToken;
-  },
+    return jwt.sign({ userId, deviceId }, SETTINGS.JWT_REFRESH_TOKEN_SECRET, {
+      expiresIn: "20m",
+    });
+  }
 
   async getUserIdByAccessToken(token: string) {
     try {
@@ -34,7 +30,7 @@ export const jwtTokenService = {
     } catch (error) {
       throw ApiError.UnauthorizedError("Unauthorized. Invalid access token");
     }
-  },
+  }
 
   async validateRefreshToken(refreshToken: string) {
     try {
@@ -42,12 +38,11 @@ export const jwtTokenService = {
         refreshToken,
         SETTINGS.JWT_REFRESH_TOKEN_SECRET
       ) as JwtPayload;
-      console.log(result)
       return result;
     } catch (error) {
       throw ApiError.UnauthorizedError("Unauthorized", [
         "Unauthorized. No access to the session.",
       ]);
     }
-  },
+  }
 };

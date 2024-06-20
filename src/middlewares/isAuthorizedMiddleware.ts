@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { jwtTokenService } from "../features/application";
 import { usersQueryRepository } from "../query_repositories";
 import { ApiError } from "../helper/api-errors";
+import { jwtService } from "../features/application";
 
 export const isAuthorizedMiddleware = async (
   req: Request,
@@ -17,7 +17,7 @@ export const isAuthorizedMiddleware = async (
 
     const token = req.headers.authorization.split(" ")[1];
 
-    const userId = await jwtTokenService.getUserIdByAccessToken(token);
+    const userId = await jwtService.getUserIdByAccessToken(token);
 
     if (!userId) {
       throw ApiError.UnauthorizedError("Not authorized", [

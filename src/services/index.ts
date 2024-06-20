@@ -1,3 +1,5 @@
+import { EmailService } from "./EmailService";
+export const emailService = new EmailService();
 export { blogsService } from "./blogs-service";
 export { postsService } from "./post-service";
 export { usersService } from "./users-service";
