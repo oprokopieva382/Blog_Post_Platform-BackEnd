@@ -2,7 +2,7 @@ import request from "supertest";
 import { ObjectId } from "mongodb";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
-import { blackListTokenCollection, usersCollection } from "../../src/cloud_DB";
+import { usersCollection } from "../../src/cloud_DB";
 
 export const testManager = {
   async createUser() {
@@ -41,10 +41,6 @@ export const testManager = {
       .split("=")[1];
 
     return { res, refreshToken };
-  },
-
-  async addToBlacklistToken(refreshToken: string) {
-    return await blackListTokenCollection.insertOne({ refreshToken });
   },
 
   async getUser() {

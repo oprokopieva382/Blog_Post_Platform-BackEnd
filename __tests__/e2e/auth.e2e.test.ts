@@ -2,8 +2,8 @@ import { ConnectMongoDB } from "../../src/cloud_DB";
 import request from "supertest";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
-import { testManager } from "../../src/testManager";
-import { dropCollections } from "../../src/testManager/dropCollections";
+import { testManager } from "./test-helpers";
+import { dropCollections } from "./dropCollections";
 
 describe("auth tests", () => {
   beforeAll(async () => {
@@ -97,7 +97,6 @@ describe("auth tests", () => {
     it("shouldn't logout user and return status code of 401 if unauthorized", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      await testManager.addToBlacklistToken(refreshToken);
 
       await request(app)
         .post(`${SETTINGS.PATH.AUTH}/logout`)
