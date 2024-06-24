@@ -1,6 +1,9 @@
 import redisClient from "../redisClient";
 
-export function cache(keyGenerator: (...args: any[]) => string, ttl: 3600) {
+export function cache(
+  keyGenerator: (...args: any[]) => string,
+  ttl: number = 3600
+) {
   return function (_: any, __: string, descriptor: PropertyDescriptor) {
     let method = descriptor.value;
 

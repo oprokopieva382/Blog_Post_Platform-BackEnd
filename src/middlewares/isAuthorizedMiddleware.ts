@@ -26,22 +26,12 @@ export const isAuthorizedMiddleware = async (
       ]);
     }
 
-    let authorizedUser;
-    const cashedUser = await redisClient.get(`user:${userId}`);
-
-    if (!cashedUser) {
-      authorizedUser = await usersQueryRepository.getByIdUser(userId);
-      if (!authorizedUser) {
-        throw ApiError.UnauthorizedError("Not authorized", [
-          "Authorization failed. Can't find user with such id",
-        ]);
-      }
-
-      await redisClient.set(`user:${userId}`, JSON.stringify(authorizedUser), {
-        EX: 3600, // Cache for 1 hour
-      });
-    } else {
-      authorizedUser = JSON.parse(cashedUser);
+    //getting authorizedUser from cache or DB
+    const authorizedUser = await usersQueryRepository.getByIdUser(userId);
+    if (!authorizedUser) {
+      throw ApiError.UnauthorizedError("Not authorized", [
+        "Authorization failed. Can't find user with such id",
+      ]);
     }
 
     req.user = authorizedUser;
