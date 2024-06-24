@@ -2,7 +2,7 @@ import request from "supertest";
 import { ObjectId } from "mongodb";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
-import { blackListTokenCollection, usersCollection } from "../../src/cloud_DB";
+import { usersCollection } from "../../src/cloud_DB";
 
 export const testManager = {
   async createUser() {
@@ -43,15 +43,11 @@ export const testManager = {
     return { res, refreshToken };
   },
 
-  async addToBlacklistToken(refreshToken: string) {
-    return await blackListTokenCollection.insertOne({ refreshToken });
-  },
-
   async getUser() {
     const res = await request(app)
       .get(SETTINGS.PATH.USERS)
       .auth("admin", "qwerty");
-    return res.body.data;
+    return res.body;
   },
 
   async registerUser() {
@@ -74,10 +70,43 @@ export const testManager = {
     const userWithCode = await usersCollection.findOne({
       _id: new ObjectId(user.items[0].id),
     });
-    console.log(userWithCode);
+
     return userWithCode
       ? userWithCode.emailConfirmation.confirmationCode
       : null;
+  },
+
+  async getFiveConfirmCodes() {
+    const users = await this.getUser();
+    const confirmationCodes: string[] = [];
+
+    for (const user of users.items) {
+      const userWithCode = await usersCollection.findOne({
+        _id: new ObjectId(user.id),
+      });
+      if (userWithCode && userWithCode.emailConfirmation.confirmationCode) {
+        confirmationCodes.push(userWithCode.emailConfirmation.confirmationCode);
+      }
+    }
+
+    return confirmationCodes;
+  },
+
+  async registerFiveUsers() {
+    const users = [
+      { login: "Tina1", password: "tina123", email: "Tina1@gmail.com" },
+      { login: "Tina2", password: "tina123", email: "Tina2@gmail.com" },
+      { login: "Tina3", password: "tina123", email: "Tina3@gmail.com" },
+      { login: "Tina4", password: "tina123", email: "Tina4@gmail.com" },
+      { login: "Tina5", password: "tina123", email: "Tina5@gmail.com" },
+    ];
+
+    for (const user of users) {
+      await request(app)
+        .post(`${SETTINGS.PATH.AUTH}/registration`)
+        .send(user)
+        .expect(204);
+    }
   },
 
   async createBlog() {
@@ -93,12 +122,12 @@ export const testManager = {
       .auth("admin", "qwerty")
       .expect(201);
 
-    return res.body.data;
+    return res.body;
   },
 
   async getBlogs() {
     const res = await request(app).get(SETTINGS.PATH.BLOGS).expect(200);
-    return res.body.data.items;
+    return res.body.items;
   },
 
   async createPost(blogId: string) {
@@ -114,7 +143,7 @@ export const testManager = {
       .auth("admin", "qwerty")
       .expect(201);
 
-    return res.body.data;
+    return res.body;
   },
 
   async createComment(postId: string, accessToken: string) {
@@ -127,8 +156,6 @@ export const testManager = {
       .send(comment)
       .set("Authorization", `Bearer ${accessToken}`)
       .expect(201);
-
-    return res.body.data;
+    return res.body;
   },
-  
 };

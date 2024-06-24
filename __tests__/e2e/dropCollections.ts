@@ -1,10 +1,14 @@
 import {
-  blackListTokenCollection,
   blogsCollection,
   commentsCollection,
   postsCollection,
   usersCollection,
 } from "../../src/cloud_DB";
+import {
+  apiLimitCollection,
+  sessionsCollection,
+} from "../../src/cloud_DB/mongo_db_atlas";
+import { logger } from "../../src/utils/logger";
 
 export const dropCollections = async () => {
   try {
@@ -13,10 +17,11 @@ export const dropCollections = async () => {
       postsCollection.drop(),
       commentsCollection.drop(),
       usersCollection.drop(),
-      await blackListTokenCollection.drop(),
+      sessionsCollection.drop(),
+      apiLimitCollection.drop(),
     ]);
-    console.log("Collections dropped successfully");
+    logger.info("Collections dropped successfully");
   } catch (error) {
-    console.log("Error dropping collections:", error);
+    logger.error("Error dropping collections:", error);
   }
 };

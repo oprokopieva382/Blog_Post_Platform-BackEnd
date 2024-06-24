@@ -1,9 +1,9 @@
 import { ConnectMongoDB } from "../../src/cloud_DB";
-import { authService } from "../../src/services";
+import { authService, emailService } from "../../src/services";
 import { user } from "./seeder";
-import { emailAdapter } from "../../src/features/adapters";
 import { ObjectId } from "mongodb";
 import { dropCollections } from "../e2e/dropCollections";
+import { ApiError } from "../../src/helper/api-errors";
 
 describe("auth tests", () => {
   beforeAll(async () => {
@@ -11,7 +11,7 @@ describe("auth tests", () => {
   });
 
   afterEach(async () => {
-    //await dropCollections();
+    await dropCollections();
   });
 
   afterAll(async () => {
@@ -21,13 +21,13 @@ describe("auth tests", () => {
   describe("USER REGISTRATION", () => {
     const registerUser = authService.registerUser;
 
-    emailAdapter.sendEmail = jest
+    emailService.sendEmail = jest
       .fn()
       .mockImplementation((email: string, code: string) => {
         return true;
       });
 
-    it.skip("1- should register user and return status code 204", async () => {
+    it("1- should register user and return status code 204", async () => {
       const result = await registerUser(user);
 
       expect(result).toEqual({
@@ -43,22 +43,32 @@ describe("auth tests", () => {
         },
       });
 
-      expect(emailAdapter.sendEmail).toHaveBeenCalled();
-      expect(emailAdapter.sendEmail).toHaveBeenCalledTimes(1);
+      expect(emailService.sendEmail).toHaveBeenCalled();
+      expect(emailService.sendEmail).toHaveBeenCalledTimes(1);
     });
 
-    it.skip("2- shouldn't register user and if the user with the given email or login already exists return status code 400", async () => {
+    it("2- shouldn't register user and if the user with the given email or login already exists return status code 400", async () => {
       await registerUser(user);
-      const userToRegister: any = await registerUser(user);
-
-      expect(userToRegister).toBe(false);
+      try {
+        await registerUser(user);
+      } catch (error) {
+        //console.log("Caught error:", error);
+        const apiError = error as ApiError;
+        expect(apiError).toBeDefined();
+        expect(apiError.status).toBe(400);
+        expect(apiError.errorsMessages).toBeDefined();
+        expect(apiError.errorsMessages).toHaveLength(1);
+        expect(apiError.errorsMessages[0]).toBe(
+          "Registration failed. User already exists."
+        );
+      }
     });
   });
 
   describe("USER REGISTRATION CONFIRMATION", () => {
     const registerUser = authService.registerUser;
 
-    emailAdapter.sendEmail = jest
+    emailService.sendEmail = jest
       .fn()
       .mockImplementation((email: string, code: string) => {
         return true;
@@ -66,14 +76,12 @@ describe("auth tests", () => {
 
     it("1- should confirm user registration and return status code 204", async () => {
       const result: any = await registerUser(user);
-      console.log("Registered User:", result);
 
       expect(result.emailConfirmation).toBeDefined();
       const data = {
         code: result.emailConfirmation.confirmationCode,
       };
       const userConfirmed = await authService.confirmUser(data);
-      console.log("Confirmed User:", userConfirmed);
 
       expect(userConfirmed?.emailConfirmation.isConfirmed).toBe(true);
     });

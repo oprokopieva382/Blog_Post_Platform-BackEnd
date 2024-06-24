@@ -82,8 +82,8 @@ describe("/posts test", () => {
         .get(`${SETTINGS.PATH.POSTS}?pageNumber=1&pageSize=5`)
         .auth("admin", "qwerty")
         .expect(200);
-      expect(res.body.data.page).toBe(1);
-      expect(res.body.data.pageSize).toBe(5);
+      expect(res.body.page).toBe(1);
+      expect(res.body.pageSize).toBe(5);
     });
   });
 
@@ -173,7 +173,7 @@ describe("/posts test", () => {
     it("1- should create comment for proper post and with user auth & return status code 201", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
 
@@ -191,7 +191,7 @@ describe("/posts test", () => {
     it("2- shouldn't create comment for proper post and with user auth if incorrect values & return status code 400", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
 
@@ -209,7 +209,7 @@ describe("/posts test", () => {
     it("3- shouldn't create comment for proper post if user unauthorized & return status code 401", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
 
@@ -227,7 +227,7 @@ describe("/posts test", () => {
     it("4- shouldn't create comment for proper post if postId is not exist & return status code 404", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       await testManager.createPost(blog.id);
       const wrongPostId = "6634e807bcf8ea51a3d4da61";
@@ -248,7 +248,7 @@ describe("/posts test", () => {
     it("1 - shouldn't find comment for proper post if postId is not exist & return status code 404", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       await testManager.createComment(post.id, accessToken);
@@ -265,7 +265,7 @@ describe("/posts test", () => {
     it("2 - should find comment for proper post if postId exist, return status code 200 & object with pagination", async () => {
       await testManager.createUser();
       const { res, refreshToken } = await testManager.loginUser();
-      const accessToken = res.body.data.accessToken;
+      const accessToken = res.body.accessToken;
       const blog = await testManager.createBlog();
       const post = await testManager.createPost(blog.id);
       await testManager.createComment(post.id, accessToken);

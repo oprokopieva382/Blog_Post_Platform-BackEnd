@@ -1,4 +1,3 @@
-import { authRepository } from "../../src/repositories";
 
 export const user = {
   login: "OksanaYo",

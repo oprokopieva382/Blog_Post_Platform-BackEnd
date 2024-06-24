@@ -4,8 +4,9 @@ import { QueryUserType } from "../query-type";
 import { usersCollection } from "../cloud_DB/mongo_db_atlas";
 import { ObjectId } from "mongodb";
 import { userDTO } from "../DTO";
+import { cache } from "../utils/decorators";
 
-export const usersQueryRepository = {
+class UsersQueryRepository {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
     const searchByLogin = query.searchLoginTerm
       ? { login: { $regex: query.searchLoginTerm, $options: "i" } }
@@ -35,13 +36,16 @@ export const usersQueryRepository = {
     };
 
     return usersToView;
-  },
+  }
 
+  @cache((userId: string)=> `user:${userId}`)
   async getByIdUser(id: string): Promise<UserViewModel | null> {
     const foundUser = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
    
     return foundUser ? userDTO(foundUser) : null;
-  },
+  }
 };
+
+export const usersQueryRepository = new UsersQueryRepository();
