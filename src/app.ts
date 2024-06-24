@@ -30,3 +30,5 @@ app.get("/", (req, res) => {
   //endpoint to display backend version in use
   res.status(200).json({ version: SETTINGS.VERSION });
 });
+
+logger.info("Server started");
