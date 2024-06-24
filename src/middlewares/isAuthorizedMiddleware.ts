@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { usersQueryRepository } from "../query_repositories";
 import { ApiError } from "../helper/api-errors";
 import { jwtService } from "../features/application";
-import redisClient from "../redisClient";
 
 export const isAuthorizedMiddleware = async (
   req: Request,
