@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { Types } from "mongoose";
 
 export type BlogDBType = {
@@ -62,4 +61,11 @@ export type ApiDBType = {
   IP: string;
   URL: string;
   date: Date;
+};
+
+export type PasswordRecoveryDBType = {
+  _id: Types.ObjectId;
+  recoveryCode: string;
+  expirationDate: Date;
+  createdAt: string;
 };

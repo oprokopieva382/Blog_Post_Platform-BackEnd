@@ -168,4 +168,13 @@ export const authService = {
       });
     }
   },
+
+  async passwordRecovery() {
+    const passwordRecovery = {
+      recoveryCode: randomUUID(),
+      expirationDate: add(new Date(Date.now()).toISOString(), {
+        hours: 1,
+      }),
+    };
+  },
 };

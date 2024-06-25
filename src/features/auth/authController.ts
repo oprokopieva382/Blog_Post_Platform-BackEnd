@@ -1,12 +1,26 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../models";
 import { formatResponse } from "../../utils/responseFormatter";
-import { authService } from "../../services";
+import { authService} from "../../services";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
 import { authDTO } from "../../DTO";
 
 export const authController = {
+  me: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const me = await usersQueryRepository.getByIdUser(req.user.id);
+      if (!me) {
+        throw ApiError.UnauthorizedError("Not authorized", [
+          "Authorization failed. Can't find user with such id",
+        ]);
+      }
+      formatResponse(res, 200, authDTO(me), "User authorized");
+    } catch (error) {
+      next(error);
+    }
+  },
+
   login: async (
     req: Request<{}, {}, LoginInputModel>,
     res: Response,
@@ -23,20 +37,6 @@ export const authController = {
         secure: true,
       });
       formatResponse(res, 200, accessToken, "User logged in successfully");
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  me: async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const me = await usersQueryRepository.getByIdUser(req.user.id);
-      if (!me) {
-        throw ApiError.UnauthorizedError("Not authorized", [
-          "Authorization failed. Can't find user with such id",
-        ]);
-      }
-      formatResponse(res, 200, authDTO(me), "User authorized");
     } catch (error) {
       next(error);
     }
@@ -105,6 +105,16 @@ export const authController = {
       });
 
       formatResponse(res, 200, newAccessToken, "New access token sent");
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  passwordRecovery: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await authService.passwordRecovery();
+
+      formatResponse(res, 204, {}, "Email sent with recovery code inside");
     } catch (error) {
       next(error);
     }
