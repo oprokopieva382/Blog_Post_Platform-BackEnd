@@ -1,14 +1,14 @@
-import { sessionsCollection } from "../cloud_DB/mongo_db_atlas";
+import { SessionModel } from "../models1";
 
 export const devicesRepository = {
   async removeDevice(deviceId: string) {
-    return await sessionsCollection.findOneAndDelete({
+    return await SessionModel.findOneAndDelete({
       deviceId,
     });
   },
 
   async removeDevices(currentSessionDeviceId: string, userId: string) {
-    return await sessionsCollection.deleteMany({
+    return await SessionModel.deleteMany({
       userId,
       deviceId: { $ne: currentSessionDeviceId },
     });

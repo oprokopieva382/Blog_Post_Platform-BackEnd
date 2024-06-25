@@ -31,9 +31,8 @@ export const postsService = {
     };
 
     const createdPost = await postsRepository.createPost(newPost);
-    const insertedId = createdPost.insertedId;
-
-    const post = postsRepository.getByIdPost(insertedId.toString());
+  
+    const post = postsRepository.getByIdPost(createdPost._id.toString());
 
     if (!post) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);
@@ -92,7 +91,7 @@ export const postsService = {
         `Comment does not exist`,
       ]);
     }
-    const insertedId = createdComment.insertedId;
-    return await postsRepository.getByIdComment(insertedId.toString());
+
+    return await postsRepository.getByIdComment(createdComment._id.toString());
   },
 };

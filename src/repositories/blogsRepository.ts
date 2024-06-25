@@ -3,40 +3,39 @@ import { BlogInputModel } from "../models";
 import {
   BlogDBType,
   PostDBType,
-  blogsCollection,
-  postsCollection,
 } from "../cloud_DB";
+import { BlogModel, PostModel } from "../models1";
 
 export const blogsRepository = {
   async getByIdBlog(id: string): Promise<BlogDBType | null> {
-    return await blogsCollection.findOne({
+    return await BlogModel.findOne({
       _id: new ObjectId(id),
     });
   },
 
   async removeBlog(id: string) {
-    return await blogsCollection.findOneAndDelete({
+    return await BlogModel.findOneAndDelete({
       _id: new ObjectId(id),
     });
   },
 
   async createBlog(newBlog: BlogDBType) {
-    return await blogsCollection.insertOne(newBlog);
+    return await BlogModel.create(newBlog);
   },
 
   async updateBlog(data: BlogInputModel, id: string) {
     const { name, description, websiteUrl } = data;
-    await blogsCollection.findOneAndUpdate(
+    await BlogModel.findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: { name, description, websiteUrl } }
     );
 
-    return await blogsCollection.findOne({
+    return await BlogModel.findOne({
       _id: new ObjectId(id),
     });
   },
 
   async createPost(newPost: PostDBType) {
-    return await postsCollection.insertOne(newPost);
+    return await PostModel.create(newPost);
   },
 };

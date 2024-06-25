@@ -28,9 +28,8 @@ export const usersService = {
     };
 
     const createdUser = await usersRepository.createUser(newUser);
-    const insertedId = createdUser.insertedId;
 
-    const user = usersRepository.getByIdUser(insertedId.toString());
+    const user = usersRepository.getByIdUser(createdUser._id.toString());
 
     if (!user) {
       throw ApiError.UnauthorizedError("Not authorized", [

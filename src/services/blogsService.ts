@@ -16,9 +16,8 @@ export const blogsService = {
       ...data,
     };
     const createdBlog = await blogsRepository.createBlog(newBlog);
-    const insertedId = createdBlog.insertedId;
-
-    return blogsRepository.getByIdBlog(insertedId.toString());
+ 
+    return blogsRepository.getByIdBlog(createdBlog._id.toString());
   },
 
   async updateBlog(data: BlogInputModel, id: string) {
@@ -53,9 +52,7 @@ export const blogsService = {
       throw ApiError.NotFoundError("Not found", ["Can't create post"]);
     }
 
-    const insertedId = createdPost.insertedId;
-
-    const result = await postsRepository.getByIdPost(insertedId.toString());
+    const result = await postsRepository.getByIdPost(createdPost._id.toString());
 
     if (!result) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);

@@ -1,7 +1,8 @@
 import { ObjectId } from "mongodb";
+import { Types } from "mongoose";
 
 export type BlogDBType = {
-  _id: ObjectId;
+  _id: Types.ObjectId;
   name: string;
   description: string;
   websiteUrl: string;
@@ -10,17 +11,17 @@ export type BlogDBType = {
 };
 
 export type PostDBType = {
-  _id: ObjectId;
+  _id: Types.ObjectId;
   title: string;
   shortDescription: string;
   content: string;
-  blogId: ObjectId;
+  blogId: Types.ObjectId;
   blogName: string;
   createdAt?: string;
 };
 
 export type UserDBType = {
-  _id: ObjectId;
+  _id: Types.ObjectId;
   login: string;
   password: string;
   email: string;
@@ -37,7 +38,7 @@ type ConfirmationEmailType = {
 type ExpirationDate = Date;
 
 export type CommentDBType = {
-  _id: ObjectId;
+  _id: Types.ObjectId;
   postId: string;
   content: string;
   commentatorInfo: {
@@ -48,7 +49,7 @@ export type CommentDBType = {
 };
 
 export type SessionsDBType = {
-  _id: ObjectId;
+  _id: Types.ObjectId;
   userId: string;
   deviceId: string;
   iat: string;

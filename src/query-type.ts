@@ -1,16 +1,14 @@
-import { SortDirection } from "mongodb";
-
 export type QueryType = {
   pageNumber: number;
   pageSize: number;
   sortBy: string;
-  sortDirection: SortDirection;
+  sortDirection: 1 | -1;
   searchNameTerm: string | null;
 };
 
 export type QueryUserType = {
   sortBy: string;
-  sortDirection: SortDirection;
+  sortDirection: 1 | -1;
   pageNumber: number;
   pageSize: number;
   searchLoginTerm: string | null;
@@ -19,7 +17,7 @@ export type QueryUserType = {
 
 export type QueryCommentsType = {
   sortBy: string;
-  sortDirection: SortDirection;
+  sortDirection: 1 | -1;
   pageNumber: number;
   pageSize: number;
 };

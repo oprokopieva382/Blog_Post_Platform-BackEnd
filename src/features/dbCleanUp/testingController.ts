@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
 import {
-  apiLimitCollection,
-  blogsCollection,
-  commentsCollection,
-  postsCollection,
-  sessionsCollection,
-  usersCollection,
-} from "../../cloud_DB/mongo_db_atlas";
+  ApiCallModel,
+  BlogModel,
+  CommentModel,
+  PostModel,
+  SessionModel,
+  UserModel,
+} from "../../models1";
 
 export const testingController = async (req: Request, res: Response) => {
   try {
-    await blogsCollection.deleteMany({});
-    await postsCollection.deleteMany({});
-    await usersCollection.deleteMany({});
-    await commentsCollection.deleteMany({});
-    await apiLimitCollection.deleteMany({});
-    await sessionsCollection.deleteMany({});
+    await BlogModel.deleteMany({});
+    await PostModel.deleteMany({});
+    await UserModel.deleteMany({});
+    await CommentModel.deleteMany({});
+    await ApiCallModel.deleteMany({});
+    await SessionModel.deleteMany({});
     res.sendStatus(204);
   } catch (error) {
     console.error("Error in fetching delete all data:", error);

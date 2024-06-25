@@ -2,29 +2,29 @@ import { ObjectId } from "mongodb";
 import {
   BlogDBType,
   PostDBType,
-  blogsCollection,
-  postsCollection,
 } from "../cloud_DB";
 import { BlogViewModel, Paginator, PostViewModel } from "../models";
 import { QueryType } from "../query-type";
 import { ApiError } from "../helper/api-errors";
 import { blogDTO, postDTO } from "../DTO";
+import { BlogModel, PostModel } from "../models1";
 
 export const blogsQueryRepository = {
   async getPostsOfBlog(
     blogId: string,
     query: QueryType
   ): Promise<Paginator<PostViewModel>> {
-    const totalPostsCount = await postsCollection.countDocuments({
+    const totalPostsCount = await PostModel.countDocuments({
       blogId: new ObjectId(blogId),
     });
 
-    const posts: PostDBType[] = await postsCollection
-      .find({ blogId: new ObjectId(blogId) })
+    const posts: PostDBType[] = await PostModel.find({
+      blogId: new ObjectId(blogId),
+    })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
-      .sort(query.sortBy, query.sortDirection)
-      .toArray();
+      .sort({ [query.sortBy]: query.sortDirection })
+      .lean();
 
     const postsToView = {
       pagesCount: Math.ceil(totalPostsCount / query.pageSize),
@@ -42,16 +42,15 @@ export const blogsQueryRepository = {
       ? { name: { $regex: query.searchNameTerm, $options: "i" } }
       : {};
 
-    const totalBlogsCount = await blogsCollection.countDocuments({
+    const totalBlogsCount = await BlogModel.countDocuments({
       ...search,
     });
 
-    const blogs: BlogDBType[] = await blogsCollection
-      .find(search)
+    const blogs: BlogDBType[] = await BlogModel.find(search)
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
-      .sort(query.sortBy, query.sortDirection)
-      .toArray();
+      .sort({ [query.sortBy]: query.sortDirection })
+      .lean();
 
     const blogsToView = {
       pagesCount: Math.ceil(totalBlogsCount / query.pageSize),
@@ -65,7 +64,7 @@ export const blogsQueryRepository = {
   },
 
   async getByIdBlog(id: string): Promise<BlogViewModel> {
-    const foundBlog = await blogsCollection.findOne({
+    const foundBlog = await BlogModel.findOne({
       _id: new ObjectId(id),
     });
 

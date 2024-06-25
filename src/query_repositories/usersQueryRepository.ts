@@ -1,10 +1,10 @@
 import { UserDBType } from "../cloud_DB";
 import { Paginator, UserViewModel } from "../models";
 import { QueryUserType } from "../query-type";
-import { usersCollection } from "../cloud_DB/mongo_db_atlas";
 import { ObjectId } from "mongodb";
 import { userDTO } from "../DTO";
 import { cache } from "../utils/decorators";
+import { UserModel } from "../models1";
 
 class UsersQueryRepository {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
@@ -16,16 +16,17 @@ class UsersQueryRepository {
       ? { email: { $regex: query.searchEmailTerm, $options: "i" } }
       : {};
 
-    const totalUsersCount = await usersCollection.countDocuments({
+    const totalUsersCount = await UserModel.countDocuments({
       $or: [{ ...searchByLogin }, { ...searchByEmail }],
     });
 
-    const users: UserDBType[] = await usersCollection
-      .find({ $or: [{ ...searchByLogin }, { ...searchByEmail }] })
+    const users: UserDBType[] = await UserModel.find({
+      $or: [{ ...searchByLogin }, { ...searchByEmail }],
+    })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
-      .sort(query.sortBy, query.sortDirection)
-      .toArray();
+      .sort({ [query.sortBy]: query.sortDirection })
+      .lean();
 
     const usersToView = {
       pagesCount: Math.ceil(totalUsersCount / query.pageSize),
@@ -40,11 +41,9 @@ class UsersQueryRepository {
 
   @cache((userId: string)=> `user:${userId}`)
   async getByIdUser(id: string): Promise<UserViewModel | null> {
-    const foundUser = await usersCollection.findOne({
+    return await UserModel.findOne({
       _id: new ObjectId(id),
     });
-   
-    return foundUser ? userDTO(foundUser) : null;
   }
 };
 
