@@ -1,8 +1,8 @@
-import { ObjectId } from "mongodb";
 import { Schema, model } from "mongoose";
+import { CommentDBType } from "../cloud_DB";
 
-const commentSchema = new Schema({
-  _id: { type: ObjectId, required: true },
+const commentSchema = new Schema<CommentDBType>({
+  _id: { type: Schema.Types.ObjectId, required: true },
   postId: { type: String, required: true },
   content: { type: String, required: true },
   commentatorInfo: {

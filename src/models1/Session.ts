@@ -1,8 +1,7 @@
-import { ObjectId } from "mongodb";
 import { Schema, model } from "mongoose";
 
 const sessionSchema = new Schema({
-  _id: { type: ObjectId, required: true },
+  _id: { type: Schema.Types.ObjectId, required: true },
   userId: { type: String, required: true },
   deviceId: { type: String, required: true },
   iat: { type: String, required: true },
