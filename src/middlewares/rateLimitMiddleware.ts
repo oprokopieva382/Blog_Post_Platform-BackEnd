@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { subSeconds } from "date-fns/subSeconds";
 import { ApiError } from "../helper/api-errors";
-import { apiLimitCollection } from "../cloud_DB/mongo_db_atlas";
 import { ApiDBType } from "../cloud_DB/mongo_db_types";
+import { ApiCallModel } from "../models1";
 
 export const rateLimitMiddleware = async (
   req: Request,
@@ -16,7 +16,7 @@ export const rateLimitMiddleware = async (
     const tenSecAgo = subSeconds(currentTime, 10);
 
     //count requests
-    const requestCount = await apiLimitCollection.countDocuments({
+    const requestCount = await ApiCallModel.countDocuments({
       IP,
       URL,
       date: { $gte: tenSecAgo },
@@ -29,7 +29,7 @@ export const rateLimitMiddleware = async (
     }
 
     //store request in DB
-    await apiLimitCollection.insertOne({
+    await ApiCallModel.create({
       IP,
       URL,
       date: currentTime,
