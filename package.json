@@ -12,6 +12,7 @@
     "test": "jest -i --detectOpenHandles --no-cache --watchAll --testPathPattern=__tests__/integration/auth.integration.test.ts"
   },
   "dependencies": {
+    "@types/mongoose": "^5.11.97",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "date-fns": "^3.6.0",
