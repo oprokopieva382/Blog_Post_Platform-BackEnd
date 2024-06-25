@@ -9,6 +9,7 @@ import {
   UserDBType,
 } from "./mongo_db_types";
 import { logger } from "../utils/logger";
+import mongoose from "mongoose";
 
 let client: MongoClient = {} as MongoClient;
 export let db: Db = {} as Db;
@@ -27,11 +28,12 @@ export let apiLimitCollection: Collection<ApiDBType> =
 
 export const ConnectMongoDB = async () => {
   try {
-    client = new MongoClient(SETTINGS.MONGO_DB_ATLAS);
-    await client.connect();
+    //client = new MongoClient(SETTINGS.MONGO_DB_ATLAS);
+    await mongoose.connect(`${SETTINGS.MONGO_DB_ATLAS}/${SETTINGS.DB_NAME}`);
+    //await client.connect();
     logger.info("Connected to MongoDB Atlas");
 
-    db = client.db(SETTINGS.DB_NAME);
+    //db = client.db(SETTINGS.DB_NAME);
 
     blogsCollection = db.collection(SETTINGS.BLOGS_COLLECTION);
     postsCollection = db.collection(SETTINGS.POSTS_COLLECTION);
@@ -43,7 +45,8 @@ export const ConnectMongoDB = async () => {
     return true;
   } catch (error) {
     logger.error(`Failed to connect MongoDB: ${error}`);
-    await client.close();
+    //await client.close();
+    await mongoose.disconnect();
     return false;
   }
 };
