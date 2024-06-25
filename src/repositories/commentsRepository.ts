@@ -1,17 +1,17 @@
 import { ObjectId } from "mongodb";
 import { CommentInputModel } from "../models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
-import { commentsCollection } from "../cloud_DB/mongo_db_atlas";
+import { CommentModel } from "../models1";
 
 export const commentsRepository = {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
-    return await commentsCollection.findOne({
+    return await CommentModel.findOne({
       _id: new ObjectId(commentId),
     });
   },
 
   async removeComment(commentId: string) {
-    return await commentsCollection.findOneAndDelete({
+    return await CommentModel.findOneAndDelete({
       _id: new ObjectId(commentId),
     });
   },
@@ -19,7 +19,7 @@ export const commentsRepository = {
   async updateComment(data: CommentInputModel, commentId: string) {
     const { content } = data;
 
-    const updatedComment = await commentsCollection.findOneAndUpdate(
+    const updatedComment = await CommentModel.findOneAndUpdate(
       { _id: new ObjectId(commentId) },
       {
         $set: {

@@ -1,31 +1,30 @@
 import { ObjectId } from "mongodb";
 import { PostInputModel } from "../models";
-import { PostDBType, postsCollection } from "../cloud_DB";
+import { PostDBType} from "../cloud_DB";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
-import { commentsCollection } from "../cloud_DB/mongo_db_atlas";
+import { CommentModel, PostModel } from "../models1";
 
 export const postsRepository = {
   async getByIdPost(postId: string): Promise<PostDBType | null> {
-    const post = await postsCollection.findOne({
+    return await PostModel.findOne({
       _id: new ObjectId(postId),
     });
-    return post ? post : null;
   },
 
   async removePost(id: string) {
-    return await postsCollection.findOneAndDelete({
+    return await PostModel.findOneAndDelete({
       _id: new ObjectId(id),
     });
   },
 
   async createPost(newPost: PostDBType) {
-    return await postsCollection.insertOne(newPost);
+    return await PostModel.create(newPost);
   },
 
   async updatePost(data: PostInputModel, id: string, blogName: string) {
     const { title, shortDescription, content, blogId } = data;
 
-    const updatedPost = await postsCollection.findOneAndUpdate(
+    const updatedPost = await PostModel.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
         $set: {
@@ -42,12 +41,12 @@ export const postsRepository = {
   },
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
-    return await commentsCollection.findOne({
+    return await CommentModel.findOne({
       _id: new ObjectId(id),
     });
   },
 
   async createComment(newComment: CommentDBType) {
-    return await commentsCollection.insertOne(newComment);
+    return await CommentModel.create(newComment);
   },
 };

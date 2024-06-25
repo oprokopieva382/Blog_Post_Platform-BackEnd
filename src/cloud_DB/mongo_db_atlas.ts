@@ -11,20 +11,20 @@ import {
 import { logger } from "../utils/logger";
 import mongoose from "mongoose";
 
-let client: MongoClient = {} as MongoClient;
-export let db: Db = {} as Db;
-export let blogsCollection: Collection<BlogDBType> =
-  {} as Collection<BlogDBType>;
-export let postsCollection: Collection<PostDBType> =
-  {} as Collection<PostDBType>;
-export let usersCollection: Collection<UserDBType> =
-  {} as Collection<UserDBType>;
-export let commentsCollection: Collection<CommentDBType> =
-  {} as Collection<CommentDBType>;
-export let sessionsCollection: Collection<SessionsDBType> =
-  {} as Collection<SessionsDBType>;
-export let apiLimitCollection: Collection<ApiDBType> =
-  {} as Collection<ApiDBType>;
+// let client: MongoClient = {} as MongoClient;
+// export let db: Db = {} as Db;
+// export let blogsCollection: Collection<BlogDBType> =
+//   {} as Collection<BlogDBType>;
+// export let postsCollection: Collection<PostDBType> =
+//   {} as Collection<PostDBType>;
+// export let usersCollection: Collection<UserDBType> =
+//   {} as Collection<UserDBType>;
+// export let commentsCollection: Collection<CommentDBType> =
+//   {} as Collection<CommentDBType>;
+// export let sessionsCollection: Collection<SessionsDBType> =
+//   {} as Collection<SessionsDBType>;
+// export let apiLimitCollection: Collection<ApiDBType> =
+//   {} as Collection<ApiDBType>;
 
 export const ConnectMongoDB = async () => {
   try {
@@ -35,12 +35,12 @@ export const ConnectMongoDB = async () => {
 
     //db = client.db(SETTINGS.DB_NAME);
 
-    blogsCollection = db.collection(SETTINGS.BLOGS_COLLECTION);
-    postsCollection = db.collection(SETTINGS.POSTS_COLLECTION);
-    usersCollection = db.collection(SETTINGS.USERS_COLLECTION);
-    commentsCollection = db.collection(SETTINGS.COMMENTS_COLLECTION);
-    sessionsCollection = db.collection(SETTINGS.SESSIONS_COLLECTION);
-    apiLimitCollection = db.collection(SETTINGS.API_LIMIT_COLLECTION);
+    // blogsCollection = db.collection(SETTINGS.BLOGS_COLLECTION);
+    // postsCollection = db.collection(SETTINGS.POSTS_COLLECTION);
+    // usersCollection = db.collection(SETTINGS.USERS_COLLECTION);
+    // commentsCollection = db.collection(SETTINGS.COMMENTS_COLLECTION);
+    // sessionsCollection = db.collection(SETTINGS.SESSIONS_COLLECTION);
+    // apiLimitCollection = db.collection(SETTINGS.API_LIMIT_COLLECTION);
   
     return true;
   } catch (error) {

@@ -1,20 +1,20 @@
 import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
-import { usersCollection } from "../cloud_DB/mongo_db_atlas";
+import { UserModel } from "../models1";
 
 export const usersRepository = {
   async createUser(newUser: UserDBType) {
-    return await usersCollection.insertOne(newUser);
+    return await UserModel.create(newUser);
   },
 
   async getByIdUser(id: string): Promise<UserDBType | null> {
-    return await usersCollection.findOne({
+    return await UserModel.findOne({
       _id: new ObjectId(id),
     });
   },
 
   async removeUser(id: string) {
-    return await usersCollection.findOneAndDelete({
+    return await UserModel.findOneAndDelete({
       _id: new ObjectId(id),
     });
   },

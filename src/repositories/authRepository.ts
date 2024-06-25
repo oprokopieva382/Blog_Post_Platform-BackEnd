@@ -1,23 +1,23 @@
 import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
-import { sessionsCollection, usersCollection } from "../cloud_DB/mongo_db_atlas";
 import { SessionsDBType } from "../cloud_DB/mongo_db_types";
+import { SessionModel, UserModel } from "../models1";
 
 export const authRepository = {
   async getByLoginOrEmail(data: string): Promise<UserDBType | null> {
-    return await usersCollection.findOne({
+    return await UserModel.findOne({
       $or: [{ email: data }, { login: data }],
     });
   },
 
   async getByConfirmationCode(code: string): Promise<UserDBType | null> {
-    return await usersCollection.findOne({
+    return await UserModel.findOne({
       "emailConfirmation.confirmationCode": code,
     });
   },
 
   async updateCode(userId: ObjectId, newCode: string): Promise<Boolean> {
-    const updatedUser = await usersCollection.updateOne(
+    const updatedUser = await UserModel.updateOne(
       { _id: userId },
       {
         $set: {
@@ -29,7 +29,7 @@ export const authRepository = {
   },
 
   async updateConfirmation(_id: ObjectId): Promise<UserDBType | null> {
-    return await usersCollection.findOneAndUpdate(
+    return await UserModel.findOneAndUpdate(
       { _id },
       { $set: { "emailConfirmation.isConfirmed": true } },
       { returnDocument: "after" }
@@ -37,7 +37,7 @@ export const authRepository = {
   },
 
   async createSession(newSession: SessionsDBType) {
-    return await sessionsCollection.insertOne(newSession);
+    return await SessionModel.create(newSession);
   },
 
   async updateSession({
@@ -49,7 +49,7 @@ export const authRepository = {
     exp: string;
     deviceId: string;
   }) {
-    return await sessionsCollection.findOneAndUpdate(
+    return await SessionModel.findOneAndUpdate(
       { deviceId },
       { $set: { iat, exp } },
       { returnDocument: "after" }
@@ -57,11 +57,11 @@ export const authRepository = {
   },
 
   async getSessionByDeviceId(deviceId: string) {
-    return await sessionsCollection.findOne({ deviceId });
+    return await SessionModel.findOne({ deviceId });
   },
 
   async removeSession(deviceId: string) {
-    return await sessionsCollection.findOneAndDelete({
+    return await SessionModel.findOneAndDelete({
       deviceId,
     });
   },
