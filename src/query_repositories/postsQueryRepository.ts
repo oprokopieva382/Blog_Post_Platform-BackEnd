@@ -1,19 +1,19 @@
 import { ObjectId } from "mongodb";
-import { PostDBType, postsCollection } from "../cloud_DB";
+import { PostDBType } from "../cloud_DB";
 import { Paginator, PostViewModel } from "../models";
 import { QueryType } from "../query-type";
 import { postDTO } from "../DTO";
+import { PostModel } from "../models1";
 
 export const postsQueryRepository = {
   async getAllPosts(query: QueryType): Promise<Paginator<PostViewModel>> {
-    const totalPostsCount = await postsCollection.countDocuments();
+    const totalPostsCount = await PostModel.countDocuments();
 
-    const posts: PostDBType[] = await postsCollection
-      .find()
+    const posts: PostDBType[] = await PostModel.find()
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
-      .sort(query.sortBy, query.sortDirection)
-      .toArray();
+      .sort({ [query.sortBy]: query.sortDirection })
+      .lean();
 
     const postsToView = {
       pagesCount: Math.ceil(totalPostsCount / query.pageSize),
@@ -27,7 +27,7 @@ export const postsQueryRepository = {
   },
 
   async getByIdPost(id: string): Promise<PostViewModel | null> {
-    const foundPost = await postsCollection.findOne({ _id: new ObjectId(id) });
+    const foundPost = await PostModel.findOne({ _id: new ObjectId(id) });
     return foundPost ? postDTO(foundPost) : null;
   },
 

@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { UserDBType } from "../cloud_DB";
 
-const userSchema = new Schema({
+const userSchema = new Schema<UserDBType>({
   _id: { type: Schema.Types.ObjectId, required: true },
   login: { type: String, required: true },
   password: { type: String, required: true },
