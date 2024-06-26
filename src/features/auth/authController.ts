@@ -112,7 +112,7 @@ export const authController = {
 
   passwordRecovery: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await authService.passwordRecovery();
+      await authService.passwordRecovery(req.body.email);
 
       formatResponse(res, 204, {}, "Email sent with recovery code inside");
     } catch (error) {

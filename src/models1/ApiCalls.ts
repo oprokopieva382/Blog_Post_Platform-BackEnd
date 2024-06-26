@@ -7,4 +7,4 @@ const apiCallSchema = new Schema<ApiDBType>({
   date: { type: Date, required: true },
 });
 
-export const ApiCallModel = model("apiCalls", apiCallSchema);
+export const ApiCallModel = model("api-calls", apiCallSchema);

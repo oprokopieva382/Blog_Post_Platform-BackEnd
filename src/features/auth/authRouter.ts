@@ -55,4 +55,9 @@ authRouter.post(
   isAuthorizedRefreshToken,
   authController.refreshToken
 );
-authRouter.post("/password-recovery", authController.passwordRecovery)
+authRouter.post(
+  "/password-recovery",
+  rateLimitMiddleware,
+  validateEmail,
+  authController.passwordRecovery
+);

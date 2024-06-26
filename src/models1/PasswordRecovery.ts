@@ -8,4 +8,4 @@ const passwordSchema = new Schema<PasswordRecoveryDBType>({
   createdAt: { type: String },
 });
 
-export const PasswordModel = model("passwordRecovery", passwordSchema);
+export const PasswordModel = model("password-recovery", passwordSchema);

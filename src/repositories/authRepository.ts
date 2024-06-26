@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
-import { SessionsDBType } from "../cloud_DB/mongo_db_types";
-import { SessionModel, UserModel } from "../models1";
+import { PasswordRecoveryDBType, SessionsDBType } from "../cloud_DB";
+import { PasswordModel, SessionModel, UserModel } from "../models1";
 
 export const authRepository = {
   async getByLoginOrEmail(data: string): Promise<UserDBType | null> {
@@ -63,6 +63,12 @@ export const authRepository = {
   async removeSession(deviceId: string) {
     return await SessionModel.findOneAndDelete({
       deviceId,
+    });
+  },
+
+  async savePasswordRecoveryInfo(passwordRecovery: PasswordRecoveryDBType) {
+    return await PasswordModel.create({
+      ...passwordRecovery,
     });
   },
 };

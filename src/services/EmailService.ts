@@ -25,6 +25,7 @@ export class EmailService implements IEmailService {
 
     return !!emailInfo;
   }
+  
   async passwordRecovery(email: string, code: string) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -35,13 +36,13 @@ export class EmailService implements IEmailService {
     });
 
     const emailInfo = transporter.sendMail({
-      from: `"BlogPosts Registration" <${SETTINGS.REGISTRATION_EMAIL}>`,
+      from: `"BlogPosts Password Recovery" <${SETTINGS.REGISTRATION_EMAIL}>`,
       to: email,
-      subject: "Email confirmation",
+      subject: "Password recovery",
       html: `
-        <h1>Thank you for your registration</h1>
-        <p>To finish registration please follow the link below:
-        <a href="https://google.com/confirm-email?code=${code}">complete registration</a></p>
+        <h1>Password recovery</h1>
+        <p>To finish password recovery please follow the link below:
+        <a href="https://google.com/password-recovery?recoveryCode=${code}">This link will expire in one hour.</a></p>
       `,
     });
 
