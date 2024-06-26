@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { BlogDBType } from "../cloud_DB/mongo_db_types";
+import { BlogDBType } from "../cloud_DB";
 
 const blogSchema = new Schema<BlogDBType>({
   _id: { type: Schema.Types.ObjectId, required: true },

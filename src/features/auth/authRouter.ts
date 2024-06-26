@@ -16,13 +16,13 @@ import {
 
 export const authRouter = Router();
 
+authRouter.get("/me", isAuthorizedMiddleware, authController.me);
 authRouter.post(
   "/login",
   rateLimitMiddleware,
   validateLoginInputs,
   authController.login
 );
-authRouter.get("/me", isAuthorizedMiddleware, authController.me);
 authRouter.post(
   "/registration",
   rateLimitMiddleware,
@@ -54,4 +54,10 @@ authRouter.post(
   "/refresh-token",
   isAuthorizedRefreshToken,
   authController.refreshToken
+);
+authRouter.post(
+  "/password-recovery",
+  rateLimitMiddleware,
+  validateEmail,
+  authController.passwordRecovery
 );

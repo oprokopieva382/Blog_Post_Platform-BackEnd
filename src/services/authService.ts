@@ -59,10 +59,6 @@ export const authService = {
     return { accessToken, refreshToken };
   },
 
-  async logoutUser(deviceId: string) {
-    await authRepository.removeSession(deviceId);
-  },
-
   async registerUser(data: UserInputModel) {
     const { login, password, email } = data;
     const findUser = await authRepository.getByLoginOrEmail(login);
@@ -128,6 +124,10 @@ export const authService = {
     return findUser;
   },
 
+  async logoutUser(deviceId: string) {
+    await authRepository.removeSession(deviceId);
+  },
+
   async refreshToken(deviceId: string, userId: string) {
     const newAccessToken = await jwtService.createAccessToken(userId);
     const newRefreshToken = await jwtService.createRefreshToken(
@@ -167,5 +167,22 @@ export const authService = {
         deviceId: deviceId,
       });
     }
+  },
+
+  async passwordRecovery(email: string) {
+    const passwordRecovery = {
+      _id: new ObjectId(),
+      recoveryCode: randomUUID(),
+      expirationDate: add(new Date(Date.now()).toISOString(), {
+        hours: 1,
+      }),
+      createdAt: new Date().toISOString(),
+    };
+
+    const { recoveryCode } = await authRepository.savePasswordRecoveryInfo(
+      passwordRecovery
+    );
+
+    await emailService.passwordRecovery(email, recoveryCode);
   },
 };
