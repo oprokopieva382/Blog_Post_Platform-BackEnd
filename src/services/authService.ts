@@ -194,7 +194,10 @@ export const authService = {
 
     if (!result || new Date(result.expirationDate) < new Date()) {
       throw ApiError.BadRequestError("Bad Request", [
-        "RecoveryCode is incorrect or expired",
+        {
+          message: "RecoveryCode is incorrect or expired",
+          field: "recoveryCode",
+        },
       ]);
     }
     const passwordHash = await bcryptService.createHash(newPassword);
