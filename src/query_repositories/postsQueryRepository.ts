@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { PostDBType } from "../cloud_DB";
 import { Paginator, PostViewModel } from "../type-models";
-import { QueryType } from "../query-type";
+import { QueryType } from "../types/query-type";
 import { postDTO } from "../DTO";
 import { PostModel } from "../models";
 

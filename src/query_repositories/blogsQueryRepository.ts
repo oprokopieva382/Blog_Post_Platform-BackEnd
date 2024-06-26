@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { BlogDBType, PostDBType } from "../cloud_DB";
 import { BlogViewModel, Paginator, PostViewModel } from "../type-models";
-import { QueryType } from "../query-type";
+import { QueryType } from "../types/query-type";
 import { ApiError } from "../helper/api-errors";
 import { blogDTO, postDTO } from "../DTO";
 import { BlogModel, PostModel } from "../models";

@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { CommentViewModel, Paginator } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
-import { QueryCommentsType } from "../query-type";
+import { QueryCommentsType } from "../types/query-type";
 import { commentDTO } from "../DTO";
 import { CommentModel } from "../models";
 

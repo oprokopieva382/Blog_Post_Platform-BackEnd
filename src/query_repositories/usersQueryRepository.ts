@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
 import { Paginator, UserViewModel } from "../type-models";
-import { QueryUserType } from "../query-type";
+import { QueryUserType } from "../types/query-type";
 import { userDTO } from "../DTO";
 import { cache } from "../utils/decorators";
 import { UserModel } from "../models";
