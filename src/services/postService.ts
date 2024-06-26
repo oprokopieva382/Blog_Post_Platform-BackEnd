@@ -1,9 +1,9 @@
+import { ObjectId } from "mongodb";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { ApiError } from "../helper/api-errors";
-import { PostInputModel, UserViewModel } from "../models";
-import { CommentInputModel } from "../models/CommentInputModel";
+import { PostInputModel, UserViewModel } from "../type-models";
+import { CommentInputModel } from "../type-models/CommentInputModel";
 import { blogsRepository, postsRepository } from "../repositories";
-import { ObjectId } from "mongodb";
 
 export const postsService = {
   async removePost(id: string) {
@@ -31,7 +31,7 @@ export const postsService = {
     };
 
     const createdPost = await postsRepository.createPost(newPost);
-  
+
     const post = postsRepository.getByIdPost(createdPost._id.toString());
 
     if (!post) {

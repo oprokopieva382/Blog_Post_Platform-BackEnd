@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { PostDBType } from "../cloud_DB";
-import { BlogInputModel, BlogPostInputModel } from "../models";
+import { BlogInputModel, BlogPostInputModel } from "../type-models";
 import { blogsRepository, postsRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
 
@@ -16,7 +16,7 @@ export const blogsService = {
       ...data,
     };
     const createdBlog = await blogsRepository.createBlog(newBlog);
- 
+
     return blogsRepository.getByIdBlog(createdBlog._id.toString());
   },
 
@@ -52,7 +52,9 @@ export const blogsService = {
       throw ApiError.NotFoundError("Not found", ["Can't create post"]);
     }
 
-    const result = await postsRepository.getByIdPost(createdPost._id.toString());
+    const result = await postsRepository.getByIdPost(
+      createdPost._id.toString()
+    );
 
     if (!result) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);

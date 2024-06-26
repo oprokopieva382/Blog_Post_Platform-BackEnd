@@ -1,5 +1,5 @@
 import { ApiError } from "../helper/api-errors";
-import { CommentInputModel, UserViewModel } from "../models";
+import { CommentInputModel, UserViewModel } from "../type-models";
 import { commentsRepository } from "../repositories";
 
 export const commentsService = {

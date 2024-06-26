@@ -1,5 +1,5 @@
 import { SessionsDBType } from "../cloud_DB";
-import { DeviceViewModel } from "../models";
+import { DeviceViewModel } from "../type-models";
 
 export const deviceDTO = (device: SessionsDBType): DeviceViewModel => {
   return {

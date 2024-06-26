@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { LoginInputModel } from "../../models";
+import { LoginInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
-import { authService} from "../../services";
+import { authService } from "../../services";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
 import { authDTO } from "../../DTO";

@@ -1,7 +1,10 @@
 import { ObjectId } from "mongodb";
-import { UserDBType } from "../cloud_DB";
-import { PasswordRecoveryDBType, SessionsDBType } from "../cloud_DB";
-import { PasswordModel, SessionModel, UserModel } from "../models1";
+import {
+  UserDBType,
+  PasswordRecoveryDBType,
+  SessionsDBType,
+} from "../cloud_DB";
+import { PasswordModel, SessionModel, UserModel } from "../models";
 
 export const authRepository = {
   async getByLoginOrEmail(data: string): Promise<UserDBType | null> {

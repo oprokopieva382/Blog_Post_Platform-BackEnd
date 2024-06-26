@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import { PostInputModel } from "../models";
-import { PostDBType} from "../cloud_DB";
+import { PostInputModel } from "../type-models";
+import { PostDBType } from "../cloud_DB";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
-import { CommentModel, PostModel } from "../models1";
+import { CommentModel, PostModel } from "../models";
 
 export const postsRepository = {
   async getByIdPost(postId: string): Promise<PostDBType | null> {

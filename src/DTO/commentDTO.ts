@@ -1,5 +1,5 @@
 import { CommentDBType } from "../cloud_DB";
-import { CommentViewModel } from "../models";
+import { CommentViewModel } from "../type-models";
 
 export const commentDTO = (comment: CommentDBType): CommentViewModel => {
   return {

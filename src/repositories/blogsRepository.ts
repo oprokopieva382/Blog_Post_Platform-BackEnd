@@ -1,10 +1,7 @@
 import { ObjectId } from "mongodb";
-import { BlogInputModel } from "../models";
-import {
-  BlogDBType,
-  PostDBType,
-} from "../cloud_DB";
-import { BlogModel, PostModel } from "../models1";
+import { BlogInputModel } from "../type-models";
+import { BlogDBType, PostDBType } from "../cloud_DB";
+import { BlogModel, PostModel } from "../models";
 
 export const blogsRepository = {
   async getByIdBlog(id: string): Promise<BlogDBType | null> {

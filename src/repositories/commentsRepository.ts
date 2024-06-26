@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
-import { CommentInputModel } from "../models";
+import { CommentInputModel } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
-import { CommentModel } from "../models1";
+import { CommentModel } from "../models";
 
 export const commentsRepository = {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {

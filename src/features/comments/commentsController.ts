@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
-import { CommentInputModel } from "../../models";
+import { CommentInputModel } from "../../type-models";
 import { commentsQueryRepository } from "../../query_repositories";
 import { commentsService } from "../../services";
 import { CommentParamType } from ".";

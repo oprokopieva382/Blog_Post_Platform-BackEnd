@@ -1,7 +1,7 @@
 import { deviceDTO } from "../DTO";
 import { SessionsDBType } from "../cloud_DB/mongo_db_types";
-import { DeviceViewModel } from "../models";
-import { SessionModel } from "../models1";
+import { DeviceViewModel } from "../type-models";
+import { SessionModel } from "../models";
 
 export const devicesQueryRepository = {
   async getAllDevices(userId: string): Promise<DeviceViewModel[]> {

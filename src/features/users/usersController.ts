@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UserInputModel } from "../../models";
+import { UserInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
 import { usersService } from "../../services";
 import { usersQueryRepository } from "../../query_repositories";

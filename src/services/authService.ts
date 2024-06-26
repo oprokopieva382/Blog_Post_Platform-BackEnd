@@ -8,7 +8,7 @@ import {
   LoginInputModel,
   RegistrationConfirmationCodeModel,
   UserInputModel,
-} from "../models";
+} from "../type-models";
 import { authRepository, usersRepository } from "../repositories";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { ApiError } from "../helper/api-errors";
