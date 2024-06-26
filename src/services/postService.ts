@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { CommentDBType } from "../cloud_DB/mongo_db_types";
+import { CommentDBType } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
@@ -66,7 +66,7 @@ export const postsService = {
   ): Promise<CommentDBType | null> {
     const { content } = data;
     const isPostExist = await postsRepository.getByIdPost(postId);
-
+  
     if (!isPostExist) {
       throw ApiError.NotFoundError("Post is not found", [
         `Post with id ${postId} does not exist`,

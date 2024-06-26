@@ -46,7 +46,9 @@ export const postsRepository = {
     });
   },
 
-  async createComment(newComment: CommentDBType) {
+  async createComment(
+    newComment: CommentDBType
+  ): Promise<CommentDBType | null> {
     return await CommentModel.create(newComment);
   },
 };

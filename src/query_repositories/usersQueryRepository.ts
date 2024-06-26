@@ -41,9 +41,11 @@ class UsersQueryRepository {
 
   @cache((userId: string) => `user:${userId}`)
   async getByIdUser(id: string): Promise<UserViewModel | null> {
-    return await UserModel.findOne({
+    const result = await UserModel.findOne({
       _id: new ObjectId(id),
     });
+    
+    return result ? userDTO(result) : null;
   }
 }
 

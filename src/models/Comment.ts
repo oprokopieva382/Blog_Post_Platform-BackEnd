@@ -7,7 +7,7 @@ const commentSchema = new Schema<CommentDBType>({
   content: { type: String, required: true },
   commentatorInfo: {
     userId: { type: String, required: true },
-    userLogin: { type: Date, required: true },
+    userLogin: { type: String, required: true },
   },
   createdAt: { type: String, required: true },
 });
