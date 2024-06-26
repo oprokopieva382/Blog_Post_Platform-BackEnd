@@ -46,11 +46,8 @@ authRouter.post(
   validateEmailResending,
   authController.registrationResending
 );
-authRouter.post(
-  "/logout",
-  isAuthorizedRefreshToken,
-  authController.logout
-);
+authRouter.post("/logout", isAuthorizedRefreshToken, authController.logout);
+
 authRouter.post(
   "/refresh-token",
   isAuthorizedRefreshToken,
