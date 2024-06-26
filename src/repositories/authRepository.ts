@@ -35,7 +35,7 @@ export const authRepository = {
     return await UserModel.findOneAndUpdate(
       { _id },
       { $set: { "emailConfirmation.isConfirmed": true } },
-      { returnDocument: "after" }
+      { new: true }
     );
   },
 
@@ -55,7 +55,7 @@ export const authRepository = {
     return await SessionModel.findOneAndUpdate(
       { deviceId },
       { $set: { iat, exp } },
-      { returnDocument: "after" }
+      { new: true }
     );
   },
 
@@ -73,5 +73,19 @@ export const authRepository = {
     return await PasswordModel.create({
       ...passwordRecovery,
     });
+  },
+
+  async getByRecoveryCode(
+    recoveryCode: string
+  ): Promise<PasswordRecoveryDBType | null> {
+    return await PasswordModel.findOne({ recoveryCode });
+  },
+
+  async setNewPassword(email: string, newPassword: string) {
+    return await UserModel.findOneAndUpdate(
+      { email },
+      { $set: { password: newPassword } },
+      { new: true }
+    );
   },
 };

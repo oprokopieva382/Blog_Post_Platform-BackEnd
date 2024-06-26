@@ -66,6 +66,7 @@ export type ApiDBType = {
 export type PasswordRecoveryDBType = {
   _id: Types.ObjectId;
   recoveryCode: string;
+  email: string;
   expirationDate: Date;
   createdAt: string;
 };

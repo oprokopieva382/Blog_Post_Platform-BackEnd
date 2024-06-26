@@ -119,4 +119,14 @@ export const authController = {
       next(error);
     }
   },
+
+  setNewPassword: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await authService.setNewPassword(req.body);
+
+      formatResponse(res, 204, {}, "New password created");
+    } catch (error) {
+      next(error);
+    }
+  },
 };

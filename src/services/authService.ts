@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 import { bcryptService, emailService } from ".";
 import {
   LoginInputModel,
+  NewPasswordRecoveryInputModel,
   RegistrationConfirmationCodeModel,
   UserInputModel,
 } from "../type-models";
@@ -173,6 +174,7 @@ export const authService = {
     const passwordRecovery = {
       _id: new ObjectId(),
       recoveryCode: randomUUID(),
+      email,
       expirationDate: add(new Date(Date.now()).toISOString(), {
         hours: 1,
       }),
@@ -184,5 +186,19 @@ export const authService = {
     );
 
     await emailService.passwordRecovery(email, recoveryCode);
+  },
+
+  async setNewPassword(data: NewPasswordRecoveryInputModel) {
+    const { newPassword, recoveryCode } = data;
+    const result = await authRepository.getByRecoveryCode(recoveryCode);
+
+    if (!result || new Date(result.expirationDate) < new Date()) {
+      throw ApiError.BadRequestError("Bad Request", [
+        "RecoveryCode is incorrect or expired",
+      ]);
+    }
+    const passwordHash = await bcryptService.createHash(newPassword);
+
+    await authRepository.setNewPassword(result.email, passwordHash);
   },
 };

@@ -14,3 +14,4 @@ export { MeViewModel } from "./MeViewModel";
 export { DeviceViewModel } from "./DeviceViewModel";
 export { RegistrationConfirmationCodeModel } from "./RegistrationConfirmationCodeModel";
 export { PasswordRecoveryInputModel } from "./PasswordRecoveryInputModel";
+export { NewPasswordRecoveryInputModel } from "./NewPasswordRecoveryInputModel";

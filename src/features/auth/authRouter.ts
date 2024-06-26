@@ -12,6 +12,7 @@ import {
   validateUserLoginUnique,
   isAuthorizedRefreshToken,
   rateLimitMiddleware,
+  validateNewPasswordInputs,
 } from "../../middlewares";
 
 export const authRouter = Router();
@@ -60,4 +61,10 @@ authRouter.post(
   rateLimitMiddleware,
   validateEmail,
   authController.passwordRecovery
+);
+authRouter.post(
+  "/new-password",
+  rateLimitMiddleware,
+  validateNewPasswordInputs,
+  authController.setNewPassword
 );
