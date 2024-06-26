@@ -6,7 +6,7 @@ import {
   PostModel,
   SessionModel,
   UserModel,
-} from "../../models1";
+} from "../../models";
 
 export const testingController = async (req: Request, res: Response) => {
   try {

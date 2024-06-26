@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { subSeconds } from "date-fns/subSeconds";
 import { ApiError } from "../helper/api-errors";
 import { ApiDBType } from "../cloud_DB/mongo_db_types";
-import { ApiCallModel } from "../models1";
+import { ApiCallModel } from "../models";
 
 export const rateLimitMiddleware = async (
   req: Request,

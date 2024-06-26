@@ -1,4 +1,4 @@
-import { MeViewModel, UserViewModel } from "../models";
+import { MeViewModel, UserViewModel } from "../type-models";
 
 export const authDTO = (me: UserViewModel): MeViewModel => {
   return {

@@ -1,5 +1,5 @@
 import { BlogDBType } from "../cloud_DB";
-import { BlogViewModel } from "../models";
+import { BlogViewModel } from "../type-models";
 
 export const blogDTO = (blog: BlogDBType): BlogViewModel => {
   return {

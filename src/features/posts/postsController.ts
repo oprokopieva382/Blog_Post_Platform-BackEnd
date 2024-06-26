@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
-import { PostInputModel, PostViewModel } from "../../models";
+import { PostInputModel, PostViewModel } from "../../type-models";
 import { postsService } from "../../services";
 import {
   commentsQueryRepository,
   postsQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
-import { CommentInputModel } from "../../models/CommentInputModel";
+import { CommentInputModel } from "../../type-models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
 import { commentDTO, postDTO } from "../../DTO";
 

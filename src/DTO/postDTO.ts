@@ -1,5 +1,5 @@
 import { PostDBType } from "../cloud_DB";
-import { PostViewModel } from "../models";
+import { PostViewModel } from "../type-models";
 
 export const postDTO = (post: PostDBType): PostViewModel => {
   return {

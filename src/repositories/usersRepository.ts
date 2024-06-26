@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
-import { UserModel } from "../models1";
+import { UserModel } from "../models";
 
 export const usersRepository = {
   async createUser(newUser: UserDBType) {

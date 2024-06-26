@@ -1,4 +1,4 @@
-import { SessionModel } from "../models1";
+import { SessionModel } from "../models";
 
 export const devicesRepository = {
   async removeDevice(deviceId: string) {

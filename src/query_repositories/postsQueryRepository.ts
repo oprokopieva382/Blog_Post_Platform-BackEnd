@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import { PostDBType } from "../cloud_DB";
-import { Paginator, PostViewModel } from "../models";
-import { QueryType } from "../query-type";
+import { Paginator, PostViewModel } from "../type-models";
+import { QueryType } from "../types/query-type";
 import { postDTO } from "../DTO";
-import { PostModel } from "../models1";
+import { PostModel } from "../models";
 
 export const postsQueryRepository = {
   async getAllPosts(query: QueryType): Promise<Paginator<PostViewModel>> {
@@ -30,5 +30,4 @@ export const postsQueryRepository = {
     const foundPost = await PostModel.findOne({ _id: new ObjectId(id) });
     return foundPost ? postDTO(foundPost) : null;
   },
-
 };

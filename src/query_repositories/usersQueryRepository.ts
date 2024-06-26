@@ -1,10 +1,10 @@
-import { UserDBType } from "../cloud_DB";
-import { Paginator, UserViewModel } from "../models";
-import { QueryUserType } from "../query-type";
 import { ObjectId } from "mongodb";
+import { UserDBType } from "../cloud_DB";
+import { Paginator, UserViewModel } from "../type-models";
+import { QueryUserType } from "../types/query-type";
 import { userDTO } from "../DTO";
 import { cache } from "../utils/decorators";
-import { UserModel } from "../models1";
+import { UserModel } from "../models";
 
 class UsersQueryRepository {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
@@ -39,12 +39,14 @@ class UsersQueryRepository {
     return usersToView;
   }
 
-  @cache((userId: string)=> `user:${userId}`)
+  @cache((userId: string) => `user:${userId}`)
   async getByIdUser(id: string): Promise<UserViewModel | null> {
-    return await UserModel.findOne({
+    const result = await UserModel.findOne({
       _id: new ObjectId(id),
     });
+    
+    return result ? userDTO(result) : null;
   }
-};
+}
 
 export const usersQueryRepository = new UsersQueryRepository();

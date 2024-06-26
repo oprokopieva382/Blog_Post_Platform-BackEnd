@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
-import { UserInputModel } from "../models";
-import { usersRepository } from "../repositories";
-import { bcryptService } from "./bcryptService";
 import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
+import { UserInputModel } from "../type-models";
+import { usersRepository } from "../repositories";
+import { bcryptService } from "./bcryptService";
 import { ApiError } from "../helper/api-errors";
 
 export const usersService = {

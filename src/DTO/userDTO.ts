@@ -1,5 +1,5 @@
 import { UserDBType } from "../cloud_DB";
-import { UserViewModel } from "../models";
+import { UserViewModel } from "../type-models";
 
 export const userDTO = (user: UserDBType): UserViewModel => {
   return {

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
-import { BlogInputModel, BlogPostInputModel } from "../../models";
+import { BlogInputModel, BlogPostInputModel } from "../../type-models";
 import { blogsService } from "../../services";
 import { blogsQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
