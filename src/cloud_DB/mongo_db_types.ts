@@ -40,17 +40,6 @@ type ConfirmationEmailType = {
   isConfirmed: boolean;
 };
 
-// export type UserDBType = {
-//   _id: Types.ObjectId;
-//   login: string;
-//   password: string;
-//   email: string;
-//   createdAt: string;
-//   emailConfirmation: ConfirmationEmailType;
-// };
-
-
-
 type ExpirationDate = Date;
 
 export type CommentDBType = {
@@ -64,15 +53,17 @@ export type CommentDBType = {
   createdAt: string;
 };
 
-export type SessionsDBType = {
-  _id: Types.ObjectId;
-  userId: string;
-  deviceId: string;
-  iat: string;
-  deviceName: string;
-  ip: string;
-  exp: string;
-};
+export class SessionsDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public userId: string,
+    public deviceId: string,
+    public iat: string,
+    public deviceName: string,
+    public ip: string,
+    public exp: string
+  ) {}
+}
 
 export type ApiDBType = {
   IP: string;
@@ -80,10 +71,13 @@ export type ApiDBType = {
   date: Date;
 };
 
-export type PasswordRecoveryDBType = {
-  _id: Types.ObjectId;
-  recoveryCode: string;
-  email: string;
-  expirationDate: Date;
-  createdAt: string;
-};
+export class PasswordRecoveryDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public recoveryCode: string,
+    public email: string,
+    public expirationDate: Date,
+    public createdAt: string
+  ) {}
+}
+

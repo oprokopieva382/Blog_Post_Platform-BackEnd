@@ -16,7 +16,11 @@ import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
 import { jwtService } from "../features/application";
 import { userDTO } from "../DTO";
-import { UserDBType } from "../cloud_DB";
+import {
+  PasswordRecoveryDBType,
+  SessionsDBType,
+  UserDBType,
+} from "../cloud_DB";
 
 export const authService = {
   async loginUser(data: LoginInputModel, req: Request) {
@@ -142,15 +146,15 @@ export const authService = {
   },
 
   async createSession(sessionData: SessionData) {
-    const newSession = {
-      _id: new ObjectId(),
-      userId: sessionData.userId,
-      deviceId: sessionData.deviceId,
-      iat: fromUnixTime(sessionData.iat!).toISOString(),
-      deviceName: sessionData.deviceName,
-      ip: sessionData.ip,
-      exp: fromUnixTime(sessionData.exp!).toISOString(),
-    };
+    const newSession = new SessionsDBType(
+      new ObjectId(),
+      sessionData.userId,
+      sessionData.deviceId,
+      fromUnixTime(sessionData.iat!).toISOString(),
+      sessionData.deviceName,
+      sessionData.ip,
+      fromUnixTime(sessionData.exp!).toISOString()
+    );
     await authRepository.createSession(newSession);
   },
 
@@ -172,15 +176,15 @@ export const authService = {
   },
 
   async passwordRecovery(email: string) {
-    const passwordRecovery = {
-      _id: new ObjectId(),
-      recoveryCode: randomUUID(),
+    const passwordRecovery = new PasswordRecoveryDBType(
+      new ObjectId(),
+      randomUUID(),
       email,
-      expirationDate: add(new Date(Date.now()).toISOString(), {
+      add(new Date(Date.now()).toISOString(), {
         hours: 1,
       }),
-      createdAt: new Date().toISOString(),
-    };
+      new Date().toISOString()
+    );
 
     const { recoveryCode } = await authRepository.savePasswordRecoveryInfo(
       passwordRecovery
