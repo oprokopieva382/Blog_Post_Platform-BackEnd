@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { devicesController } from "./devicesController";
+import { devicesController } from "./DevicesController";
 import { isAuthorizedRefreshToken } from "../../middlewares";
 
 export const devicesRouter = Router();

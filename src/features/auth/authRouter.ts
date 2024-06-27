@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authController } from "./authController";
+import { authController } from "./AuthController";
 import {
   isAuthorizedMiddleware,
   validateRegistrationCode,

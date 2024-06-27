@@ -12,8 +12,8 @@ import { CommentInputModel } from "../../type-models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
 import { commentDTO, postDTO } from "../../DTO";
 
-export const postsController = {
-  getAll: async (req: Request, res: Response, next: NextFunction) => {
+class PostsController {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await postsQueryRepository.getAllPosts(
         queryFilter(req.query)
@@ -27,9 +27,9 @@ export const postsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  getById: async (req: Request, res: Response, next: NextFunction) => {
+  async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = (await postsQueryRepository.getByIdPost(
         req.params.id
@@ -43,13 +43,13 @@ export const postsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  create: async (
+  async create(
     req: Request<{}, {}, PostInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await postsService.createPost(req.body);
 
@@ -61,9 +61,9 @@ export const postsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  deleteById: async (req: Request, res: Response, next: NextFunction) => {
+  async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await postsService.removePost(req.params.id);
 
@@ -77,13 +77,13 @@ export const postsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  update: async (
+  async update(
     req: Request<ParamType, {}, PostInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await postsService.updatePost(req.body, req.params.id);
 
@@ -97,9 +97,9 @@ export const postsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  getPostComments: async (req: Request, res: Response, next: NextFunction) => {
+  async getPostComments(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await commentsQueryRepository.getCommentsOfPost(
         req.params.postId,
@@ -116,13 +116,13 @@ export const postsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  createPostComment: async (
+  async createPostComment(
     req: Request<{ postId: string }, {}, CommentInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await postsService.createPostComment(
         req.params.postId,
@@ -145,5 +145,6 @@ export const postsController = {
     } catch (error) {
       next(error);
     }
-  },
-};
+  }
+}
+export const postsController = new PostsController()

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { usersController } from "./usersController";
+import { usersController } from "./UsersController";
 import {
   isAdminMiddleware,
   validateRegistrationInput,

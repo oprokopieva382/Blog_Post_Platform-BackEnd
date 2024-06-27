@@ -7,8 +7,8 @@ import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
 import { commentDTO } from "../../DTO";
 
-export const commentsController = {
-  getById: async (req: Request, res: Response, next: NextFunction) => {
+class CommentsController {
+  async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await commentsQueryRepository.getByIdComment(
         req.params.id
@@ -27,9 +27,9 @@ export const commentsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  deleteById: async (req: Request, res: Response, next: NextFunction) => {
+  async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await commentsService.removeComment(
         req.params.commentId,
@@ -46,13 +46,13 @@ export const commentsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  update: async (
+  async update(
     req: Request<CommentParamType, {}, CommentInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await commentsService.updateComment(
         req.body,
@@ -70,5 +70,6 @@ export const commentsController = {
     } catch (error) {
       next(error);
     }
-  },
-};
+  }
+}
+export const commentsController = new CommentsController()

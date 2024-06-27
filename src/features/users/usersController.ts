@@ -7,8 +7,8 @@ import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { userDTO } from "../../DTO";
 
-export const usersController = {
-  getAll: async (req: Request, res: Response, next: NextFunction) => {
+class UsersController {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await usersQueryRepository.getAllUsers(
         userQueryFilter(req.query)
@@ -22,13 +22,13 @@ export const usersController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  create: async (
+  async create(
     req: Request<{}, {}, UserInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await usersService.createUser(req.body);
 
@@ -40,9 +40,9 @@ export const usersController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  deleteById: async (req: Request, res: Response, next: NextFunction) => {
+  async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await usersService.removeUser(req.params.id);
 
@@ -56,5 +56,7 @@ export const usersController = {
     } catch (error) {
       next(error);
     }
-  },
-};
+  }
+}
+
+export const usersController = new UsersController()

@@ -8,8 +8,8 @@ import { queryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { blogDTO, postDTO } from "../../DTO";
 
-export const blogsController = {
-  getAll: async (req: Request, res: Response, next: NextFunction) => {
+class BlogsController {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await blogsQueryRepository.getAllBlogs(
         queryFilter(req.query)
@@ -22,9 +22,9 @@ export const blogsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  getById: async (req: Request, res: Response, next: NextFunction) => {
+  async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await blogsQueryRepository.getByIdBlog(req.params.id);
 
@@ -32,9 +32,9 @@ export const blogsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  deleteById: async (req: Request, res: Response, next: NextFunction) => {
+  async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await blogsService.removeBlog(req.params.id);
 
@@ -48,13 +48,13 @@ export const blogsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  create: async (
+  async create(
     req: Request<{}, {}, BlogInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await blogsService.createBlog(req.body);
 
@@ -66,13 +66,13 @@ export const blogsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  update: async (
+  async update(
     req: Request<ParamType, {}, BlogInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await blogsService.updateBlog(req.body, req.params.id);
 
@@ -86,9 +86,9 @@ export const blogsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  getBlogPosts: async (req: Request, res: Response, next: NextFunction) => {
+  async getBlogPosts(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await blogsQueryRepository.getPostsOfBlog(
         req.params.blogId,
@@ -105,13 +105,13 @@ export const blogsController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  createBlogPost: async (
+  async createBlogPost(
     req: Request<{ blogId: string }, {}, BlogPostInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const result = await blogsService.createPost(req.params.blogId, req.body);
 
@@ -125,5 +125,7 @@ export const blogsController = {
     } catch (error) {
       next(error);
     }
-  },
-};
+  }
+}
+
+export const blogsController = new BlogsController();

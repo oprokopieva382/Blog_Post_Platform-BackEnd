@@ -6,8 +6,8 @@ import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
 import { authDTO } from "../../DTO";
 
-export const authController = {
-  me: async (req: Request, res: Response, next: NextFunction) => {
+class AuthController {
+  async me(req: Request, res: Response, next: NextFunction) {
     try {
       const me = await usersQueryRepository.getByIdUser(req.user.id);
       if (!me) {
@@ -19,13 +19,13 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  login: async (
+  async login(
     req: Request<{}, {}, LoginInputModel>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       const { accessToken, refreshToken } = await authService.loginUser(
         req.body,
@@ -40,9 +40,9 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  registration: async (req: Request, res: Response, next: NextFunction) => {
+  async registration(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.registerUser(req.body);
 
@@ -55,13 +55,13 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  registrationConfirmation: async (
+  async registrationConfirmation(
     req: Request,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     try {
       await authService.confirmUser(req.body);
 
@@ -69,22 +69,18 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  registrationResending: async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+  async registrationResending(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.confirmResentUser(req.body);
       formatResponse(res, 204, {}, "Registration link resent");
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  logout: async (req: Request, res: Response, next: NextFunction) => {
+  async logout(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.logoutUser(req.deviceId);
 
@@ -92,9 +88,9 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  refreshToken: async (req: Request, res: Response, next: NextFunction) => {
+  async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const { newAccessToken, newRefreshToken } =
         await authService.refreshToken(req.deviceId, req.userId!);
@@ -108,9 +104,9 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  passwordRecovery: async (req: Request, res: Response, next: NextFunction) => {
+  async passwordRecovery(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.passwordRecovery(req.body.email);
 
@@ -118,9 +114,9 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  setNewPassword: async (req: Request, res: Response, next: NextFunction) => {
+  async setNewPassword(req: Request, res: Response, next: NextFunction) {
     try {
       await authService.setNewPassword(req.body);
 
@@ -128,5 +124,7 @@ export const authController = {
     } catch (error) {
       next(error);
     }
-  },
-};
+  }
+}
+
+export const authController = new AuthController();

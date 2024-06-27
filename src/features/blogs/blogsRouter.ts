@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { blogsController } from "./blogsController";
+import { blogsController } from "./BlogsController";
 import {
   isAdminMiddleware,
   validatePostOfBlog,
