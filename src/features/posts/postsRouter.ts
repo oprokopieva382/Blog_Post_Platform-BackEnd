@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postsController } from "./postsController";
+import { postsController } from "./PostsController";
 import {
   isAdminMiddleware,
   isAuthorizedMiddleware,
