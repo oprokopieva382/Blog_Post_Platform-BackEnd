@@ -4,8 +4,8 @@ import { formatResponse } from "../../utils/responseFormatter";
 import { devicesQueryRepository } from "../../query_repositories";
 import { devicesService } from "../../services";
 
-export const devicesController = {
-  getAll: async (req: Request, res: Response, next: NextFunction) => {
+class DevicesController {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await devicesQueryRepository.getAllDevices(req.userId);
 
@@ -17,9 +17,9 @@ export const devicesController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  deleteById: async (req: Request, res: Response, next: NextFunction) => {
+  async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await devicesService.delete(
         req.params.deviceId,
@@ -34,9 +34,9 @@ export const devicesController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
-  delete: async (req: Request, res: Response, next: NextFunction) => {
+  async delete(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await devicesService.deleteRest(req.deviceId, req.userId);
 
@@ -48,5 +48,7 @@ export const devicesController = {
     } catch (error) {
       next(error);
     }
-  },
-};
+  }
+}
+
+export const devicesController = new DevicesController();
