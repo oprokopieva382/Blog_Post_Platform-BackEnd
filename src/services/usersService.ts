@@ -5,6 +5,7 @@ import { UserInputModel } from "../type-models";
 import { usersRepository } from "../repositories";
 import { bcryptService } from "./bcryptService";
 import { ApiError } from "../helper/api-errors";
+import { UserDBType } from "../cloud_DB";
 
 export const usersService = {
   async createUser(data: UserInputModel) {
@@ -12,20 +13,20 @@ export const usersService = {
 
     const hashedPassword = await bcryptService.createHash(password);
 
-    const newUser = {
-      _id: new ObjectId(),
+    const newUser = new UserDBType(
+      new ObjectId(),
       login,
-      password: hashedPassword,
+      hashedPassword,
       email,
-      createdAt: new Date().toISOString(),
-      emailConfirmation: {
+      new Date().toISOString(),
+      {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), {
           hours: 1,
         }),
         isConfirmed: true,
-      },
-    };
+      }
+    );
 
     const createdUser = await usersRepository.createUser(newUser);
 

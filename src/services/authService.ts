@@ -16,6 +16,7 @@ import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
 import { jwtService } from "../features/application";
 import { userDTO } from "../DTO";
+import { UserDBType } from "../cloud_DB";
 
 export const authService = {
   async loginUser(data: LoginInputModel, req: Request) {
@@ -72,20 +73,20 @@ export const authService = {
 
     const passwordHash = await bcryptService.createHash(password);
 
-    const newUser = {
-      _id: new ObjectId(),
+    const newUser = new UserDBType(
+      new ObjectId(),
       login,
+      passwordHash,
       email,
-      password: passwordHash,
-      createdAt: new Date().toISOString(),
-      emailConfirmation: {
+      new Date().toISOString(),
+      {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date().toISOString(), {
           hours: 1,
         }),
         isConfirmed: false,
-      },
-    };
+      }
+    );
 
     await usersRepository.createUser(newUser);
 

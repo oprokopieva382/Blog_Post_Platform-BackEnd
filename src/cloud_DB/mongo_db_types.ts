@@ -23,20 +23,33 @@ export class PostDBType {
   ) {}
 }
 
-export type UserDBType = {
-  _id: Types.ObjectId;
-  login: string;
-  password: string;
-  email: string;
-  createdAt: string;
-  emailConfirmation: ConfirmationEmailType;
-};
+export class UserDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public login: string,
+    public password: string,
+    public email: string,
+    public createdAt: string,
+    public emailConfirmation: ConfirmationEmailType
+  ) {}
+}
 
 type ConfirmationEmailType = {
   confirmationCode: string;
   expirationDate: ExpirationDate;
   isConfirmed: boolean;
 };
+
+// export type UserDBType = {
+//   _id: Types.ObjectId;
+//   login: string;
+//   password: string;
+//   email: string;
+//   createdAt: string;
+//   emailConfirmation: ConfirmationEmailType;
+// };
+
+
 
 type ExpirationDate = Date;
 
