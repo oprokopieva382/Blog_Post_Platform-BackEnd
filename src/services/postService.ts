@@ -66,23 +66,23 @@ export const postsService = {
   ): Promise<CommentDBType | null> {
     const { content } = data;
     const isPostExist = await postsRepository.getByIdPost(postId);
-  
+
     if (!isPostExist) {
       throw ApiError.NotFoundError("Post is not found", [
         `Post with id ${postId} does not exist`,
       ]);
     }
 
-    const newComment = {
-      _id: new ObjectId(),
+    const newComment = new CommentDBType(
+      new ObjectId(),
       postId,
       content,
-      commentatorInfo: {
+      {
         userId: user.id,
         userLogin: user.login,
       },
-      createdAt: new Date().toISOString(),
-    };
+      new Date().toISOString()
+    );
 
     const createdComment = await postsRepository.createComment(newComment);
 

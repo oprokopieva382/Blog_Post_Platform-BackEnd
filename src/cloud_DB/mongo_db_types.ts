@@ -42,16 +42,18 @@ type ConfirmationEmailType = {
 
 type ExpirationDate = Date;
 
-export type CommentDBType = {
-  _id: Types.ObjectId;
-  postId: string;
-  content: string;
-  commentatorInfo: {
-    userId: string;
-    userLogin: string;
-  };
-  createdAt: string;
-};
+export class CommentDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public postId: string,
+    public content: string,
+    public commentatorInfo: {
+      userId: string;
+      userLogin: string;
+    },
+    public createdAt: string
+  ) {}
+}
 
 export class SessionsDBType {
   constructor(
@@ -80,4 +82,3 @@ export class PasswordRecoveryDBType {
     public createdAt: string
   ) {}
 }
-
