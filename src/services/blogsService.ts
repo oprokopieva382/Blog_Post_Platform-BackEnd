@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { PostDBType } from "../cloud_DB";
+import { BlogDBType, PostDBType } from "../cloud_DB";
 import { BlogInputModel, BlogPostInputModel } from "../type-models";
 import { blogsRepository, postsRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
@@ -10,11 +10,15 @@ export const blogsService = {
   },
 
   async createBlog(data: BlogInputModel) {
-    const newBlog = {
-      _id: new ObjectId(),
-      createdAt: new Date().toISOString(),
-      ...data,
-    };
+    const { name, description, websiteUrl } = data;
+    const newBlog = new BlogDBType(
+      new ObjectId(),
+      name,
+      description,
+      websiteUrl,
+      new Date().toISOString()
+    );
+
     const createdBlog = await blogsRepository.createBlog(newBlog);
 
     return blogsRepository.getByIdBlog(createdBlog._id.toString());
@@ -29,22 +33,21 @@ export const blogsService = {
     data: BlogPostInputModel
   ): Promise<PostDBType | null> {
     const { title, shortDescription, content } = data;
-
     const isBlogExist = await blogsRepository.getByIdBlog(blogId);
 
     if (!isBlogExist) {
       throw ApiError.NotFoundError("Not found", ["No blog found"]);
     }
 
-    const newPost = {
-      _id: new ObjectId(),
+    const newPost = new PostDBType(
+      new ObjectId(),
       title,
       shortDescription,
       content,
-      blogId: new ObjectId(blogId),
-      blogName: isBlogExist.name,
-      createdAt: new Date().toISOString(),
-    };
+      new ObjectId(blogId),
+      isBlogExist.name,
+      new Date().toISOString()
+    );
 
     const createdPost = await blogsRepository.createPost(newPost);
 

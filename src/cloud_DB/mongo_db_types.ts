@@ -1,23 +1,27 @@
 import { Types } from "mongoose";
 
-export type BlogDBType = {
-  _id: Types.ObjectId;
-  name: string;
-  description: string;
-  websiteUrl: string;
-  createdAt?: string;
-  isMembership?: boolean;
-};
+export class BlogDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public name: string,
+    public description: string,
+    public websiteUrl: string,
+    public createdAt?: string,
+    public isMembership?: boolean
+  ) {}
+}
 
-export type PostDBType = {
-  _id: Types.ObjectId;
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: Types.ObjectId;
-  blogName: string;
-  createdAt?: string;
-};
+export class PostDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public title: string,
+    public shortDescription: string,
+    public content: string,
+    public blogId: Types.ObjectId,
+    public blogName: string,
+    public createdAt?: string
+  ) {}
+}
 
 export type UserDBType = {
   _id: Types.ObjectId;
