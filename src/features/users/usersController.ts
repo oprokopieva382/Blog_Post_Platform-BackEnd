@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UserInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
-import { usersService } from "../../services";
+import { userService } from "../../services";
 import { usersQueryRepository } from "../../query_repositories";
 import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
@@ -30,7 +30,7 @@ class UsersController {
     next: NextFunction
   ) {
     try {
-      const result = await usersService.createUser(req.body);
+      const result = await userService.createUser(req.body);
 
       if (!result) {
         throw ApiError.NotFoundError(`User can't be created`);
@@ -44,7 +44,7 @@ class UsersController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await usersService.removeUser(req.params.id);
+      const result = await userService.removeUser(req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("User to delete is not found", [
@@ -59,4 +59,4 @@ class UsersController {
   }
 }
 
-export const usersController = new UsersController()
+export const usersController = new UsersController();

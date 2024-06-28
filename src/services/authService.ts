@@ -10,7 +10,7 @@ import {
   RegistrationConfirmationCodeModel,
   UserInputModel,
 } from "../type-models";
-import { authRepository, usersRepository } from "../repositories";
+import { authRepository, userRepository } from "../repositories";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
@@ -22,7 +22,7 @@ import {
   UserDBType,
 } from "../cloud_DB";
 
-export const authService = {
+class AuthService {
   async loginUser(data: LoginInputModel, req: Request) {
     const userData = await authRepository.getByLoginOrEmail(data.loginOrEmail);
 
@@ -63,7 +63,7 @@ export const authService = {
     });
 
     return { accessToken, refreshToken };
-  },
+  }
 
   async registerUser(data: UserInputModel) {
     const { login, password, email } = data;
@@ -92,7 +92,7 @@ export const authService = {
       }
     );
 
-    await usersRepository.createUser(newUser);
+    await userRepository.createUser(newUser);
 
     await emailService.sendEmail(
       newUser.email,
@@ -100,7 +100,7 @@ export const authService = {
     );
 
     return newUser;
-  },
+  }
 
   async confirmUser(data: RegistrationConfirmationCodeModel) {
     const findUser = await authRepository.getByConfirmationCode(data.code);
@@ -111,7 +111,7 @@ export const authService = {
       ]);
     }
     return await authRepository.updateConfirmation(findUser._id);
-  },
+  }
 
   async confirmResentUser(data: RegistrationEmailResending) {
     const findUser = await authRepository.getByLoginOrEmail(data.email);
@@ -128,11 +128,11 @@ export const authService = {
     emailService.sendEmail(data.email, newCode);
 
     return findUser;
-  },
+  }
 
   async logoutUser(deviceId: string) {
     await authRepository.removeSession(deviceId);
-  },
+  }
 
   async refreshToken(deviceId: string, userId: string) {
     const newAccessToken = await jwtService.createAccessToken(userId);
@@ -143,7 +143,7 @@ export const authService = {
 
     await this.updateSession(newRefreshToken);
     return { newAccessToken, newRefreshToken };
-  },
+  }
 
   async createSession(sessionData: SessionData) {
     const newSession = new SessionsDBType(
@@ -156,7 +156,7 @@ export const authService = {
       fromUnixTime(sessionData.exp!).toISOString()
     );
     await authRepository.createSession(newSession);
-  },
+  }
 
   async updateSession(newRefreshToken: string) {
     const { iat, exp, deviceId } = await jwtService.validateRefreshToken(
@@ -173,7 +173,7 @@ export const authService = {
         deviceId: deviceId,
       });
     }
-  },
+  }
 
   async passwordRecovery(email: string) {
     const passwordRecovery = new PasswordRecoveryDBType(
@@ -191,7 +191,7 @@ export const authService = {
     );
 
     await emailService.passwordRecovery(email, recoveryCode);
-  },
+  }
 
   async setNewPassword(data: NewPasswordRecoveryInputModel) {
     const { newPassword, recoveryCode } = data;
@@ -208,5 +208,6 @@ export const authService = {
     const passwordHash = await bcryptService.createHash(newPassword);
 
     await authRepository.setNewPassword(result.email, passwordHash);
-  },
-};
+  }
+}
+export const authService = new AuthService();

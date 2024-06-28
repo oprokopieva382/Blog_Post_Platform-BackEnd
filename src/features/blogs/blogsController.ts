@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { BlogInputModel, BlogPostInputModel } from "../../type-models";
-import { blogsService } from "../../services";
+import { blogService } from "../../services";
 import { blogsQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
@@ -36,7 +36,7 @@ class BlogsController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogsService.removeBlog(req.params.id);
+      const result = await blogService.removeBlog(req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Blog to delete is not found", [
@@ -56,7 +56,7 @@ class BlogsController {
     next: NextFunction
   ) {
     try {
-      const result = await blogsService.createBlog(req.body);
+      const result = await blogService.createBlog(req.body);
 
       if (!result) {
         throw ApiError.NotFoundError(`Blog can't be created`);
@@ -74,7 +74,7 @@ class BlogsController {
     next: NextFunction
   ) {
     try {
-      const result = await blogsService.updateBlog(req.body, req.params.id);
+      const result = await blogService.updateBlog(req.body, req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Blog to update is not found", [
@@ -113,7 +113,7 @@ class BlogsController {
     next: NextFunction
   ) {
     try {
-      const result = await blogsService.createPost(req.params.blogId, req.body);
+      const result = await blogService.createPost(req.params.blogId, req.body);
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", [

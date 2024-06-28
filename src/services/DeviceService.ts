@@ -1,7 +1,7 @@
 import { ApiError } from "../helper/api-errors";
-import { authRepository, devicesRepository } from "../repositories";
+import { authRepository, deviceRepository } from "../repositories";
 
-export const devicesService = {
+class DeviceService {
   async delete(deviceId: string, userId: string) {
     const dbSession = await authRepository.getSessionByDeviceId(deviceId);
 
@@ -17,10 +17,11 @@ export const devicesService = {
       ]);
     }
 
-    return await devicesRepository.removeDevice(deviceId);
-  },
+    return await deviceRepository.removeDevice(deviceId);
+  }
 
   async deleteRest(deviceId: string, userId: string) {
-    return await devicesRepository.removeDevices(deviceId, userId);
-  },
-};
+    return await deviceRepository.removeDevices(deviceId, userId);
+  }
+}
+export const deviceService = new DeviceService();

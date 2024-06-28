@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../type-models";
-import { postsService } from "../../services";
+import { postService } from "../../services";
 import {
   commentsQueryRepository,
   postsQueryRepository,
@@ -51,7 +51,7 @@ class PostsController {
     next: NextFunction
   ) {
     try {
-      const result = await postsService.createPost(req.body);
+      const result = await postService.createPost(req.body);
 
       if (!result) {
         throw ApiError.NotFoundError(`Post can't be created`);
@@ -65,7 +65,7 @@ class PostsController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await postsService.removePost(req.params.id);
+      const result = await postService.removePost(req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Post to delete is not found", [
@@ -85,7 +85,7 @@ class PostsController {
     next: NextFunction
   ) {
     try {
-      const result = await postsService.updatePost(req.body, req.params.id);
+      const result = await postService.updatePost(req.body, req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Post to update is not found", [
@@ -124,7 +124,7 @@ class PostsController {
     next: NextFunction
   ) {
     try {
-      const result = await postsService.createPostComment(
+      const result = await postService.createPostComment(
         req.params.postId,
         req.body,
         req.user
@@ -147,4 +147,4 @@ class PostsController {
     }
   }
 }
-export const postsController = new PostsController()
+export const postsController = new PostsController();

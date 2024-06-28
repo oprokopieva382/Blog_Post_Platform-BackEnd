@@ -1,10 +1,10 @@
 import { ApiError } from "../helper/api-errors";
 import { CommentInputModel, UserViewModel } from "../type-models";
-import { commentsRepository } from "../repositories";
+import { commentRepository } from "../repositories";
 
-export const commentsService = {
+class CommentService {
   async removeComment(commentId: string, user: UserViewModel) {
-    const foundComment = await commentsRepository.getByIdComment(commentId);
+    const foundComment = await commentRepository.getByIdComment(commentId);
 
     if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
       throw ApiError.ForbiddenError("Forbidden", [
@@ -12,15 +12,15 @@ export const commentsService = {
       ]);
     }
 
-    return await commentsRepository.removeComment(commentId);
-  },
+    return await commentRepository.removeComment(commentId);
+  }
 
   async updateComment(
     data: CommentInputModel,
     commentId: string,
     user: UserViewModel
   ) {
-    const isCommentExist = await commentsRepository.getByIdComment(commentId);
+    const isCommentExist = await commentRepository.getByIdComment(commentId);
 
     if (!isCommentExist) {
       throw ApiError.NotFoundError("Comment to update is not found", [
@@ -28,7 +28,7 @@ export const commentsService = {
       ]);
     }
 
-    const foundComment = await commentsRepository.getByIdComment(commentId);
+    const foundComment = await commentRepository.getByIdComment(commentId);
 
     if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
       throw ApiError.ForbiddenError("Forbidden", [
@@ -36,8 +36,9 @@ export const commentsService = {
       ]);
     }
 
-    await commentsRepository.updateComment(data, commentId);
+    await commentRepository.updateComment(data, commentId);
 
-    return await commentsRepository.getByIdComment(commentId);
-  },
-};
+    return await commentRepository.getByIdComment(commentId);
+  }
+}
+export const commentService = new CommentService();
