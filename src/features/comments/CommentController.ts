@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { CommentInputModel } from "../../type-models";
-import { commentsQueryRepository } from "../../query_repositories";
+import { commentQueryRepository } from "../../query_repositories";
 import { commentService } from "../../services";
 import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
@@ -10,7 +10,7 @@ import { CommentDTO } from "../../DTO";
 class CommentController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await commentsQueryRepository.getByIdComment(
+      const result = await commentQueryRepository.getByIdComment(
         req.params.id
       );
 

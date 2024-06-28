@@ -6,7 +6,7 @@ import { ApiError } from "../helper/api-errors";
 import { BlogDTO, PostDTO } from "../DTO";
 import { BlogModel, PostModel } from "../models";
 
-export const blogsQueryRepository = {
+class BlogQueryRepository {
   async getPostsOfBlog(
     blogId: string,
     query: QueryType
@@ -32,7 +32,7 @@ export const blogsQueryRepository = {
     };
 
     return postsToView;
-  },
+  }
 
   async getAllBlogs(query: QueryType): Promise<Paginator<BlogViewModel>> {
     const search = query.searchNameTerm
@@ -58,7 +58,7 @@ export const blogsQueryRepository = {
     };
 
     return blogsToView;
-  },
+  }
 
   async getByIdBlog(id: string): Promise<BlogViewModel> {
     const foundBlog = await BlogModel.findOne({
@@ -70,5 +70,7 @@ export const blogsQueryRepository = {
     }
 
     return BlogDTO.transform(foundBlog);
-  },
-};
+  }
+}
+
+export const blogQueryRepository = new BlogQueryRepository();

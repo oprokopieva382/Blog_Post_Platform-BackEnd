@@ -4,8 +4,8 @@ import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../type-models";
 import { postService } from "../../services";
 import {
-  commentsQueryRepository,
-  postsQueryRepository,
+  commentQueryRepository,
+  postQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { CommentInputModel } from "../../type-models/CommentInputModel";
@@ -15,7 +15,7 @@ import { CommentDTO, PostDTO } from "../../DTO";
 class PostController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await postsQueryRepository.getAllPosts(
+      const result = await postQueryRepository.getAllPosts(
         queryFilter(req.query)
       );
 
@@ -31,7 +31,7 @@ class PostController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = (await postsQueryRepository.getByIdPost(
+      const result = (await postQueryRepository.getByIdPost(
         req.params.id
       )) as PostViewModel;
 
@@ -101,7 +101,7 @@ class PostController {
 
   async getPostComments(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await commentsQueryRepository.getCommentsOfPost(
+      const result = await commentQueryRepository.getCommentsOfPost(
         req.params.postId,
         commentsQueryFilter(req.query)
       );

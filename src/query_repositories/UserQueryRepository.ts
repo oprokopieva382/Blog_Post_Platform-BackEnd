@@ -6,7 +6,7 @@ import { UserDTO } from "../DTO";
 import { cache } from "../utils/decorators";
 import { UserModel } from "../models";
 
-class UsersQueryRepository {
+class UserQueryRepository {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
     const searchByLogin = query.searchLoginTerm
       ? { login: { $regex: query.searchLoginTerm, $options: "i" } }
@@ -49,4 +49,4 @@ class UsersQueryRepository {
   }
 }
 
-export const usersQueryRepository = new UsersQueryRepository();
+export const userQueryRepository = new UserQueryRepository();

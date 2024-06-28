@@ -5,8 +5,8 @@ import { QueryCommentsType } from "../types/query-type";
 import { CommentDTO } from "../DTO";
 import { CommentModel } from "../models";
 
-export const commentsQueryRepository = {
-  async getCommentsOfPost(
+class CommentQueryRepository {
+ async getCommentsOfPost(
     postId: string,
     query: QueryCommentsType
   ): Promise<Paginator<CommentViewModel>> {
@@ -31,11 +31,14 @@ export const commentsQueryRepository = {
     };
 
     return commentsToView;
-  },
+  }
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(id),
     });
-  },
-};
+  }
+}
+
+export const commentQueryRepository = new CommentQueryRepository()
+

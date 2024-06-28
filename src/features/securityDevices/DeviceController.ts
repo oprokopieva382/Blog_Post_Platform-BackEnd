@@ -1,13 +1,13 @@
 import { NextFunction, Response, Request } from "express";
 import { ApiError } from "../../helper/api-errors";
 import { formatResponse } from "../../utils/responseFormatter";
-import { devicesQueryRepository } from "../../query_repositories";
+import { deviceQueryRepository } from "../../query_repositories";
 import { deviceService } from "../../services";
 
 class DeviceController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await devicesQueryRepository.getAllDevices(req.userId);
+      const result = await deviceQueryRepository.getAllDevices(req.userId);
 
       if (result.length === 0) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);

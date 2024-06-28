@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { usersQueryRepository } from "../query_repositories";
+import { userQueryRepository } from "../query_repositories";
 import { ApiError } from "../helper/api-errors";
 import { jwtService } from "../features/application";
 
@@ -26,7 +26,7 @@ export const isAuthorizedMiddleware = async (
     }
 
     //getting authorizedUser from cache or DB
-    const authorizedUser = await usersQueryRepository.getByIdUser(userId);
+    const authorizedUser = await userQueryRepository.getByIdUser(userId);
     if (!authorizedUser) {
       throw ApiError.UnauthorizedError("Not authorized", [
         "Authorization failed. Can't find user with such id",

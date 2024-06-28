@@ -3,7 +3,7 @@ import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { BlogInputModel, BlogPostInputModel } from "../../type-models";
 import { blogService } from "../../services";
-import { blogsQueryRepository } from "../../query_repositories";
+import { blogQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { BlogDTO, PostDTO } from "../../DTO";
@@ -11,7 +11,7 @@ import { BlogDTO, PostDTO } from "../../DTO";
 class BlogController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogsQueryRepository.getAllBlogs(
+      const result = await blogQueryRepository.getAllBlogs(
         queryFilter(req.query)
       );
 
@@ -26,7 +26,7 @@ class BlogController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogsQueryRepository.getByIdBlog(req.params.id);
+      const result = await blogQueryRepository.getByIdBlog(req.params.id);
 
       formatResponse(res, 200, result, "Blog retrieved successfully");
     } catch (error) {
@@ -90,7 +90,7 @@ class BlogController {
 
   async getBlogPosts(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogsQueryRepository.getPostsOfBlog(
+      const result = await blogQueryRepository.getPostsOfBlog(
         req.params.blogId,
         queryFilter(req.query)
       );

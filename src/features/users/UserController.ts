@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { UserInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
 import { userService } from "../../services";
-import { usersQueryRepository } from "../../query_repositories";
+import { userQueryRepository } from "../../query_repositories";
 import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { UserDTO } from "../../DTO";
@@ -10,7 +10,7 @@ import { UserDTO } from "../../DTO";
 class UserController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await usersQueryRepository.getAllUsers(
+      const result = await userQueryRepository.getAllUsers(
         userQueryFilter(req.query)
       );
 
