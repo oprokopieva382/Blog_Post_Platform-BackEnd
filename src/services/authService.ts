@@ -10,7 +10,7 @@ import {
   RegistrationConfirmationCodeModel,
   UserInputModel,
 } from "../type-models";
-import { AuthRepository, userRepository } from "../repositories";
+import { AuthRepository, UserRepository } from "../repositories";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
@@ -24,12 +24,16 @@ import {
 
 class AuthService {
   private authRepository: AuthRepository;
+  private userRepository: UserRepository;
   constructor() {
     this.authRepository = new AuthRepository();
+    this.userRepository = new UserRepository();
   }
 
   async loginUser(data: LoginInputModel, req: Request) {
-    const userData = await this.authRepository.getByLoginOrEmail(data.loginOrEmail);
+    const userData = await this.authRepository.getByLoginOrEmail(
+      data.loginOrEmail
+    );
 
     if (!userData) {
       throw ApiError.UnauthorizedError("Not authorized", [
@@ -97,7 +101,7 @@ class AuthService {
       }
     );
 
-    await userRepository.createUser(newUser);
+    await this.userRepository.createUser(newUser);
 
     await emailService.sendEmail(
       newUser.email,

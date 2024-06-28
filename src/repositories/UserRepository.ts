@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
 import { UserModel } from "../models";
 
-class UserRepository {
+export class UserRepository {
   async createUser(newUser: UserDBType) {
     return await UserModel.create(newUser);
   }
@@ -19,4 +19,3 @@ class UserRepository {
     });
   }
 }
-export const userRepository = new UserRepository();

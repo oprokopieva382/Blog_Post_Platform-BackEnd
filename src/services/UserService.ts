@@ -2,12 +2,16 @@ import { ObjectId } from "mongodb";
 import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
 import { UserInputModel } from "../type-models";
-import { userRepository } from "../repositories";
+import { UserRepository } from "../repositories";
 import { bcryptService } from "./BcryptService";
 import { ApiError } from "../helper/api-errors";
 import { UserDBType } from "../cloud_DB";
 
 class UserService {
+  private userRepository: UserRepository;
+  constructor() {
+    this.userRepository = new UserRepository();
+  }
   async createUser(data: UserInputModel) {
     const { login, password, email } = data;
 
@@ -28,9 +32,9 @@ class UserService {
       }
     );
 
-    const createdUser = await userRepository.createUser(newUser);
+    const createdUser = await this.userRepository.createUser(newUser);
 
-    const user = userRepository.getByIdUser(createdUser._id.toString());
+    const user = this.userRepository.getByIdUser(createdUser._id.toString());
 
     if (!user) {
       throw ApiError.UnauthorizedError("Not authorized", [
@@ -42,7 +46,7 @@ class UserService {
   }
 
   async removeUser(id: string) {
-    return await userRepository.removeUser(id);
+    return await this.userRepository.removeUser(id);
   }
 }
 export const userService = new UserService();
