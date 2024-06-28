@@ -1,5 +1,5 @@
-export { blogsQueryRepository } from "./blogsQueryRepository";
-export { postsQueryRepository } from "./postsQueryRepository";
-export { usersQueryRepository } from "./usersQueryRepository";
-export { commentsQueryRepository } from "./commentsQueryRepository";
-export { devicesQueryRepository } from "./devicesQueryRepository";
+export { blogQueryRepository } from "./BlogQueryRepository";
+export { postQueryRepository } from "./PostQueryRepository";
+export { userQueryRepository } from "./UserQueryRepository";
+export { commentQueryRepository } from "./CommentQueryRepository";
+export { deviceQueryRepository } from "./DeviceQueryRepository";

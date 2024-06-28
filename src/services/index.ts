@@ -1,9 +1,8 @@
-import { EmailService } from "./EmailService";
-export const emailService = new EmailService();
-export { blogsService } from "./blogsService";
-export { postsService } from "./postService";
-export { usersService } from "./usersService";
-export { bcryptService } from "./bcryptService";
-export { authService } from "./authService";
-export { devicesService } from "./devicesService";
-export { commentsService } from "./commentsService";
+export { emailService } from "./EmailService";
+export { blogService } from "./BlogService";
+export { postService } from "./PostService";
+export { userService } from "./UserService";
+export { bcryptService } from "./BcryptService";
+export { authService } from "./AuthService";
+export { deviceService } from "./DeviceService";
+export { commentService } from "./CommentService";

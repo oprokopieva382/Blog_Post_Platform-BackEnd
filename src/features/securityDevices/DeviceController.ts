@@ -1,13 +1,13 @@
 import { NextFunction, Response, Request } from "express";
 import { ApiError } from "../../helper/api-errors";
 import { formatResponse } from "../../utils/responseFormatter";
-import { devicesQueryRepository } from "../../query_repositories";
-import { devicesService } from "../../services";
+import { deviceQueryRepository } from "../../query_repositories";
+import { deviceService } from "../../services";
 
-class DevicesController {
+class DeviceController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await devicesQueryRepository.getAllDevices(req.userId);
+      const result = await deviceQueryRepository.getAllDevices(req.userId);
 
       if (result.length === 0) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);
@@ -21,7 +21,7 @@ class DevicesController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await devicesService.delete(
+      const result = await deviceService.delete(
         req.params.deviceId,
         req.userId
       );
@@ -38,7 +38,7 @@ class DevicesController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await devicesService.deleteRest(req.deviceId, req.userId);
+      const result = await deviceService.deleteRest(req.deviceId, req.userId);
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);
@@ -51,4 +51,4 @@ class DevicesController {
   }
 }
 
-export const devicesController = new DevicesController();
+export const deviceController = new DeviceController();

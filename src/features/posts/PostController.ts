@@ -2,20 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../type-models";
-import { postsService } from "../../services";
+import { postService } from "../../services";
 import {
-  commentsQueryRepository,
-  postsQueryRepository,
+  commentQueryRepository,
+  postQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { CommentInputModel } from "../../type-models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
-import { commentDTO, postDTO } from "../../DTO";
+import { CommentDTO, PostDTO } from "../../DTO";
 
-class PostsController {
+class PostController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await postsQueryRepository.getAllPosts(
+      const result = await postQueryRepository.getAllPosts(
         queryFilter(req.query)
       );
 
@@ -31,7 +31,7 @@ class PostsController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = (await postsQueryRepository.getByIdPost(
+      const result = (await postQueryRepository.getByIdPost(
         req.params.id
       )) as PostViewModel;
 
@@ -51,13 +51,13 @@ class PostsController {
     next: NextFunction
   ) {
     try {
-      const result = await postsService.createPost(req.body);
+      const result = await postService.createPost(req.body);
 
       if (!result) {
         throw ApiError.NotFoundError(`Post can't be created`);
       }
 
-      formatResponse(res, 201, postDTO(result), "Post created successfully");
+      formatResponse(res, 201, PostDTO.transform(result), "Post created successfully");
     } catch (error) {
       next(error);
     }
@@ -65,7 +65,7 @@ class PostsController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await postsService.removePost(req.params.id);
+      const result = await postService.removePost(req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Post to delete is not found", [
@@ -85,7 +85,7 @@ class PostsController {
     next: NextFunction
   ) {
     try {
-      const result = await postsService.updatePost(req.body, req.params.id);
+      const result = await postService.updatePost(req.body, req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Post to update is not found", [
@@ -101,7 +101,7 @@ class PostsController {
 
   async getPostComments(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await commentsQueryRepository.getCommentsOfPost(
+      const result = await commentQueryRepository.getCommentsOfPost(
         req.params.postId,
         commentsQueryFilter(req.query)
       );
@@ -124,7 +124,7 @@ class PostsController {
     next: NextFunction
   ) {
     try {
-      const result = await postsService.createPostComment(
+      const result = await postService.createPostComment(
         req.params.postId,
         req.body,
         req.user
@@ -139,7 +139,7 @@ class PostsController {
       formatResponse(
         res,
         201,
-        commentDTO(result),
+        CommentDTO.transform(result),
         "Comment created successfully"
       );
     } catch (error) {
@@ -147,4 +147,4 @@ class PostsController {
     }
   }
 }
-export const postsController = new PostsController()
+export const postController = new PostController();

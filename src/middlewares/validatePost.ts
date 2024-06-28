@@ -4,11 +4,11 @@ import {
   body,
   validationResult,
 } from "express-validator";
-import { blogsRepository } from "../repositories/blogsRepository";
+import { blogRepository } from "../repositories/BlogRepository";
 import { ApiError } from "../helper/api-errors";
 
 const validateBlogId = async (blogId: string) => {
-  const blog = await blogsRepository.getByIdBlog(blogId);
+  const blog = await blogRepository.getByIdBlog(blogId);
   if (!blog) {
     throw ApiError.BadRequestError("Validation failed", [
       {
