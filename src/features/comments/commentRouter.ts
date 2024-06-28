@@ -4,7 +4,7 @@ import { isAuthorizedMiddleware, validateComment } from "../../middlewares";
 
 export const commentRouter = Router();
 
-commentRouter.get("/:id", commentController.getById);
+commentRouter.get("/:id", commentController.getById.bind(commentController));
 commentRouter.delete(
   "/:commentId",
   isAuthorizedMiddleware,

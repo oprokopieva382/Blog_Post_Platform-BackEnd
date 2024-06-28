@@ -1,16 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { CommentInputModel } from "../../type-models";
-import { commentQueryRepository } from "../../query_repositories";
 import { commentService } from "../../services";
 import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
 import { CommentDTO } from "../../DTO";
+import { CommentQueryRepository } from "../../query_repositories";
 
 class CommentController {
+  private commentQueryRepository: CommentQueryRepository;
+  constructor() {
+    this.commentQueryRepository = new CommentQueryRepository();
+  }
+
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await commentQueryRepository.getByIdComment(
+      const result = await this.commentQueryRepository.getByIdComment(
         req.params.id
       );
 

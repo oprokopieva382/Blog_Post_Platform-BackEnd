@@ -14,7 +14,10 @@ postRouter.get("/:id", postController.getById.bind(postController));
 postRouter.post("/", isAdminMiddleware, validatePost, postController.create);
 postRouter.delete("/:id", isAdminMiddleware, postController.deleteById);
 postRouter.put("/:id", isAdminMiddleware, validatePost, postController.update);
-postRouter.get("/:postId/comments", postController.getPostComments);
+postRouter.get(
+  "/:postId/comments",
+  postController.getPostComments.bind(postController)
+);
 postRouter.post(
   "/:postId/comments",
   isAuthorizedMiddleware,
