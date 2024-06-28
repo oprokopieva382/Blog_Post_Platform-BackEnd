@@ -1,13 +1,15 @@
 import { ObjectId } from "mongodb";
 import { BlogDBType, PostDBType } from "../cloud_DB";
 import { BlogInputModel, BlogPostInputModel } from "../type-models";
-import { BlogRepository, postRepository } from "../repositories";
+import { BlogRepository, PostRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
 
 class BlogService {
   private blogRepository: BlogRepository;
+  private postRepository: PostRepository;
   constructor() {
     this.blogRepository = new BlogRepository();
+    this.postRepository = new PostRepository();
   }
 
   async removeBlog(id: string) {
@@ -60,7 +62,7 @@ class BlogService {
       throw ApiError.NotFoundError("Not found", ["Can't create post"]);
     }
 
-    const result = await postRepository.getByIdPost(createdPost._id.toString());
+    const result = await this.postRepository.getByIdPost(createdPost._id.toString());
 
     if (!result) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);

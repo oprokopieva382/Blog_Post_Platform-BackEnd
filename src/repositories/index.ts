@@ -1,5 +1,5 @@
 export { BlogRepository } from "./BlogRepository";
-export { postRepository } from "./PostRepository";
+export { PostRepository } from "./PostRepository";
 export { userRepository } from "./UserRepository";
 export { AuthRepository } from "./AuthRepository";
 export { deviceRepository } from "./DeviceRepository";

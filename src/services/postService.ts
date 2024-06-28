@@ -3,16 +3,18 @@ import { CommentDBType } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
-import { BlogRepository, postRepository } from "../repositories";
+import { BlogRepository, PostRepository } from "../repositories";
 
 class PostService {
   private blogRepository: BlogRepository;
+  private postRepository: PostRepository;
   constructor() {
     this.blogRepository = new BlogRepository();
+    this.postRepository = new PostRepository();
   }
 
   async removePost(id: string) {
-    return await postRepository.removePost(id);
+    return await this.postRepository.removePost(id);
   }
 
   async createPost(data: PostInputModel) {
@@ -35,9 +37,9 @@ class PostService {
       createdAt: new Date().toISOString(),
     };
 
-    const createdPost = await postRepository.createPost(newPost);
+    const createdPost = await this.postRepository.createPost(newPost);
 
-    const post = postRepository.getByIdPost(createdPost._id.toString());
+    const post = this.postRepository.getByIdPost(createdPost._id.toString());
 
     if (!post) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);
@@ -54,9 +56,9 @@ class PostService {
         `Blog with id ${data.blogId} does not exist`,
       ]);
     }
-    await postRepository.updatePost(data, id, isBlogExist.name);
+    await this.postRepository.updatePost(data, id, isBlogExist.name);
 
-    const post = await postRepository.getByIdPost(id);
+    const post = await this.postRepository.getByIdPost(id);
 
     if (!post) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);
@@ -70,7 +72,7 @@ class PostService {
     user: UserViewModel
   ): Promise<CommentDBType | null> {
     const { content } = data;
-    const isPostExist = await postRepository.getByIdPost(postId);
+    const isPostExist = await this.postRepository.getByIdPost(postId);
 
     if (!isPostExist) {
       throw ApiError.NotFoundError("Post is not found", [
@@ -89,7 +91,7 @@ class PostService {
       new Date().toISOString()
     );
 
-    const createdComment = await postRepository.createComment(newComment);
+    const createdComment = await this.postRepository.createComment(newComment);
 
     if (!createdComment) {
       throw ApiError.NotFoundError("Comment is not found", [
@@ -97,7 +99,7 @@ class PostService {
       ]);
     }
 
-    return await postRepository.getByIdComment(createdComment._id.toString());
+    return await this.postRepository.getByIdComment(createdComment._id.toString());
   }
 }
 export const postService = new PostService();

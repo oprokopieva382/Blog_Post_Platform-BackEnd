@@ -4,7 +4,7 @@ import { PostDBType } from "../cloud_DB";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { CommentModel, PostModel } from "../models";
 
-class PostRepository {
+export class PostRepository {
   async getByIdPost(postId: string): Promise<PostDBType | null> {
     return await PostModel.findOne({
       _id: new ObjectId(postId),
@@ -52,4 +52,3 @@ class PostRepository {
     return await CommentModel.create(newComment);
   }
 }
-export const postRepository = new PostRepository();
