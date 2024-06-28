@@ -4,8 +4,8 @@ import { ParamType } from ".";
 import { PostInputModel, PostViewModel } from "../../type-models";
 import { postService } from "../../services";
 import {
+  PostQueryRepository,
   commentQueryRepository,
-  postQueryRepository,
 } from "../../query_repositories";
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { CommentInputModel } from "../../type-models/CommentInputModel";
@@ -13,9 +13,14 @@ import { ApiError } from "../../helper/api-errors";
 import { CommentDTO, PostDTO } from "../../DTO";
 
 class PostController {
+  private postQueryRepository: PostQueryRepository;
+  constructor() {
+    this.postQueryRepository = new PostQueryRepository();
+  }
+
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await postQueryRepository.getAllPosts(
+      const result = await this.postQueryRepository.getAllPosts(
         queryFilter(req.query)
       );
 
@@ -31,7 +36,7 @@ class PostController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = (await postQueryRepository.getByIdPost(
+      const result = (await this.postQueryRepository.getByIdPost(
         req.params.id
       )) as PostViewModel;
 
@@ -57,7 +62,12 @@ class PostController {
         throw ApiError.NotFoundError(`Post can't be created`);
       }
 
-      formatResponse(res, 201, PostDTO.transform(result), "Post created successfully");
+      formatResponse(
+        res,
+        201,
+        PostDTO.transform(result),
+        "Post created successfully"
+      );
     } catch (error) {
       next(error);
     }

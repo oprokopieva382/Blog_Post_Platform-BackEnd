@@ -4,7 +4,11 @@ import { isAuthorizedRefreshToken } from "../../middlewares";
 
 export const deviceRouter = Router();
 
-deviceRouter.get("/", isAuthorizedRefreshToken, deviceController.getAll);
+deviceRouter.get(
+  "/",
+  isAuthorizedRefreshToken,
+  deviceController.getAll.bind(deviceController)
+);
 deviceRouter.delete(
   "/:deviceId",
   isAuthorizedRefreshToken,

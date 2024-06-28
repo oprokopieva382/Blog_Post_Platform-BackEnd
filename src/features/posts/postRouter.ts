@@ -9,8 +9,8 @@ import {
 
 export const postRouter = Router();
 
-postRouter.get("/", postController.getAll);
-postRouter.get("/:id", postController.getById);
+postRouter.get("/", postController.getAll.bind(postController));
+postRouter.get("/:id", postController.getById.bind(postController));
 postRouter.post("/", isAdminMiddleware, validatePost, postController.create);
 postRouter.delete("/:id", isAdminMiddleware, postController.deleteById);
 postRouter.put("/:id", isAdminMiddleware, validatePost, postController.update);
