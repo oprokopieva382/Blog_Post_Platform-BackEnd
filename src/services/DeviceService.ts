@@ -1,9 +1,14 @@
 import { ApiError } from "../helper/api-errors";
-import { authRepository, deviceRepository } from "../repositories";
+import { AuthRepository, deviceRepository } from "../repositories";
 
 class DeviceService {
+  private authRepository: AuthRepository;
+  constructor() {
+    this.authRepository = new AuthRepository();
+  }
+
   async delete(deviceId: string, userId: string) {
-    const dbSession = await authRepository.getSessionByDeviceId(deviceId);
+    const dbSession = await this.authRepository.getSessionByDeviceId(deviceId);
 
     if (!dbSession) {
       throw ApiError.NotFoundError("Session not found", [

@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from "express";
-import { authRepository } from "../repositories";
+import { AuthRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
+
+const authRepository = new AuthRepository();
 
 export const validateUserEmailUnique = async (
   req: Request,

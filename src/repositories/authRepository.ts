@@ -6,7 +6,7 @@ import {
 } from "../cloud_DB";
 import { PasswordModel, SessionModel, UserModel } from "../models";
 
-class AuthRepository {
+export class AuthRepository {
   async getByLoginOrEmail(data: string): Promise<UserDBType | null> {
     return await UserModel.findOne({
       $or: [{ email: data }, { login: data }],
@@ -89,4 +89,3 @@ class AuthRepository {
     );
   }
 }
-export const authRepository = new AuthRepository();

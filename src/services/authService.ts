@@ -10,7 +10,7 @@ import {
   RegistrationConfirmationCodeModel,
   UserInputModel,
 } from "../type-models";
-import { authRepository, userRepository } from "../repositories";
+import { AuthRepository, userRepository } from "../repositories";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
@@ -23,8 +23,13 @@ import {
 } from "../cloud_DB";
 
 class AuthService {
+  private authRepository: AuthRepository;
+  constructor() {
+    this.authRepository = new AuthRepository();
+  }
+
   async loginUser(data: LoginInputModel, req: Request) {
-    const userData = await authRepository.getByLoginOrEmail(data.loginOrEmail);
+    const userData = await this.authRepository.getByLoginOrEmail(data.loginOrEmail);
 
     if (!userData) {
       throw ApiError.UnauthorizedError("Not authorized", [
@@ -67,7 +72,7 @@ class AuthService {
 
   async registerUser(data: UserInputModel) {
     const { login, password, email } = data;
-    const findUser = await authRepository.getByLoginOrEmail(login);
+    const findUser = await this.authRepository.getByLoginOrEmail(login);
 
     if (findUser) {
       throw ApiError.BadRequestError("Bad Request", [
@@ -103,18 +108,18 @@ class AuthService {
   }
 
   async confirmUser(data: RegistrationConfirmationCodeModel) {
-    const findUser = await authRepository.getByConfirmationCode(data.code);
+    const findUser = await this.authRepository.getByConfirmationCode(data.code);
 
     if (!findUser) {
       throw ApiError.BadRequestError("Bad Request", [
         "Can't find user by confirmation code",
       ]);
     }
-    return await authRepository.updateConfirmation(findUser._id);
+    return await this.authRepository.updateConfirmation(findUser._id);
   }
 
   async confirmResentUser(data: RegistrationEmailResending) {
-    const findUser = await authRepository.getByLoginOrEmail(data.email);
+    const findUser = await this.authRepository.getByLoginOrEmail(data.email);
 
     if (!findUser) {
       throw ApiError.BadRequestError("Bad Request", [
@@ -123,7 +128,7 @@ class AuthService {
     }
 
     const newCode = randomUUID();
-    await authRepository.updateCode(findUser._id, newCode);
+    await this.authRepository.updateCode(findUser._id, newCode);
 
     emailService.sendEmail(data.email, newCode);
 
@@ -131,7 +136,7 @@ class AuthService {
   }
 
   async logoutUser(deviceId: string) {
-    await authRepository.removeSession(deviceId);
+    await this.authRepository.removeSession(deviceId);
   }
 
   async refreshToken(deviceId: string, userId: string) {
@@ -155,7 +160,7 @@ class AuthService {
       sessionData.ip,
       fromUnixTime(sessionData.exp!).toISOString()
     );
-    await authRepository.createSession(newSession);
+    await this.authRepository.createSession(newSession);
   }
 
   async updateSession(newRefreshToken: string) {
@@ -167,7 +172,7 @@ class AuthService {
     const dbIat = new Date(iat!);
 
     if (tokenIat > dbIat) {
-      await authRepository.updateSession({
+      await this.authRepository.updateSession({
         iat: tokenIat.toISOString(),
         exp: fromUnixTime(+exp!).toISOString(),
         deviceId: deviceId,
@@ -186,7 +191,7 @@ class AuthService {
       new Date().toISOString()
     );
 
-    const { recoveryCode } = await authRepository.savePasswordRecoveryInfo(
+    const { recoveryCode } = await this.authRepository.savePasswordRecoveryInfo(
       passwordRecovery
     );
 
@@ -195,7 +200,7 @@ class AuthService {
 
   async setNewPassword(data: NewPasswordRecoveryInputModel) {
     const { newPassword, recoveryCode } = data;
-    const result = await authRepository.getByRecoveryCode(recoveryCode);
+    const result = await this.authRepository.getByRecoveryCode(recoveryCode);
 
     if (!result || new Date(result.expirationDate) < new Date()) {
       throw ApiError.BadRequestError("Bad Request", [
@@ -207,7 +212,7 @@ class AuthService {
     }
     const passwordHash = await bcryptService.createHash(newPassword);
 
-    await authRepository.setNewPassword(result.email, passwordHash);
+    await this.authRepository.setNewPassword(result.email, passwordHash);
   }
 }
 export const authService = new AuthService();
