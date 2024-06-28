@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { UserDBType } from "../cloud_DB";
 import { Paginator, UserViewModel } from "../type-models";
 import { QueryUserType } from "../types/query-type";
-import { userDTO } from "../DTO";
+import { UserDTO } from "../DTO";
 import { cache } from "../utils/decorators";
 import { UserModel } from "../models";
 
@@ -33,7 +33,7 @@ class UsersQueryRepository {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalUsersCount,
-      items: users.map((u) => userDTO(u)),
+      items: users.map((u) => UserDTO.transform(u)),
     };
 
     return usersToView;
@@ -45,7 +45,7 @@ class UsersQueryRepository {
       _id: new ObjectId(id),
     });
     
-    return result ? userDTO(result) : null;
+    return result ? UserDTO.transform(result) : null;
   }
 }
 

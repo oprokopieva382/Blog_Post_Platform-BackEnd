@@ -4,7 +4,7 @@ import { formatResponse } from "../../utils/responseFormatter";
 import { authService } from "../../services";
 import { usersQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
-import { authDTO } from "../../DTO";
+import { AuthDTO } from "../../DTO";
 
 class AuthController {
   async me(req: Request, res: Response, next: NextFunction) {
@@ -15,7 +15,7 @@ class AuthController {
           "Authorization failed. Can't find user with such id",
         ]);
       }
-      formatResponse(res, 200, authDTO(me), "User authorized");
+      formatResponse(res, 200, AuthDTO.transform(me), "User authorized");
     } catch (error) {
       next(error);
     }

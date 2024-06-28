@@ -5,7 +5,7 @@ import { userService } from "../../services";
 import { usersQueryRepository } from "../../query_repositories";
 import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
-import { userDTO } from "../../DTO";
+import { UserDTO } from "../../DTO";
 
 class UsersController {
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -36,7 +36,7 @@ class UsersController {
         throw ApiError.NotFoundError(`User can't be created`);
       }
 
-      formatResponse(res, 201, userDTO(result), "User created successfully");
+      formatResponse(res, 201, UserDTO.transform(result), "User created successfully");
     } catch (error) {
       next(error);
     }

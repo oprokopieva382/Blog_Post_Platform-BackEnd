@@ -6,7 +6,7 @@ import { blogService } from "../../services";
 import { blogsQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
-import { blogDTO, postDTO } from "../../DTO";
+import { BlogDTO, PostDTO } from "../../DTO";
 
 class BlogsController {
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -62,7 +62,7 @@ class BlogsController {
         throw ApiError.NotFoundError(`Blog can't be created`);
       }
 
-      formatResponse(res, 201, blogDTO(result), "Blog created successfully");
+      formatResponse(res, 201, BlogDTO.transform(result), "Blog created successfully");
     } catch (error) {
       next(error);
     }
@@ -121,7 +121,7 @@ class BlogsController {
         ]);
       }
 
-      formatResponse(res, 201, postDTO(result), "Post created successfully");
+      formatResponse(res, 201, PostDTO.transform(result), "Post created successfully");
     } catch (error) {
       next(error);
     }

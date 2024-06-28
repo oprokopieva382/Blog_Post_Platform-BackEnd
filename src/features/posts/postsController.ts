@@ -10,7 +10,7 @@ import {
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { CommentInputModel } from "../../type-models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
-import { commentDTO, postDTO } from "../../DTO";
+import { CommentDTO, PostDTO } from "../../DTO";
 
 class PostsController {
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -57,7 +57,7 @@ class PostsController {
         throw ApiError.NotFoundError(`Post can't be created`);
       }
 
-      formatResponse(res, 201, postDTO(result), "Post created successfully");
+      formatResponse(res, 201, PostDTO.transform(result), "Post created successfully");
     } catch (error) {
       next(error);
     }
@@ -139,7 +139,7 @@ class PostsController {
       formatResponse(
         res,
         201,
-        commentDTO(result),
+        CommentDTO.transform(result),
         "Comment created successfully"
       );
     } catch (error) {

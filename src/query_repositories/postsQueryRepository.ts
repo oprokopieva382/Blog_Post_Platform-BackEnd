@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { PostDBType } from "../cloud_DB";
 import { Paginator, PostViewModel } from "../type-models";
 import { QueryType } from "../types/query-type";
-import { postDTO } from "../DTO";
+import { PostDTO } from "../DTO";
 import { PostModel } from "../models";
 
 export const postsQueryRepository = {
@@ -20,7 +20,7 @@ export const postsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => postDTO(p)),
+      items: posts.map((p) => PostDTO.transform(p)),
     };
 
     return postsToView;
@@ -28,6 +28,6 @@ export const postsQueryRepository = {
 
   async getByIdPost(id: string): Promise<PostViewModel | null> {
     const foundPost = await PostModel.findOne({ _id: new ObjectId(id) });
-    return foundPost ? postDTO(foundPost) : null;
+    return foundPost ? PostDTO.transform(foundPost) : null;
   },
 };

@@ -3,7 +3,7 @@ import { BlogDBType, PostDBType } from "../cloud_DB";
 import { BlogViewModel, Paginator, PostViewModel } from "../type-models";
 import { QueryType } from "../types/query-type";
 import { ApiError } from "../helper/api-errors";
-import { blogDTO, postDTO } from "../DTO";
+import { BlogDTO, PostDTO } from "../DTO";
 import { BlogModel, PostModel } from "../models";
 
 export const blogsQueryRepository = {
@@ -28,7 +28,7 @@ export const blogsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => postDTO(p)),
+      items: posts.map((p) => PostDTO.transform(p)),
     };
 
     return postsToView;
@@ -54,7 +54,7 @@ export const blogsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalBlogsCount,
-      items: blogs.map((b) => blogDTO(b)),
+      items: blogs.map((b) => BlogDTO.transform(b)),
     };
 
     return blogsToView;
@@ -69,6 +69,6 @@ export const blogsQueryRepository = {
       throw ApiError.NotFoundError("Not found", ["No blog found"]);
     }
 
-    return blogDTO(foundBlog);
+    return BlogDTO.transform(foundBlog);
   },
 };

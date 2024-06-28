@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { CommentViewModel, Paginator } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { QueryCommentsType } from "../types/query-type";
-import { commentDTO } from "../DTO";
+import { CommentDTO } from "../DTO";
 import { CommentModel } from "../models";
 
 export const commentsQueryRepository = {
@@ -27,7 +27,7 @@ export const commentsQueryRepository = {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCommentsCount,
-      items: comments.map((c) => commentDTO(c)),
+      items: comments.map((c) => CommentDTO.transform(c)),
     };
 
     return commentsToView;

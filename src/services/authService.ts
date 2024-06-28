@@ -15,7 +15,7 @@ import { RegistrationEmailResending } from "../types/RegistrationEmailResending"
 import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
 import { jwtService } from "../features/application";
-import { userDTO } from "../DTO";
+import { UserDTO } from "../DTO";
 import {
   PasswordRecoveryDBType,
   SessionsDBType,
@@ -46,7 +46,7 @@ class AuthService {
     const deviceId = randomUUID();
     const IP = req.ip;
     const deviceName = req.headers["user-agent"] || "Unknown Device";
-    const user = userDTO(userData);
+    const user = UserDTO.transform(userData);
 
     const accessToken = await jwtService.createAccessToken(user.id);
     const refreshToken = await jwtService.createRefreshToken(user.id, deviceId);

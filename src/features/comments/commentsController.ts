@@ -5,7 +5,7 @@ import { commentsQueryRepository } from "../../query_repositories";
 import { commentService } from "../../services";
 import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
-import { commentDTO } from "../../DTO";
+import { CommentDTO } from "../../DTO";
 
 class CommentsController {
   async getById(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +21,7 @@ class CommentsController {
       formatResponse(
         res,
         200,
-        commentDTO(result),
+        CommentDTO.transform(result),
         "Comment retrieved successfully"
       );
     } catch (error) {
