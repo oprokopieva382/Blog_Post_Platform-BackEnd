@@ -5,4 +5,4 @@ export { userService } from "./UserService";
 export { BcryptService } from "./BcryptService";
 export { AuthService } from "./AuthService";
 export { deviceService } from "./DeviceService";
-export { commentService } from "./CommentService";
+export { CommentService } from "./CommentService";

@@ -2,7 +2,7 @@ import { ApiError } from "../helper/api-errors";
 import { CommentInputModel, UserViewModel } from "../type-models";
 import { CommentRepository } from "../repositories";
 
-class CommentService {
+export class CommentService {
   private commentRepository: CommentRepository;
   constructor() {
     this.commentRepository = new CommentRepository();
@@ -46,4 +46,3 @@ class CommentService {
     return await this.commentRepository.getByIdComment(commentId);
   }
 }
-export const commentService = new CommentService();
