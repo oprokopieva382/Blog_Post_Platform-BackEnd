@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authController } from "./AuthController";
+import { AuthController} from "./AuthController";
 import {
   isAuthorizedMiddleware,
   validateRegistrationCode,
@@ -16,13 +16,18 @@ import {
 } from "../../middlewares";
 
 export const authRouter = Router();
+const authController = new AuthController();
 
-authRouter.get("/me", isAuthorizedMiddleware, authController.me);
+authRouter.get(
+  "/me",
+  isAuthorizedMiddleware,
+  authController.me.bind(authController)
+);
 authRouter.post(
   "/login",
   rateLimitMiddleware,
   validateLoginInputs,
-  authController.login
+  authController.login.bind(authController)
 );
 authRouter.post(
   "/registration",
@@ -30,38 +35,43 @@ authRouter.post(
   validateRegistrationInput,
   validateUserLoginUnique,
   validateUserEmailUnique,
-  authController.registration
+  authController.registration.bind(authController)
 );
 authRouter.post(
   "/registration-confirmation",
   rateLimitMiddleware,
   validateRegistrationCode,
   validateEmailConfirmation,
-  authController.registrationConfirmation
+  authController.registrationConfirmation.bind(authController)
 );
 authRouter.post(
   "/registration-email-resending",
   rateLimitMiddleware,
   validateEmail,
   validateEmailResending,
-  authController.registrationResending
+  authController.registrationResending.bind(authController)
 );
-authRouter.post("/logout", isAuthorizedRefreshToken, authController.logout);
+authRouter.post(
+  "/logout",
+  isAuthorizedRefreshToken,
+  authController.logout.bind(authController)
+);
 
 authRouter.post(
   "/refresh-token",
   isAuthorizedRefreshToken,
-  authController.refreshToken
+  authController.refreshToken.bind(authController)
 );
 authRouter.post(
   "/password-recovery",
   rateLimitMiddleware,
   validateEmail,
-  authController.passwordRecovery
+  authController.passwordRecovery.bind(authController)
 );
 authRouter.post(
   "/new-password",
   rateLimitMiddleware,
   validateNewPasswordInputs,
-  authController.setNewPassword
+  authController.setNewPassword.bind(authController)
 );
+

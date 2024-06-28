@@ -22,7 +22,7 @@ import {
   UserDBType,
 } from "../cloud_DB";
 
-class AuthService {
+export class AuthService {
   private authRepository: AuthRepository;
   private userRepository: UserRepository;
   constructor() {
@@ -219,4 +219,3 @@ class AuthService {
     await this.authRepository.setNewPassword(result.email, passwordHash);
   }
 }
-export const authService = new AuthService();

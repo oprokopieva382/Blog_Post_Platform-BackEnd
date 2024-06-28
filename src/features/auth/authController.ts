@@ -1,17 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
-import { authService } from "../../services";
+import { AuthService } from "../../services";
 import { ApiError } from "../../helper/api-errors";
 import { AuthDTO } from "../../DTO";
 import { UserQueryRepository } from "../../query_repositories";
 
-class AuthController {
+export class AuthController {
   private userQueryRepository: UserQueryRepository;
+  private authService: AuthService;
   constructor() {
     this.userQueryRepository = new UserQueryRepository();
+    this.authService = new AuthService();
   }
-  
+
   async me(req: Request, res: Response, next: NextFunction) {
     try {
       const me = await this.userQueryRepository.getByIdUser(req.user.id);
@@ -32,7 +34,7 @@ class AuthController {
     next: NextFunction
   ) {
     try {
-      const { accessToken, refreshToken } = await authService.loginUser(
+      const { accessToken, refreshToken } = await this.authService.loginUser(
         req.body,
         req
       );
@@ -49,7 +51,7 @@ class AuthController {
 
   async registration(req: Request, res: Response, next: NextFunction) {
     try {
-      await authService.registerUser(req.body);
+      await this.authService.registerUser(req.body);
 
       formatResponse(
         res,
@@ -68,7 +70,7 @@ class AuthController {
     next: NextFunction
   ) {
     try {
-      await authService.confirmUser(req.body);
+      await this.authService.confirmUser(req.body);
 
       formatResponse(res, 204, {}, "User confirmation made successfully");
     } catch (error) {
@@ -78,7 +80,7 @@ class AuthController {
 
   async registrationResending(req: Request, res: Response, next: NextFunction) {
     try {
-      await authService.confirmResentUser(req.body);
+      await this.authService.confirmResentUser(req.body);
       formatResponse(res, 204, {}, "Registration link resent");
     } catch (error) {
       next(error);
@@ -87,7 +89,7 @@ class AuthController {
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      await authService.logoutUser(req.deviceId);
+      await this.authService.logoutUser(req.deviceId);
 
       formatResponse(res, 204, {}, "User logout successfully");
     } catch (error) {
@@ -98,7 +100,7 @@ class AuthController {
   async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const { newAccessToken, newRefreshToken } =
-        await authService.refreshToken(req.deviceId, req.userId!);
+        await this.authService.refreshToken(req.deviceId, req.userId!);
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
@@ -113,7 +115,7 @@ class AuthController {
 
   async passwordRecovery(req: Request, res: Response, next: NextFunction) {
     try {
-      await authService.passwordRecovery(req.body.email);
+      await this.authService.passwordRecovery(req.body.email);
 
       formatResponse(res, 204, {}, "Email sent with recovery code inside");
     } catch (error) {
@@ -123,7 +125,7 @@ class AuthController {
 
   async setNewPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      await authService.setNewPassword(req.body);
+      await this.authService.setNewPassword(req.body);
 
       formatResponse(res, 204, {}, "New password created");
     } catch (error) {
@@ -131,5 +133,3 @@ class AuthController {
     }
   }
 }
-
-export const authController = new AuthController();
