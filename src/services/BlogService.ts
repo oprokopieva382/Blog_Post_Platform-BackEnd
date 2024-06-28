@@ -4,7 +4,7 @@ import { BlogInputModel, BlogPostInputModel } from "../type-models";
 import { BlogRepository, PostRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
 
-class BlogService {
+export class BlogService {
   private blogRepository: BlogRepository;
   private postRepository: PostRepository;
   constructor() {
@@ -71,4 +71,3 @@ class BlogService {
     return result;
   }
 }
-export const blogService = new BlogService();

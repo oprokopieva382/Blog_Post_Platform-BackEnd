@@ -2,16 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { BlogInputModel, BlogPostInputModel } from "../../type-models";
-import { blogService } from "../../services";
+import { BlogService } from "../../services";
 import { queryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { BlogDTO, PostDTO } from "../../DTO";
 import { BlogQueryRepository } from "../../query_repositories";
 
-class BlogController {
+export class BlogController {
   private blogQueryRepository: BlogQueryRepository;
+  private blogService: BlogService;
   constructor() {
     this.blogQueryRepository = new BlogQueryRepository();
+    this.blogService = new BlogService();
   }
 
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -41,7 +43,7 @@ class BlogController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogService.removeBlog(req.params.id);
+      const result = await this.blogService.removeBlog(req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Blog to delete is not found", [
@@ -61,7 +63,7 @@ class BlogController {
     next: NextFunction
   ) {
     try {
-      const result = await blogService.createBlog(req.body);
+      const result = await this.blogService.createBlog(req.body);
 
       if (!result) {
         throw ApiError.NotFoundError(`Blog can't be created`);
@@ -84,7 +86,7 @@ class BlogController {
     next: NextFunction
   ) {
     try {
-      const result = await blogService.updateBlog(req.body, req.params.id);
+      const result = await this.blogService.updateBlog(req.body, req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Blog to update is not found", [
@@ -123,7 +125,7 @@ class BlogController {
     next: NextFunction
   ) {
     try {
-      const result = await blogService.createPost(req.params.blogId, req.body);
+      const result = await this.blogService.createPost(req.params.blogId, req.body);
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", [
@@ -142,5 +144,3 @@ class BlogController {
     }
   }
 }
-
-export const blogController = new BlogController();

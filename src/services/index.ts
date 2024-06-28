@@ -1,5 +1,5 @@
 export { emailService } from "./EmailService";
-export { blogService } from "./BlogService";
+export { BlogService } from "./BlogService";
 export { postService } from "./PostService";
 export { userService } from "./UserService";
 export { BcryptService } from "./BcryptService";
