@@ -1,16 +1,23 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { CommentInputModel } from "../../type-models";
-import { commentQueryRepository } from "../../query_repositories";
-import { commentService } from "../../services";
+import { CommentService } from "../../services";
 import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
 import { CommentDTO } from "../../DTO";
+import { CommentQueryRepository } from "../../query_repositories";
 
-class CommentController {
+export class CommentController {
+  private commentQueryRepository: CommentQueryRepository;
+  private commentService: CommentService;
+  constructor() {
+    this.commentQueryRepository = new CommentQueryRepository();
+    this.commentService = new CommentService();
+  }
+
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await commentQueryRepository.getByIdComment(
+      const result = await this.commentQueryRepository.getByIdComment(
         req.params.id
       );
 
@@ -31,7 +38,7 @@ class CommentController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await commentService.removeComment(
+      const result = await this.commentService.removeComment(
         req.params.commentId,
         req.user
       );
@@ -54,7 +61,7 @@ class CommentController {
     next: NextFunction
   ) {
     try {
-      const result = await commentService.updateComment(
+      const result = await this.commentService.updateComment(
         req.body,
         req.params.commentId,
         req.user
@@ -72,4 +79,3 @@ class CommentController {
     }
   }
 }
-export const commentController = new CommentController();

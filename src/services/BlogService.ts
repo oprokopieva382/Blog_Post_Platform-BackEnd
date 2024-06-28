@@ -1,12 +1,19 @@
 import { ObjectId } from "mongodb";
 import { BlogDBType, PostDBType } from "../cloud_DB";
 import { BlogInputModel, BlogPostInputModel } from "../type-models";
-import { blogRepository, postRepository } from "../repositories";
+import { BlogRepository, PostRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
 
-class BlogService {
+export class BlogService {
+  private blogRepository: BlogRepository;
+  private postRepository: PostRepository;
+  constructor() {
+    this.blogRepository = new BlogRepository();
+    this.postRepository = new PostRepository();
+  }
+
   async removeBlog(id: string) {
-    return await blogRepository.removeBlog(id);
+    return await this.blogRepository.removeBlog(id);
   }
 
   async createBlog(data: BlogInputModel) {
@@ -19,13 +26,13 @@ class BlogService {
       new Date().toISOString()
     );
 
-    const createdBlog = await blogRepository.createBlog(newBlog);
+    const createdBlog = await this.blogRepository.createBlog(newBlog);
 
-    return blogRepository.getByIdBlog(createdBlog._id.toString());
+    return this.blogRepository.getByIdBlog(createdBlog._id.toString());
   }
 
   async updateBlog(data: BlogInputModel, id: string) {
-    return await blogRepository.updateBlog(data, id);
+    return await this.blogRepository.updateBlog(data, id);
   }
 
   async createPost(
@@ -33,7 +40,7 @@ class BlogService {
     data: BlogPostInputModel
   ): Promise<PostDBType | null> {
     const { title, shortDescription, content } = data;
-    const isBlogExist = await blogRepository.getByIdBlog(blogId);
+    const isBlogExist = await this.blogRepository.getByIdBlog(blogId);
 
     if (!isBlogExist) {
       throw ApiError.NotFoundError("Not found", ["No blog found"]);
@@ -49,13 +56,13 @@ class BlogService {
       new Date().toISOString()
     );
 
-    const createdPost = await blogRepository.createPost(newPost);
+    const createdPost = await this.blogRepository.createPost(newPost);
 
     if (!createdPost) {
       throw ApiError.NotFoundError("Not found", ["Can't create post"]);
     }
 
-    const result = await postRepository.getByIdPost(createdPost._id.toString());
+    const result = await this.postRepository.getByIdPost(createdPost._id.toString());
 
     if (!result) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);
@@ -64,4 +71,3 @@ class BlogService {
     return result;
   }
 }
-export const blogService = new BlogService();

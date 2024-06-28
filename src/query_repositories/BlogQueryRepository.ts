@@ -6,7 +6,7 @@ import { ApiError } from "../helper/api-errors";
 import { BlogDTO, PostDTO } from "../DTO";
 import { BlogModel, PostModel } from "../models";
 
-class BlogQueryRepository {
+export class BlogQueryRepository {
   async getPostsOfBlog(
     blogId: string,
     query: QueryType
@@ -72,5 +72,3 @@ class BlogQueryRepository {
     return BlogDTO.transform(foundBlog);
   }
 }
-
-export const blogQueryRepository = new BlogQueryRepository();

@@ -1,9 +1,16 @@
 import { ApiError } from "../helper/api-errors";
-import { authRepository, deviceRepository } from "../repositories";
+import { AuthRepository, DeviceRepository } from "../repositories";
 
-class DeviceService {
+export class DeviceService {
+  private authRepository: AuthRepository;
+  private deviceRepository: DeviceRepository;
+  constructor() {
+    this.authRepository = new AuthRepository();
+    this.deviceRepository = new DeviceRepository();
+  }
+
   async delete(deviceId: string, userId: string) {
-    const dbSession = await authRepository.getSessionByDeviceId(deviceId);
+    const dbSession = await this.authRepository.getSessionByDeviceId(deviceId);
 
     if (!dbSession) {
       throw ApiError.NotFoundError("Session not found", [
@@ -17,11 +24,10 @@ class DeviceService {
       ]);
     }
 
-    return await deviceRepository.removeDevice(deviceId);
+    return await this.deviceRepository.removeDevice(deviceId);
   }
 
   async deleteRest(deviceId: string, userId: string) {
-    return await deviceRepository.removeDevices(deviceId, userId);
+    return await this.deviceRepository.removeDevices(deviceId, userId);
   }
 }
-export const deviceService = new DeviceService();

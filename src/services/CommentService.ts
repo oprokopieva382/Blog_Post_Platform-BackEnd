@@ -1,10 +1,15 @@
 import { ApiError } from "../helper/api-errors";
 import { CommentInputModel, UserViewModel } from "../type-models";
-import { commentRepository } from "../repositories";
+import { CommentRepository } from "../repositories";
 
-class CommentService {
+export class CommentService {
+  private commentRepository: CommentRepository;
+  constructor() {
+    this.commentRepository = new CommentRepository();
+  }
+
   async removeComment(commentId: string, user: UserViewModel) {
-    const foundComment = await commentRepository.getByIdComment(commentId);
+    const foundComment = await this.commentRepository.getByIdComment(commentId);
 
     if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
       throw ApiError.ForbiddenError("Forbidden", [
@@ -12,7 +17,7 @@ class CommentService {
       ]);
     }
 
-    return await commentRepository.removeComment(commentId);
+    return await this.commentRepository.removeComment(commentId);
   }
 
   async updateComment(
@@ -20,7 +25,7 @@ class CommentService {
     commentId: string,
     user: UserViewModel
   ) {
-    const isCommentExist = await commentRepository.getByIdComment(commentId);
+    const isCommentExist = await this.commentRepository.getByIdComment(commentId);
 
     if (!isCommentExist) {
       throw ApiError.NotFoundError("Comment to update is not found", [
@@ -28,7 +33,7 @@ class CommentService {
       ]);
     }
 
-    const foundComment = await commentRepository.getByIdComment(commentId);
+    const foundComment = await this.commentRepository.getByIdComment(commentId);
 
     if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
       throw ApiError.ForbiddenError("Forbidden", [
@@ -36,9 +41,8 @@ class CommentService {
       ]);
     }
 
-    await commentRepository.updateComment(data, commentId);
+    await this.commentRepository.updateComment(data, commentId);
 
-    return await commentRepository.getByIdComment(commentId);
+    return await this.commentRepository.getByIdComment(commentId);
   }
 }
-export const commentService = new CommentService();

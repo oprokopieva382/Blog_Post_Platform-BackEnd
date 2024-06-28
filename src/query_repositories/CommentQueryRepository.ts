@@ -5,7 +5,7 @@ import { QueryCommentsType } from "../types/query-type";
 import { CommentDTO } from "../DTO";
 import { CommentModel } from "../models";
 
-class CommentQueryRepository {
+export class CommentQueryRepository {
  async getCommentsOfPost(
     postId: string,
     query: QueryCommentsType
@@ -39,6 +39,3 @@ class CommentQueryRepository {
     });
   }
 }
-
-export const commentQueryRepository = new CommentQueryRepository()
-

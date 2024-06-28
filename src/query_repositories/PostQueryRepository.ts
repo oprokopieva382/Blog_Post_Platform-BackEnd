@@ -5,7 +5,7 @@ import { QueryType } from "../types/query-type";
 import { PostDTO } from "../DTO";
 import { PostModel } from "../models";
 
-class PostQueryRepository {
+export class PostQueryRepository {
   async getAllPosts(query: QueryType): Promise<Paginator<PostViewModel>> {
     const totalPostsCount = await PostModel.countDocuments();
 
@@ -31,4 +31,3 @@ class PostQueryRepository {
     return foundPost ? PostDTO.transform(foundPost) : null;
   }
 }
-export const postQueryRepository = new PostQueryRepository();

@@ -1,16 +1,23 @@
 import { NextFunction, Request, Response } from "express";
 import { UserInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
-import { userService } from "../../services";
-import { userQueryRepository } from "../../query_repositories";
+import { UserService } from "../../services";
 import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { UserDTO } from "../../DTO";
+import { UserQueryRepository } from "../../query_repositories";
 
-class UserController {
+export class UserController {
+  private userQueryRepository: UserQueryRepository;
+  private userService: UserService;
+  constructor() {
+    this.userQueryRepository = new UserQueryRepository();
+    this.userService = new UserService();
+  }
+
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await userQueryRepository.getAllUsers(
+      const result = await this.userQueryRepository.getAllUsers(
         userQueryFilter(req.query)
       );
 
@@ -30,13 +37,18 @@ class UserController {
     next: NextFunction
   ) {
     try {
-      const result = await userService.createUser(req.body);
+      const result = await this.userService.createUser(req.body);
 
       if (!result) {
         throw ApiError.NotFoundError(`User can't be created`);
       }
 
-      formatResponse(res, 201, UserDTO.transform(result), "User created successfully");
+      formatResponse(
+        res,
+        201,
+        UserDTO.transform(result),
+        "User created successfully"
+      );
     } catch (error) {
       next(error);
     }
@@ -44,7 +56,7 @@ class UserController {
 
   async deleteById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await userService.removeUser(req.params.id);
+      const result = await this.userService.removeUser(req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("User to delete is not found", [
@@ -58,5 +70,3 @@ class UserController {
     }
   }
 }
-
-export const userController = new UserController();

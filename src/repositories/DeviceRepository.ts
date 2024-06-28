@@ -1,6 +1,6 @@
 import { SessionModel } from "../models";
 
-class DeviceRepository {
+export class DeviceRepository {
   async removeDevice(deviceId: string) {
     return await SessionModel.findOneAndDelete({
       deviceId,
@@ -14,4 +14,3 @@ class DeviceRepository {
     });
   }
 }
-export const deviceRepository = new DeviceRepository();
