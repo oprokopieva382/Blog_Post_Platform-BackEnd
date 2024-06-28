@@ -1,7 +1,7 @@
 import { ApiError } from "../helper/api-errors";
 import { AuthRepository, DeviceRepository } from "../repositories";
 
-class DeviceService {
+export class DeviceService {
   private authRepository: AuthRepository;
   private deviceRepository: DeviceRepository;
   constructor() {
@@ -31,4 +31,3 @@ class DeviceService {
     return await this.deviceRepository.removeDevices(deviceId, userId);
   }
 }
-export const deviceService = new DeviceService();

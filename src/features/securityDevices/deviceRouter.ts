@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { deviceController } from "./DeviceController";
+import { DeviceController } from "./DeviceController";
 import { isAuthorizedRefreshToken } from "../../middlewares";
 
 export const deviceRouter = Router();
+const deviceController = new DeviceController();
 
 deviceRouter.get(
   "/",
@@ -12,6 +13,10 @@ deviceRouter.get(
 deviceRouter.delete(
   "/:deviceId",
   isAuthorizedRefreshToken,
-  deviceController.deleteById
+  deviceController.deleteById.bind(deviceController)
 );
-deviceRouter.delete("/", isAuthorizedRefreshToken, deviceController.delete);
+deviceRouter.delete(
+  "/",
+  isAuthorizedRefreshToken,
+  deviceController.delete.bind(deviceController)
+);
