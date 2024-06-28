@@ -3,7 +3,7 @@ import { CommentInputModel } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { CommentModel } from "../models";
 
-class CommentRepository {
+export class CommentRepository {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(commentId),
@@ -31,5 +31,3 @@ class CommentRepository {
     return updatedComment;
   }
 }
-
-export const commentRepository = new CommentRepository();
