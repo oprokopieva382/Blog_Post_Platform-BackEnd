@@ -1,11 +1,12 @@
 import { ConnectMongoDB } from "../../src/cloud_DB";
-import { AuthService, emailService } from "../../src/services";
+import { AuthService, EmailService } from "../../src/services";
 import { user } from "./seeder";
 import { ObjectId } from "mongodb";
 import { dropCollections } from "../e2e/dropCollections";
 import { ApiError } from "../../src/helper/api-errors";
 
 const authService = new AuthService();
+const emailService = new EmailService();
 
 describe("auth tests", () => {
   beforeAll(async () => {

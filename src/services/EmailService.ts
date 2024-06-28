@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import { SETTINGS } from "../settings";
 
-class EmailService  {
+export class EmailService  {
   async sendEmail(email: string, code: string) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -48,5 +48,3 @@ class EmailService  {
     return !!emailInfo;
   }
 };
-
-export const emailService = new EmailService();

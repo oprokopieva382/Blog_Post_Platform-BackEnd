@@ -3,7 +3,7 @@ import { Request } from "express";
 import { add } from "date-fns/add";
 import { fromUnixTime } from "date-fns/fromUnixTime";
 import { ObjectId } from "mongodb";
-import { BcryptService, emailService } from ".";
+import { BcryptService, EmailService } from ".";
 import {
   LoginInputModel,
   NewPasswordRecoveryInputModel,
@@ -26,10 +26,12 @@ export class AuthService {
   private authRepository: AuthRepository;
   private userRepository: UserRepository;
   private bcryptService: BcryptService;
+  private emailService: EmailService;
   constructor() {
     this.authRepository = new AuthRepository();
     this.userRepository = new UserRepository();
     this.bcryptService = new BcryptService();
+    this.emailService = new EmailService();
   }
 
   async loginUser(data: LoginInputModel, req: Request) {
@@ -105,7 +107,7 @@ export class AuthService {
 
     await this.userRepository.createUser(newUser);
 
-    await emailService.sendEmail(
+    await this.emailService.sendEmail(
       newUser.email,
       newUser.emailConfirmation.confirmationCode
     );
@@ -136,7 +138,7 @@ export class AuthService {
     const newCode = randomUUID();
     await this.authRepository.updateCode(findUser._id, newCode);
 
-    emailService.sendEmail(data.email, newCode);
+    this.emailService.sendEmail(data.email, newCode);
 
     return findUser;
   }
@@ -201,7 +203,7 @@ export class AuthService {
       passwordRecovery
     );
 
-    await emailService.passwordRecovery(email, recoveryCode);
+    await this.emailService.passwordRecovery(email, recoveryCode);
   }
 
   async setNewPassword(data: NewPasswordRecoveryInputModel) {

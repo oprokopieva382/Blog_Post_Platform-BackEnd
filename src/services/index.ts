@@ -1,4 +1,4 @@
-export { emailService } from "./EmailService";
+export { EmailService } from "./EmailService";
 export { BlogService } from "./BlogService";
 export { PostService } from "./PostService";
 export { userService } from "./UserService";
