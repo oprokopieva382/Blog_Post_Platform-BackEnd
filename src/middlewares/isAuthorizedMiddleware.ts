@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { userQueryRepository } from "../query_repositories";
 import { ApiError } from "../helper/api-errors";
 import { jwtService } from "../features/application";
+import { UserQueryRepository } from "../query_repositories";
+
+
+const userQueryRepository = new UserQueryRepository()
 
 export const isAuthorizedMiddleware = async (
   req: Request,

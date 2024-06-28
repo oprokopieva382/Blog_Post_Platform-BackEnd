@@ -2,14 +2,19 @@ import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
 import { authService } from "../../services";
-import { userQueryRepository } from "../../query_repositories";
 import { ApiError } from "../../helper/api-errors";
 import { AuthDTO } from "../../DTO";
+import { UserQueryRepository } from "../../query_repositories";
 
 class AuthController {
+  private userQueryRepository: UserQueryRepository;
+  constructor() {
+    this.userQueryRepository = new UserQueryRepository();
+  }
+  
   async me(req: Request, res: Response, next: NextFunction) {
     try {
-      const me = await userQueryRepository.getByIdUser(req.user.id);
+      const me = await this.userQueryRepository.getByIdUser(req.user.id);
       if (!me) {
         throw ApiError.UnauthorizedError("Not authorized", [
           "Authorization failed. Can't find user with such id",

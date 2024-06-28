@@ -3,15 +3,20 @@ import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
 import { BlogInputModel, BlogPostInputModel } from "../../type-models";
 import { blogService } from "../../services";
-import { blogQueryRepository } from "../../query_repositories";
 import { queryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { BlogDTO, PostDTO } from "../../DTO";
+import { BlogQueryRepository } from "../../query_repositories";
 
 class BlogController {
+  private blogQueryRepository: BlogQueryRepository;
+  constructor() {
+    this.blogQueryRepository = new BlogQueryRepository();
+  }
+
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogQueryRepository.getAllBlogs(
+      const result = await this.blogQueryRepository.getAllBlogs(
         queryFilter(req.query)
       );
 
@@ -26,7 +31,7 @@ class BlogController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogQueryRepository.getByIdBlog(req.params.id);
+      const result = await this.blogQueryRepository.getByIdBlog(req.params.id);
 
       formatResponse(res, 200, result, "Blog retrieved successfully");
     } catch (error) {
@@ -62,7 +67,12 @@ class BlogController {
         throw ApiError.NotFoundError(`Blog can't be created`);
       }
 
-      formatResponse(res, 201, BlogDTO.transform(result), "Blog created successfully");
+      formatResponse(
+        res,
+        201,
+        BlogDTO.transform(result),
+        "Blog created successfully"
+      );
     } catch (error) {
       next(error);
     }
@@ -90,7 +100,7 @@ class BlogController {
 
   async getBlogPosts(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await blogQueryRepository.getPostsOfBlog(
+      const result = await this.blogQueryRepository.getPostsOfBlog(
         req.params.blogId,
         queryFilter(req.query)
       );
@@ -121,7 +131,12 @@ class BlogController {
         ]);
       }
 
-      formatResponse(res, 201, PostDTO.transform(result), "Post created successfully");
+      formatResponse(
+        res,
+        201,
+        PostDTO.transform(result),
+        "Post created successfully"
+      );
     } catch (error) {
       next(error);
     }

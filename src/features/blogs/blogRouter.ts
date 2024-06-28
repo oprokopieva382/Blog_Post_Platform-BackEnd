@@ -8,10 +8,13 @@ import {
 
 export const blogRouter = Router();
 
-blogRouter.get("/", blogController.getAll);
+blogRouter.get("/", blogController.getAll.bind(blogController));
 
-blogRouter.get("/:id", blogController.getById);
-blogRouter.get("/:blogId/posts", blogController.getBlogPosts);
+blogRouter.get("/:id", blogController.getById.bind(blogController));
+blogRouter.get(
+  "/:blogId/posts",
+  blogController.getBlogPosts.bind(blogController)
+);
 
 blogRouter.delete("/:id", isAdminMiddleware, blogController.deleteById);
 

@@ -7,7 +7,11 @@ import {
 
 export const userRouter = Router();
 
-userRouter.get("/", isAdminMiddleware, userController.getAll);
+userRouter.get(
+  "/",
+  isAdminMiddleware,
+  userController.getAll.bind(userController)
+);
 userRouter.post(
   "/",
   isAdminMiddleware,

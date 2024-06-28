@@ -2,15 +2,20 @@ import { NextFunction, Request, Response } from "express";
 import { UserInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
 import { userService } from "../../services";
-import { userQueryRepository } from "../../query_repositories";
 import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { UserDTO } from "../../DTO";
+import { UserQueryRepository } from "../../query_repositories";
 
 class UserController {
+  private userQueryRepository: UserQueryRepository;
+  constructor() {
+    this.userQueryRepository = new UserQueryRepository();
+  }
+
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await userQueryRepository.getAllUsers(
+       const result = await this.userQueryRepository.getAllUsers(
         userQueryFilter(req.query)
       );
 
@@ -36,7 +41,12 @@ class UserController {
         throw ApiError.NotFoundError(`User can't be created`);
       }
 
-      formatResponse(res, 201, UserDTO.transform(result), "User created successfully");
+      formatResponse(
+        res,
+        201,
+        UserDTO.transform(result),
+        "User created successfully"
+      );
     } catch (error) {
       next(error);
     }
