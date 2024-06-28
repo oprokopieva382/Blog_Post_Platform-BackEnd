@@ -3,7 +3,7 @@ import { BlogInputModel } from "../type-models";
 import { BlogDBType, PostDBType } from "../cloud_DB";
 import { BlogModel, PostModel } from "../models";
 
-class BlogRepository {
+export class BlogRepository {
   async getByIdBlog(id: string): Promise<BlogDBType | null> {
     return await BlogModel.findOne({
       _id: new ObjectId(id),
@@ -36,4 +36,3 @@ class BlogRepository {
     return await PostModel.create(newPost);
   }
 }
-export const blogRepository = new BlogRepository();

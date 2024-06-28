@@ -3,9 +3,14 @@ import { CommentDBType } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
-import { blogRepository, postRepository } from "../repositories";
+import { BlogRepository, postRepository } from "../repositories";
 
 class PostService {
+  private blogRepository: BlogRepository;
+  constructor() {
+    this.blogRepository = new BlogRepository();
+  }
+
   async removePost(id: string) {
     return await postRepository.removePost(id);
   }
@@ -13,7 +18,7 @@ class PostService {
   async createPost(data: PostInputModel) {
     const { title, shortDescription, content, blogId } = data;
 
-    const isBlogExist = await blogRepository.getByIdBlog(blogId);
+    const isBlogExist = await this.blogRepository.getByIdBlog(blogId);
     if (!isBlogExist) {
       throw ApiError.NotFoundError("Blog is not found", [
         `Blog with id ${data.blogId} does not exist`,
@@ -42,7 +47,7 @@ class PostService {
   }
 
   async updatePost(data: PostInputModel, id: string) {
-    const isBlogExist = await blogRepository.getByIdBlog(data.blogId);
+    const isBlogExist = await this.blogRepository.getByIdBlog(data.blogId);
 
     if (!isBlogExist) {
       throw ApiError.NotFoundError("Blog is not found", [

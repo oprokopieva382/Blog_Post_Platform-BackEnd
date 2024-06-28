@@ -1,4 +1,4 @@
-export { blogRepository } from "./BlogRepository";
+export { BlogRepository } from "./BlogRepository";
 export { postRepository } from "./PostRepository";
 export { userRepository } from "./UserRepository";
 export { AuthRepository } from "./AuthRepository";
