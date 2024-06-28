@@ -5,7 +5,7 @@ import { PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
 import { BlogRepository, PostRepository } from "../repositories";
 
-class PostService {
+export class PostService {
   private blogRepository: BlogRepository;
   private postRepository: PostRepository;
   constructor() {
@@ -99,7 +99,8 @@ class PostService {
       ]);
     }
 
-    return await this.postRepository.getByIdComment(createdComment._id.toString());
+    return await this.postRepository.getByIdComment(
+      createdComment._id.toString()
+    );
   }
 }
-export const postService = new PostService();
