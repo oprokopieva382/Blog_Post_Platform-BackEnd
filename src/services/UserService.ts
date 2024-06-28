@@ -7,7 +7,7 @@ import { BcryptService } from "./BcryptService";
 import { ApiError } from "../helper/api-errors";
 import { UserDBType } from "../cloud_DB";
 
-class UserService {
+export class UserService {
   private userRepository: UserRepository;
   private bcryptService: BcryptService;
   constructor() {
@@ -52,5 +52,3 @@ class UserService {
     return await this.userRepository.removeUser(id);
   }
 }
-
-export const userService = new UserService();
