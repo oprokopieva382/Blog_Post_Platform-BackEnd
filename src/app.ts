@@ -1,14 +1,14 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { SETTINGS } from "./settings";
-import { postsRouter } from "./features/posts/postsRouter";
-import { blogsRouter } from "./features/blogs/blogsRouter";
+import { postRouter } from "./features/posts/postRouter";
+import { blogRouter } from "./features/blogs/blogRouter";
 import { testingRouter } from "./features/dbCleanUp/testingRouter";
-import { usersRouter } from "./features/users/usersRouter";
+import { userRouter } from "./features/users/userRouter";
 import { authRouter } from "./features/auth/authRouter";
-import { commentsRouter } from "./features/comments/commentsRouter";
+import { commentRouter } from "./features/comments/commentRouter";
 import { errorHandlerMiddleware } from "./middlewares";
-import { devicesRouter } from "./features/securityDevices/devicesRouter";
+import { deviceRouter } from "./features/securityDevices/deviceRouter";
 import { logger } from "./utils/logger";
 
 export const app = express();
@@ -19,11 +19,11 @@ app.use(express.json());
 app.set("trust proxy", true); // for learning purpose only, not for production
 app.use(SETTINGS.PATH.TESTING, testingRouter);
 app.use(SETTINGS.PATH.AUTH, authRouter);
-app.use(SETTINGS.PATH.POSTS, postsRouter);
-app.use(SETTINGS.PATH.BLOGS, blogsRouter);
-app.use(SETTINGS.PATH.USERS, usersRouter);
-app.use(SETTINGS.PATH.COMMENTS, commentsRouter);
-app.use(SETTINGS.PATH.SECURITY_DEVICES, devicesRouter);
+app.use(SETTINGS.PATH.POSTS, postRouter);
+app.use(SETTINGS.PATH.BLOGS, blogRouter);
+app.use(SETTINGS.PATH.USERS, userRouter);
+app.use(SETTINGS.PATH.COMMENTS, commentRouter);
+app.use(SETTINGS.PATH.SECURITY_DEVICES, deviceRouter);
 app.use(errorHandlerMiddleware);
 
 app.get("/", (req, res) => {

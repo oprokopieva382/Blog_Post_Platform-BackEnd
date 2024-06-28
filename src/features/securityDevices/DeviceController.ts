@@ -4,7 +4,7 @@ import { formatResponse } from "../../utils/responseFormatter";
 import { devicesQueryRepository } from "../../query_repositories";
 import { deviceService } from "../../services";
 
-class DevicesController {
+class DeviceController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await devicesQueryRepository.getAllDevices(req.userId);
@@ -51,4 +51,4 @@ class DevicesController {
   }
 }
 
-export const devicesController = new DevicesController();
+export const deviceController = new DeviceController();

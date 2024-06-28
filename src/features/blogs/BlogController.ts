@@ -8,7 +8,7 @@ import { queryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { BlogDTO, PostDTO } from "../../DTO";
 
-class BlogsController {
+class BlogController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await blogsQueryRepository.getAllBlogs(
@@ -128,4 +128,4 @@ class BlogsController {
   }
 }
 
-export const blogsController = new BlogsController();
+export const blogController = new BlogController();

@@ -7,7 +7,7 @@ import { userQueryFilter } from "../../utils/queryFilter";
 import { ApiError } from "../../helper/api-errors";
 import { UserDTO } from "../../DTO";
 
-class UsersController {
+class UserController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await usersQueryRepository.getAllUsers(
@@ -59,4 +59,4 @@ class UsersController {
   }
 }
 
-export const usersController = new UsersController();
+export const userController = new UserController();

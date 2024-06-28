@@ -12,7 +12,7 @@ import { CommentInputModel } from "../../type-models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
 import { CommentDTO, PostDTO } from "../../DTO";
 
-class PostsController {
+class PostController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await postsQueryRepository.getAllPosts(
@@ -147,4 +147,4 @@ class PostsController {
     }
   }
 }
-export const postsController = new PostsController();
+export const postController = new PostController();

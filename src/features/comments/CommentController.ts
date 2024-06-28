@@ -7,7 +7,7 @@ import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
 import { CommentDTO } from "../../DTO";
 
-class CommentsController {
+class CommentController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await commentsQueryRepository.getByIdComment(
@@ -72,4 +72,4 @@ class CommentsController {
     }
   }
 }
-export const commentsController = new CommentsController();
+export const commentController = new CommentController();
