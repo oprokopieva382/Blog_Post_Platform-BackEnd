@@ -3,19 +3,22 @@ import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
 import { UserInputModel } from "../type-models";
 import { UserRepository } from "../repositories";
-import { bcryptService } from "./BcryptService";
+import { BcryptService } from "./BcryptService";
 import { ApiError } from "../helper/api-errors";
 import { UserDBType } from "../cloud_DB";
 
 class UserService {
   private userRepository: UserRepository;
+  private bcryptService: BcryptService;
   constructor() {
     this.userRepository = new UserRepository();
+    this.bcryptService = new BcryptService();
   }
+
   async createUser(data: UserInputModel) {
     const { login, password, email } = data;
 
-    const hashedPassword = await bcryptService.createHash(password);
+    const hashedPassword = await this.bcryptService.createHash(password);
 
     const newUser = new UserDBType(
       new ObjectId(),
@@ -49,4 +52,5 @@ class UserService {
     return await this.userRepository.removeUser(id);
   }
 }
+
 export const userService = new UserService();

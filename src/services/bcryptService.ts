@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-class BcryptService {
+export class BcryptService {
   async createHash(password: string) {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
@@ -10,4 +10,4 @@ class BcryptService {
     return bcrypt.compare(password, hash);
   }
 }
-export const bcryptService = new BcryptService();
+
