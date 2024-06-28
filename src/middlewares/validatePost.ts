@@ -4,7 +4,7 @@ import {
   body,
   validationResult,
 } from "express-validator";
-import { blogsRepository } from "../repositories/blogsRepository";
+import { blogsRepository } from "../repositories/BlogRepository";
 import { ApiError } from "../helper/api-errors";
 
 const validateBlogId = async (blogId: string) => {
