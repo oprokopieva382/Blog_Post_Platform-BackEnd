@@ -8,10 +8,10 @@ import { UserDTO } from "../../DTO";
 import { UserQueryRepository } from "../../query_repositories";
 
 export class UserController {
-  private userQueryRepository: UserQueryRepository;
-  constructor(protected userService: UserService) {
-    this.userQueryRepository = new UserQueryRepository();
-  }
+  constructor(
+    protected userService: UserService,
+    protected userQueryRepository: UserQueryRepository
+  ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {

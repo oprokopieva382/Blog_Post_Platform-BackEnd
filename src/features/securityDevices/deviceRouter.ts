@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { DeviceController } from "./DeviceController";
 import { isAuthorizedRefreshToken } from "../../middlewares";
+import { deviceController } from "../../composition-root";
 
 export const deviceRouter = Router();
-const deviceController = new DeviceController();
 
 deviceRouter.get(
   "/",

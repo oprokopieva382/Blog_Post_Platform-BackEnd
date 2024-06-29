@@ -9,10 +9,10 @@ import { BlogDTO, PostDTO } from "../../DTO";
 import { BlogQueryRepository } from "../../query_repositories";
 
 export class BlogController {
-  private blogQueryRepository: BlogQueryRepository;
-  constructor(protected blogService: BlogService) {
-    this.blogQueryRepository = new BlogQueryRepository();
-  }
+  constructor(
+    protected blogService: BlogService,
+    protected blogQueryRepository: BlogQueryRepository
+  ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {

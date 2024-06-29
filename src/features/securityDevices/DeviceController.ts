@@ -5,10 +5,10 @@ import { DeviceService } from "../../services";
 import { DeviceQueryRepository } from "../../query_repositories";
 
 export class DeviceController {
-  private deviceQueryRepository: DeviceQueryRepository;
-  constructor(protected deviceService: DeviceService) {
-    this.deviceQueryRepository = new DeviceQueryRepository();
-  }
+  constructor(
+    protected deviceService: DeviceService,
+    protected deviceQueryRepository: DeviceQueryRepository
+  ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {

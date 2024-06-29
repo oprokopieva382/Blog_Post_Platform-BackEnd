@@ -1,13 +1,12 @@
 import { Router } from "express";
-import { BlogController } from "./BlogController";
 import {
   isAdminMiddleware,
   validatePostOfBlog,
   validateBlog,
 } from "../../middlewares";
+import { blogController } from "../../composition-root";
 
 export const blogRouter = Router();
-const blogController = new BlogController();
 
 blogRouter.get("/", blogController.getAll.bind(blogController));
 

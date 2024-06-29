@@ -8,10 +8,10 @@ import { CommentDTO } from "../../DTO";
 import { CommentQueryRepository } from "../../query_repositories";
 
 export class CommentController {
-  private commentQueryRepository: CommentQueryRepository;
-  constructor(protected commentService: CommentService) {
-    this.commentQueryRepository = new CommentQueryRepository();
-  }
+  constructor(
+    protected commentService: CommentService,
+    protected commentQueryRepository: CommentQueryRepository
+  ) {}
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {

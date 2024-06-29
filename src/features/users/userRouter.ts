@@ -1,12 +1,11 @@
 import { Router } from "express";
-import { UserController } from "./UserController";
 import {
   isAdminMiddleware,
   validateRegistrationInput,
 } from "../../middlewares";
+import { userController } from "../../composition-root";
 
 export const userRouter = Router();
-const userController = new UserController();
 
 userRouter.get(
   "/",
