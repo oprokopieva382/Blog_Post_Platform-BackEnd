@@ -1,25 +1,26 @@
-import { ConnectMongoDB } from "../../src/cloud_DB";
-import { AuthService, EmailService } from "../../src/services";
-import { user } from "./seeder";
 import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
+import { ConnectMongoDB } from "../../src/cloud_DB";
+import { user } from "./seeder";
 import { dropCollections } from "../e2e/dropCollections";
 import { ApiError } from "../../src/helper/api-errors";
+import { SETTINGS } from "../../src/settings";
+import { authService, emailService } from "../../src/composition-root";
 
-const authService = new AuthService();
-const emailService = new EmailService();
+const environmentStatus = `${SETTINGS.TESTING_ENVIRONMENT_STATUS}`;
 
 describe("auth tests", () => {
   beforeAll(async () => {
-    await ConnectMongoDB();
+    await ConnectMongoDB(environmentStatus);
   });
 
   afterEach(async () => {
     await dropCollections();
   });
 
-  afterAll(async () => {
-    //await dropCollections();
-  });
+   afterAll(async () => {
+     await mongoose.disconnect();
+   });
 
   describe("USER REGISTRATION", () => {
     const registerUser = authService.registerUser;

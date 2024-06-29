@@ -35,8 +35,8 @@ const deviceRepository = new DeviceRepository();
 
 //SERVICES
 const bcryptService = new BcryptService();
-const emailService = new EmailService();
-const authService = new AuthService(
+export const emailService = new EmailService();
+export const authService = new AuthService(
   authRepository,
   userRepository,
   bcryptService,
