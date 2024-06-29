@@ -5,12 +5,10 @@ import { DeviceService } from "../../services";
 import { DeviceQueryRepository } from "../../query_repositories";
 
 export class DeviceController {
-  private deviceQueryRepository: DeviceQueryRepository;
-  private deviceService: DeviceService;
-  constructor() {
-    this.deviceQueryRepository = new DeviceQueryRepository();
-    this.deviceService = new DeviceService();
-  }
+  constructor(
+    protected deviceService: DeviceService,
+    protected deviceQueryRepository: DeviceQueryRepository
+  ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
@@ -45,7 +43,10 @@ export class DeviceController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.deviceService.deleteRest(req.deviceId, req.userId);
+      const result = await this.deviceService.deleteRest(
+        req.deviceId,
+        req.userId
+      );
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No devices found"]);

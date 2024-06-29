@@ -6,12 +6,10 @@ import { CommentInputModel } from "../type-models/CommentInputModel";
 import { BlogRepository, PostRepository } from "../repositories";
 
 export class PostService {
-  private blogRepository: BlogRepository;
-  private postRepository: PostRepository;
-  constructor() {
-    this.blogRepository = new BlogRepository();
-    this.postRepository = new PostRepository();
-  }
+  constructor(
+    protected blogRepository: BlogRepository,
+    protected postRepository: PostRepository
+  ) {}
 
   async removePost(id: string) {
     return await this.postRepository.removePost(id);

@@ -1,14 +1,13 @@
 import { Router } from "express";
-import { PostController } from "./PostController";
 import {
   isAdminMiddleware,
   isAuthorizedMiddleware,
   validateComment,
   validatePost,
 } from "../../middlewares";
+import { postController } from "../../composition-root";
 
 export const postRouter = Router();
-const postController = new PostController();
 
 postRouter.get("/", postController.getAll.bind(postController));
 postRouter.get("/:id", postController.getById.bind(postController));

@@ -13,14 +13,11 @@ import { ApiError } from "../../helper/api-errors";
 import { CommentDTO, PostDTO } from "../../DTO";
 
 export class PostController {
-  private postQueryRepository: PostQueryRepository;
-  private commentQueryRepository: CommentQueryRepository;
-  private postService: PostService;
-  constructor() {
-    this.postQueryRepository = new PostQueryRepository();
-    this.commentQueryRepository = new CommentQueryRepository();
-    this.postService = new PostService();
-  }
+  constructor(
+    protected postService: PostService,
+    protected postQueryRepository: PostQueryRepository,
+    protected commentQueryRepository: CommentQueryRepository
+  ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {

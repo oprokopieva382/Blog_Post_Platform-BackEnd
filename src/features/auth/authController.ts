@@ -7,12 +7,10 @@ import { AuthDTO } from "../../DTO";
 import { UserQueryRepository } from "../../query_repositories";
 
 export class AuthController {
-  private userQueryRepository: UserQueryRepository;
-  private authService: AuthService;
-  constructor() {
-    this.userQueryRepository = new UserQueryRepository();
-    this.authService = new AuthService();
-  }
+  constructor(
+    protected authService: AuthService,
+    protected userQueryRepository: UserQueryRepository
+  ) {}
 
   async me(req: Request, res: Response, next: NextFunction) {
     try {

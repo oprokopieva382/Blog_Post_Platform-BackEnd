@@ -2,12 +2,10 @@ import { ApiError } from "../helper/api-errors";
 import { AuthRepository, DeviceRepository } from "../repositories";
 
 export class DeviceService {
-  private authRepository: AuthRepository;
-  private deviceRepository: DeviceRepository;
-  constructor() {
-    this.authRepository = new AuthRepository();
-    this.deviceRepository = new DeviceRepository();
-  }
+  constructor(
+    protected authRepository: AuthRepository,
+    protected deviceRepository: DeviceRepository
+  ) {}
 
   async delete(deviceId: string, userId: string) {
     const dbSession = await this.authRepository.getSessionByDeviceId(deviceId);

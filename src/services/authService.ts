@@ -23,15 +23,12 @@ import {
 } from "../cloud_DB";
 
 export class AuthService {
-  private authRepository: AuthRepository;
-  private userRepository: UserRepository;
-  private bcryptService: BcryptService;
-  private emailService: EmailService;
-  constructor() {
-    this.authRepository = new AuthRepository();
-    this.userRepository = new UserRepository();
-    this.bcryptService = new BcryptService();
-    this.emailService = new EmailService();
+  constructor(
+    protected authRepository: AuthRepository,
+    protected userRepository: UserRepository,
+    protected bcryptService: BcryptService,
+    protected emailService: EmailService
+  ) {
   }
 
   async loginUser(data: LoginInputModel, req: Request) {

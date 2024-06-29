@@ -8,12 +8,10 @@ import { ApiError } from "../helper/api-errors";
 import { UserDBType } from "../cloud_DB";
 
 export class UserService {
-  private userRepository: UserRepository;
-  private bcryptService: BcryptService;
-  constructor() {
-    this.userRepository = new UserRepository();
-    this.bcryptService = new BcryptService();
-  }
+  constructor(
+    protected userRepository: UserRepository,
+    protected bcryptService: BcryptService
+  ) {}
 
   async createUser(data: UserInputModel) {
     const { login, password, email } = data;

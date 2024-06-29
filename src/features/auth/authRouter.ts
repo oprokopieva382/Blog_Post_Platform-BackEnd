@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { AuthController} from "./AuthController";
 import {
   isAuthorizedMiddleware,
   validateRegistrationCode,
@@ -14,9 +13,9 @@ import {
   rateLimitMiddleware,
   validateNewPasswordInputs,
 } from "../../middlewares";
+import { authController } from "../../composition-root";
 
 export const authRouter = Router();
-const authController = new AuthController();
 
 authRouter.get(
   "/me",
