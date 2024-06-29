@@ -10,10 +10,8 @@ import { BlogQueryRepository } from "../../query_repositories";
 
 export class BlogController {
   private blogQueryRepository: BlogQueryRepository;
-  private blogService: BlogService;
-  constructor() {
+  constructor(protected blogService: BlogService) {
     this.blogQueryRepository = new BlogQueryRepository();
-    this.blogService = new BlogService();
   }
 
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -125,7 +123,10 @@ export class BlogController {
     next: NextFunction
   ) {
     try {
-      const result = await this.blogService.createPost(req.params.blogId, req.body);
+      const result = await this.blogService.createPost(
+        req.params.blogId,
+        req.body
+      );
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", [

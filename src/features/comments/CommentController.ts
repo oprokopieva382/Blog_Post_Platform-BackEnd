@@ -9,10 +9,8 @@ import { CommentQueryRepository } from "../../query_repositories";
 
 export class CommentController {
   private commentQueryRepository: CommentQueryRepository;
-  private commentService: CommentService;
-  constructor() {
+  constructor(protected commentService: CommentService) {
     this.commentQueryRepository = new CommentQueryRepository();
-    this.commentService = new CommentService();
   }
 
   async getById(req: Request, res: Response, next: NextFunction) {

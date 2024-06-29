@@ -8,11 +8,9 @@ import { UserQueryRepository } from "../../query_repositories";
 
 export class AuthController {
   private userQueryRepository: UserQueryRepository;
-  private authService: AuthService;
-  constructor() {
+    constructor(protected authService: AuthService) {
     this.userQueryRepository = new UserQueryRepository();
-    this.authService = new AuthService();
-  }
+     }
 
   async me(req: Request, res: Response, next: NextFunction) {
     try {

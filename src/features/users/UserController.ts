@@ -9,10 +9,8 @@ import { UserQueryRepository } from "../../query_repositories";
 
 export class UserController {
   private userQueryRepository: UserQueryRepository;
-  private userService: UserService;
-  constructor() {
+  constructor(protected userService: UserService) {
     this.userQueryRepository = new UserQueryRepository();
-    this.userService = new UserService();
   }
 
   async getAll(req: Request, res: Response, next: NextFunction) {
