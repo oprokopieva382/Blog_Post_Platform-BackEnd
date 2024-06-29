@@ -1,24 +1,16 @@
-import {
-  blogsCollection,
-  commentsCollection,
-  postsCollection,
-  usersCollection,
-} from "../../src/cloud_DB";
-import {
-  apiLimitCollection,
-  sessionsCollection,
-} from "../../src/cloud_DB/mongo_db_atlas";
+import mongoose from "mongoose";
 import { logger } from "../../src/utils/logger";
 
 export const dropCollections = async () => {
   try {
     await Promise.all([
-      blogsCollection.drop(),
-      postsCollection.drop(),
-      commentsCollection.drop(),
-      usersCollection.drop(),
-      sessionsCollection.drop(),
-      apiLimitCollection.drop(),
+      mongoose.connection.collection("blogs").drop(),
+      mongoose.connection.collection("comments").drop(),
+      mongoose.connection.collection("posts").drop(),
+      mongoose.connection.collection("users").drop(),
+      mongoose.connection.collection("sessions").drop(),
+      mongoose.connection.collection("api-calls").drop(),
+      mongoose.connection.collection("password-recovery").drop(),
     ]);
     logger.info("Collections dropped successfully");
   } catch (error) {

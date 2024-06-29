@@ -1,6 +1,7 @@
 import request from "supertest";
-import { SETTINGS } from "../../src/settings";
+import mongoose from "mongoose";
 import { app } from "../../src/app";
+import { SETTINGS } from "../../src/settings";
 import { ConnectMongoDB } from "../../src/cloud_DB";
 import { dropCollections } from "../e2e/dropCollections";
 import { testManager } from "./test-helpers";
@@ -14,6 +15,10 @@ describe("/users test", () => {
 
   afterEach(async () => {
     await dropCollections();
+  });
+
+    afterAll(async () => {
+    await mongoose.disconnect();
   });
 
   describe("CREATE USER", () => {

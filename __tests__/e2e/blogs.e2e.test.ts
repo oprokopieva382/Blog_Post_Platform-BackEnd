@@ -1,4 +1,5 @@
 import request from "supertest";
+import mongoose from "mongoose";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
 import { ConnectMongoDB } from "../../src/cloud_DB";
@@ -14,6 +15,10 @@ describe("/blogs test", () => {
 
   afterEach(async () => {
     await dropCollections();
+  });
+  
+  afterAll(async () => {
+    await mongoose.disconnect();
   });
 
   describe("CREATE BLOG", () => {
