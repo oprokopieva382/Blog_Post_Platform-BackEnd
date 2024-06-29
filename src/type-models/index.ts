@@ -2,6 +2,7 @@ export { BlogInputModel } from "./BlogInputModel"
 export { BlogViewModel } from "./BlogViewModel";
 export { PostInputModel } from "./PostInputModel";
 export { PostViewModel } from "./PostViewModel";
+export { LikesInfoViewModel } from "./LikesInfoViewModel";
 export { BlogPostInputModel } from "./BlogPostInputModel";
 export { Paginator } from "./Paginator";
 export { LoginInputModel } from "./LoginInputModel";
