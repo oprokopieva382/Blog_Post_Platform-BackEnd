@@ -1,10 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../helper/api-errors";
-import { jwtService } from "../features/application";
-import { UserQueryRepository } from "../query_repositories";
-
-
-const userQueryRepository = new UserQueryRepository()
+import { jwtService, userQueryRepository } from "../composition-root";
 
 export const isAuthorizedMiddleware = async (
   req: Request,

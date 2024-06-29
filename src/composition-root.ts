@@ -20,14 +20,15 @@ import {
   CommentService,
   DeviceService,
   EmailService,
+  JwtService,
   PostService,
   UserService,
 } from "./services";
 
 //REPOSITORIES
-const authRepository = new AuthRepository();
+export const authRepository = new AuthRepository();
 const userRepository = new UserRepository();
-const blogRepository = new BlogRepository();
+export const blogRepository = new BlogRepository();
 const postRepository = new PostRepository();
 const commentRepository = new CommentRepository();
 const deviceRepository = new DeviceRepository();
@@ -36,11 +37,13 @@ const deviceRepository = new DeviceRepository();
 //SERVICES
 const bcryptService = new BcryptService();
 export const emailService = new EmailService();
+export const jwtService = new JwtService();
 export const authService = new AuthService(
   authRepository,
   userRepository,
   bcryptService,
-  emailService
+  emailService,
+  jwtService
 );
 const blogService = new BlogService(blogRepository, postRepository);
 const commentService = new CommentService(commentRepository);
@@ -50,7 +53,7 @@ const userService = new UserService(userRepository, bcryptService);
 
 
 //QUERY-REPOSITORIES
-const userQueryRepository = new UserQueryRepository();
+export const userQueryRepository = new UserQueryRepository();
 const deviceQueryRepository = new DeviceQueryRepository();
 const postQueryRepository = new PostQueryRepository();
 const commentQueryRepository = new CommentQueryRepository();

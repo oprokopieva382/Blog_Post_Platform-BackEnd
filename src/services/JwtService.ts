@@ -1,8 +1,8 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { SETTINGS } from "../../settings";
-import { ApiError } from "../../helper/api-errors";
+import { SETTINGS } from "../settings";
+import { ApiError } from "../helper/api-errors";
 
-class JwtService  {
+export class JwtService {
   async createAccessToken(userId: string) {
     const aToken = jwt.sign({ userId }, SETTINGS.JWT_ACCESS_TOKEN_SECRET, {
       expiresIn: "10m",
@@ -44,6 +44,4 @@ class JwtService  {
       ]);
     }
   }
-};
-
-export const jwtService = new JwtService();
+}
