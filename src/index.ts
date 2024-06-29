@@ -4,10 +4,13 @@ import { SETTINGS } from "./settings";
 import { logger } from "./utils/logger";
 
 const startServer = async () => {
-  const mongoDBConnected = await ConnectMongoDB();
+  const environmentStatus = `${SETTINGS.STAGING_ENVIRONMENT_STATUS}`;
+  const mongoDBConnected = await ConnectMongoDB(environmentStatus);
   try {
     if (!mongoDBConnected) {
-      logger.info("Failed to connect to MongoDB Atlas");
+      logger.info(
+        `Failed to connect to MongoDB in environment status ${environmentStatus}`
+      );
       process.exit(1);
     }
     app.listen(SETTINGS.PORT, () => {

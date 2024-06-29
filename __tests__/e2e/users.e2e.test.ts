@@ -5,9 +5,11 @@ import { ConnectMongoDB } from "../../src/cloud_DB";
 import { dropCollections } from "../e2e/dropCollections";
 import { testManager } from "./test-helpers";
 
+const environmentStatus = `${SETTINGS.TESTING_ENVIRONMENT_STATUS}`;
+
 describe("/users test", () => {
   beforeAll(async () => {
-    await ConnectMongoDB();
+    await ConnectMongoDB(environmentStatus);
   });
 
   afterEach(async () => {

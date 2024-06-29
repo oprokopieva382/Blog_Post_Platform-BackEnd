@@ -5,9 +5,11 @@ import { SETTINGS } from "../../src/settings";
 import { testManager } from "./test-helpers";
 import { dropCollections } from "./dropCollections";
 
+ const environmentStatus = `${SETTINGS.TESTING_ENVIRONMENT_STATUS}`;
+
 describe("auth tests", () => {
   beforeAll(async () => {
-    await ConnectMongoDB();
+    await ConnectMongoDB(environmentStatus);
   });
 
   afterEach(async () => {
