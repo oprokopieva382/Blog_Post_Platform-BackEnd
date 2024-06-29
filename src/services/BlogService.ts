@@ -5,12 +5,10 @@ import { BlogRepository, PostRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
 
 export class BlogService {
-  private blogRepository: BlogRepository;
-  private postRepository: PostRepository;
-  constructor() {
-    this.blogRepository = new BlogRepository();
-    this.postRepository = new PostRepository();
-  }
+  constructor(
+    protected blogRepository: BlogRepository,
+    protected postRepository: PostRepository
+  ) {}
 
   async removeBlog(id: string) {
     return await this.blogRepository.removeBlog(id);
@@ -62,7 +60,9 @@ export class BlogService {
       throw ApiError.NotFoundError("Not found", ["Can't create post"]);
     }
 
-    const result = await this.postRepository.getByIdPost(createdPost._id.toString());
+    const result = await this.postRepository.getByIdPost(
+      createdPost._id.toString()
+    );
 
     if (!result) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);

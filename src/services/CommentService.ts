@@ -3,10 +3,7 @@ import { CommentInputModel, UserViewModel } from "../type-models";
 import { CommentRepository } from "../repositories";
 
 export class CommentService {
-  private commentRepository: CommentRepository;
-  constructor() {
-    this.commentRepository = new CommentRepository();
-  }
+  constructor(protected commentRepository: CommentRepository) {}
 
   async removeComment(commentId: string, user: UserViewModel) {
     const foundComment = await this.commentRepository.getByIdComment(commentId);
@@ -25,7 +22,9 @@ export class CommentService {
     commentId: string,
     user: UserViewModel
   ) {
-    const isCommentExist = await this.commentRepository.getByIdComment(commentId);
+    const isCommentExist = await this.commentRepository.getByIdComment(
+      commentId
+    );
 
     if (!isCommentExist) {
       throw ApiError.NotFoundError("Comment to update is not found", [
