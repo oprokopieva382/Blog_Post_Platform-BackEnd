@@ -3,7 +3,7 @@ import { Request } from "express";
 import { add } from "date-fns/add";
 import { fromUnixTime } from "date-fns/fromUnixTime";
 import { ObjectId } from "mongodb";
-import { BcryptService, EmailService } from ".";
+import { BcryptService, EmailService, JwtService } from ".";
 import {
   LoginInputModel,
   NewPasswordRecoveryInputModel,
@@ -14,7 +14,6 @@ import { AuthRepository, UserRepository } from "../repositories";
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
-import { jwtService } from "../features/application";
 import { UserDTO } from "../DTO";
 import {
   PasswordRecoveryDBType,
@@ -27,7 +26,8 @@ export class AuthService {
     protected authRepository: AuthRepository,
     protected userRepository: UserRepository,
     protected bcryptService: BcryptService,
-    protected emailService: EmailService
+    protected emailService: EmailService,
+    protected jwtService: JwtService
   ) {
   }
 
@@ -58,10 +58,10 @@ export class AuthService {
     const deviceName = req.headers["user-agent"] || "Unknown Device";
     const user = UserDTO.transform(userData);
 
-    const accessToken = await jwtService.createAccessToken(user.id);
-    const refreshToken = await jwtService.createRefreshToken(user.id, deviceId);
+    const accessToken = await this.jwtService.createAccessToken(user.id);
+    const refreshToken = await this.jwtService.createRefreshToken(user.id, deviceId);
 
-    const { iat, exp } = await jwtService.validateRefreshToken(refreshToken);
+    const { iat, exp } = await this.jwtService.validateRefreshToken(refreshToken);
 
     await this.createSession({
       userId: user.id,
@@ -145,8 +145,8 @@ export class AuthService {
   }
 
   async refreshToken(deviceId: string, userId: string) {
-    const newAccessToken = await jwtService.createAccessToken(userId);
-    const newRefreshToken = await jwtService.createRefreshToken(
+    const newAccessToken = await this.jwtService.createAccessToken(userId);
+    const newRefreshToken = await this.jwtService.createRefreshToken(
       userId,
       deviceId
     );
@@ -169,7 +169,7 @@ export class AuthService {
   }
 
   async updateSession(newRefreshToken: string) {
-    const { iat, exp, deviceId } = await jwtService.validateRefreshToken(
+    const { iat, exp, deviceId } = await this.jwtService.validateRefreshToken(
       newRefreshToken
     );
 

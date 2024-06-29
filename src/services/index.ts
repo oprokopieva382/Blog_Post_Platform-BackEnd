@@ -6,3 +6,4 @@ export { BcryptService } from "./BcryptService";
 export { AuthService } from "./AuthService";
 export { DeviceService } from "./DeviceService";
 export { CommentService } from "./CommentService";
+export { JwtService } from "./JwtService";

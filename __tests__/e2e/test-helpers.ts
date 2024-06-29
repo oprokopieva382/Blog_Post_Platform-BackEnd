@@ -2,7 +2,7 @@ import request from "supertest";
 import { ObjectId } from "mongodb";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
-import { usersCollection } from "../../src/cloud_DB";
+import { UserModel } from "../../src/models";
 
 export const testManager = {
   async createUser() {
@@ -67,7 +67,7 @@ export const testManager = {
     await this.registerUser();
 
     const user = await this.getUser();
-    const userWithCode = await usersCollection.findOne({
+    const userWithCode = await UserModel.findOne({
       _id: new ObjectId(user.items[0].id),
     });
 
@@ -81,7 +81,7 @@ export const testManager = {
     const confirmationCodes: string[] = [];
 
     for (const user of users.items) {
-      const userWithCode = await usersCollection.findOne({
+      const userWithCode = await UserModel.findOne({
         _id: new ObjectId(user.id),
       });
       if (userWithCode && userWithCode.emailConfirmation.confirmationCode) {

@@ -1,17 +1,24 @@
 import request from "supertest";
+import mongoose from "mongoose";
 import { app } from "../../src/app";
 import { SETTINGS } from "../../src/settings";
 import { ConnectMongoDB } from "../../src/cloud_DB";
 import { testManager } from "./test-helpers";
 import { dropCollections } from "../e2e/dropCollections";
 
+const environmentStatus = `${SETTINGS.TESTING_ENVIRONMENT_STATUS}`;
+
 describe("/blogs test", () => {
   beforeAll(async () => {
-    await ConnectMongoDB();
+    await ConnectMongoDB(environmentStatus);
   });
 
   afterEach(async () => {
     await dropCollections();
+  });
+  
+  afterAll(async () => {
+    await mongoose.disconnect();
   });
 
   describe("CREATE BLOG", () => {

@@ -1,8 +1,6 @@
 import { Response, Request, NextFunction } from "express";
-import { AuthRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
-
-const authRepository = new AuthRepository();
+import { authRepository } from "../composition-root";
 
 export const validateEmailResending = async (
   req: Request,

@@ -1,10 +1,7 @@
 import { Response, Request, NextFunction } from "express";
 import { ApiError } from "../helper/api-errors";
-import { AuthRepository } from "../repositories";
 import { fromUnixTime } from "date-fns/fromUnixTime";
-import { jwtService } from "../features/application";
-
-const authRepository = new AuthRepository();
+import { authRepository, jwtService } from "../composition-root";
 
 export const isAuthorizedRefreshToken = async (
   req: Request,

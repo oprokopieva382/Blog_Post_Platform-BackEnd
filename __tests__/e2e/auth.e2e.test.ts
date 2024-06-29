@@ -1,17 +1,24 @@
-import { ConnectMongoDB } from "../../src/cloud_DB";
 import request from "supertest";
+import mongoose from "mongoose";
 import { app } from "../../src/app";
+import { ConnectMongoDB } from "../../src/cloud_DB";
 import { SETTINGS } from "../../src/settings";
 import { testManager } from "./test-helpers";
 import { dropCollections } from "./dropCollections";
 
+const environmentStatus = `${SETTINGS.TESTING_ENVIRONMENT_STATUS}`;
+
 describe("auth tests", () => {
   beforeAll(async () => {
-    await ConnectMongoDB();
+    await ConnectMongoDB(environmentStatus);
   });
 
   afterEach(async () => {
     await dropCollections();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect();
   });
 
   describe("AUTH LOGIN", () => {
