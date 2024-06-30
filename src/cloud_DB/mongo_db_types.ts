@@ -97,3 +97,12 @@ export class ReactionDBType {
     public createdAt: string
   ) {}
 }
+
+export class ReactionCountDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public commentId: string,
+    public likesCount: Number,
+    public dislikesCount: Number
+  ) {}
+}
