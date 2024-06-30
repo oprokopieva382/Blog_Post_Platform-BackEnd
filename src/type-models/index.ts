@@ -6,6 +6,7 @@ export { LikesInfoViewModel } from "./LikesInfoViewModel";
 export { BlogPostInputModel } from "./BlogPostInputModel";
 export { Paginator } from "./Paginator";
 export { LoginInputModel } from "./LoginInputModel";
+export { LikeInputModel } from "./LikeInputModel";
 export { UserInputModel } from "./UserInputModel";
 export { UserViewModel } from "./UserViewModel";
 export { CommentViewModel } from "./CommentViewModel";

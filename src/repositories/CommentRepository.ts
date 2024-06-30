@@ -25,7 +25,8 @@ export class CommentRepository {
         $set: {
           content,
         },
-      }
+      },
+      { new: true }
     );
 
     return updatedComment;

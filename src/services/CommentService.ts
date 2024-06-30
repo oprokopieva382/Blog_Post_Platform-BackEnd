@@ -1,5 +1,9 @@
 import { ApiError } from "../helper/api-errors";
-import { CommentInputModel, UserViewModel } from "../type-models";
+import {
+  CommentInputModel,
+  LikeInputModel,
+  UserViewModel,
+} from "../type-models";
 import { CommentRepository } from "../repositories";
 
 export class CommentService {
@@ -22,26 +26,36 @@ export class CommentService {
     commentId: string,
     user: UserViewModel
   ) {
-    const isCommentExist = await this.commentRepository.getByIdComment(
-      commentId
-    );
+    const comment = await this.commentRepository.getByIdComment(commentId);
 
-    if (!isCommentExist) {
+    if (!comment) {
       throw ApiError.NotFoundError("Comment to update is not found", [
         `Comment with id ${commentId} does not exist`,
       ]);
     }
 
-    const foundComment = await this.commentRepository.getByIdComment(commentId);
-
-    if (foundComment && user.id !== foundComment.commentatorInfo.userId) {
+    if (comment && user.id !== comment.commentatorInfo.userId) {
       throw ApiError.ForbiddenError("Forbidden", [
-        "You don't have permission to create comment",
+        "You don't have permission to update comment",
       ]);
     }
 
-    await this.commentRepository.updateComment(data, commentId);
-
-    return await this.commentRepository.getByIdComment(commentId);
+    return await this.commentRepository.updateComment(data, commentId);
   }
+
+  // async reactToComment(
+  //   data: LikeInputModel,
+  //   commentId: string,
+  //   user: UserViewModel
+  // ) {
+  //   const comment = await this.commentRepository.getByIdComment(commentId);
+
+  //   if (!comment) {
+  //     throw ApiError.NotFoundError("Comment to react is not found", [
+  //       `Comment with id ${commentId} does not exist`,
+  //     ]);
+  //   }
+
+  //   await this.commentRepository.reactToComment(data, commentId);
+  // }
 }

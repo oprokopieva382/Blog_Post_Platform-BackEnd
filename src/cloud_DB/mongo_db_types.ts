@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { LikeStatus } from "../types/LikesStatus";
 
 export class BlogDBType {
   constructor(
@@ -51,6 +52,11 @@ export class CommentDBType {
       userId: string;
       userLogin: string;
     },
+    // public likesInfo: {
+    //   likesCount: number,
+    //   dislikesCount: number,
+    //   myStatus: LikeStatus,
+    // },
     public createdAt: string
   ) {}
 }
@@ -79,6 +85,15 @@ export class PasswordRecoveryDBType {
     public recoveryCode: string,
     public email: string,
     public expirationDate: Date,
+    public createdAt: string
+  ) {}
+}
+
+export class ReactionDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public commentId: string,
+    public myStatus: LikeStatus,
     public createdAt: string
   ) {}
 }
