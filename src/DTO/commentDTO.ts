@@ -10,6 +10,11 @@ class CommentDTO {
         userId: comment.commentatorInfo.userId,
         userLogin: comment.commentatorInfo.userLogin,
       },
+      likesInfo: {
+        likesCount: comment.likesInfo.likesCount,
+        dislikesCount: comment.likesInfo.dislikesCount,
+        myStatus: comment.likesInfo.myStatus
+      },
       createdAt: comment.createdAt,
     };
   }

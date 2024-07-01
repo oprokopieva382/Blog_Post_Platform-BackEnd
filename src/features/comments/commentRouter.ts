@@ -16,9 +16,9 @@ commentRouter.put(
   validateComment,
   commentController.update.bind(commentController)
 );
-// commentRouter.put(
-//   "/:commentId/like-status",
-//   isAuthorizedMiddleware,
-//   validateCommentReaction,
-//   commentController.reactToComment.bind(commentController)
-// );
+commentRouter.put(
+  "/:commentId/like-status",
+  isAuthorizedMiddleware,
+  validateCommentReaction,
+  commentController.reactToComment.bind(commentController)
+);

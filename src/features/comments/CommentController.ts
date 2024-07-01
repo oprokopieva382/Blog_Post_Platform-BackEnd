@@ -77,27 +77,27 @@ export class CommentController {
     }
   }
 
-  // async reactToComment(
-  //   req: Request<CommentParamType, {}, LikeInputModel>,
-  //   res: Response,
-  //   next: NextFunction
-  // ) {
-  //   try {
-  //     const result = await this.commentService.reactToComment(
-  //       req.body,
-  //       req.params.commentId,
-  //       req.user
-  //     );
+  async reactToComment(
+    req: Request<CommentParamType, {}, LikeInputModel>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const result = await this.commentService.reactToComment(
+        req.body,
+        req.params.commentId,
+        req.user
+      );
 
-  //     if (!result) {
-  //       throw ApiError.NotFoundError("Comment to react is not found", [
-  //         `Comment with id ${req.params.commentId} does not exist`,
-  //       ]);
-  //     }
+      if (!result) {
+        throw ApiError.NotFoundError("Comment to react is not found", [
+          `Comment with id ${req.params.commentId} does not exist`,
+        ]);
+      }
 
-  //     formatResponse(res, 204, {}, "React to comment successfully");
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+      formatResponse(res, 204, {}, "React to comment successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
 }

@@ -10,22 +10,23 @@ const commentSchema = new Schema<CommentDBType>({
     userId: { type: String, required: true },
     userLogin: { type: String, required: true },
   },
-  // likesInfo: {
-  //   likesCount: {
-  //     type: Number,
-  //     default: 0,
-  //     min: 0,
-  //   },
-  //   dislikesCount: {
-  //     type: Number,
-  //     default: 0,
-  //     min: 0,
-  //   },
-  //   myStatus: {
-  //     type: String,
-  //     enum: Object.values(LikeStatus)
-  //   },
-  // },
+  likesInfo: {
+    likesCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    dislikesCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    myStatus: {
+      type: String,
+      enum: Object.values(LikeStatus),
+      default: Object.values(LikeStatus.None),
+    },
+  },
   createdAt: { type: String, required: true },
 });
 

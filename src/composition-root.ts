@@ -30,7 +30,7 @@ export const authRepository = new AuthRepository();
 const userRepository = new UserRepository();
 export const blogRepository = new BlogRepository();
 const postRepository = new PostRepository();
-const commentRepository = new CommentRepository();
+export const commentRepository = new CommentRepository();
 const deviceRepository = new DeviceRepository();
 
 
