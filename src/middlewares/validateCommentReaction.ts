@@ -23,7 +23,7 @@ export const validateCommentReaction = async (
       body("likeStatus")
         .trim()
         .isString()
-        .withMessage("Name field must be a string")
+        .withMessage("likeStatus field must be a string")
         .custom((value) => {
           if (!isValidLikeStatus(value)) {
             throw new Error("Invalid likeStatus value.");

@@ -12,6 +12,6 @@ export type CommentViewModel = {
   id: string;
   content: string;
   commentatorInfo: CommentatorInfo;
-  likesInfo?: LikesInfoViewModel;
+  likesInfo: LikesInfoViewModel;
   createdAt: string;
 };
