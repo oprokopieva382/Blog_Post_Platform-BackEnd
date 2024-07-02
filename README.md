@@ -15,6 +15,7 @@ This repository contains the backend implementation for a blog posts platform. T
 - 📌Bcrypt
 - 📌Redis
 - 📌Winston
+- 📌Mongoose
 
 ## Features:
 
@@ -29,6 +30,7 @@ This repository contains the backend implementation for a blog posts platform. T
 - 📍 Custom rate limiting for request handling
 - 📍 Caching user information with Redis
 - 📍 Winston logger for logging
+- 📍 Schema definition and data modeling with Mongoose
 
 ## Used Coding Principals
 
