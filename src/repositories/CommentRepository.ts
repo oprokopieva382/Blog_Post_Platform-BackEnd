@@ -1,8 +1,7 @@
 import { ObjectId } from "mongodb";
 import { CommentInputModel } from "../type-models";
-import {
-  CommentDBType} from "../cloud_DB/mongo_db_types";
-import { CommentModel } from "../models";
+import { CommentDBType, ReactionCountDBType } from "../cloud_DB/mongo_db_types";
+import { CommentModel, ReactionCountModel } from "../models";
 
 export class CommentRepository {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
@@ -34,13 +33,26 @@ export class CommentRepository {
   }
 
   async likeReaction(commentId: string, likeStatus: string, count: number) {
+       console.log("count", count);
+    const reactionCount = await ReactionCountModel.findOneAndUpdate(
+      { commentId },
+      {
+        $inc: {
+          likesCount: count,
+        },
+      },
+      { new: true, upsert: true }
+    );
+
+    const { likesCount } = reactionCount;
+    console.log("reactionCount", reactionCount);
+    console.log(likesCount);
+
     return await CommentModel.findOneAndUpdate(
       { _id: new ObjectId(commentId) },
       {
-        $inc: {
-          "likesInfo.likesCount": count,
-        },
         $set: {
+          "likesInfo.likesCount": likesCount,
           "likesInfo.myStatus": likeStatus,
         },
       },
@@ -49,17 +61,40 @@ export class CommentRepository {
   }
 
   async dislikeReaction(commentId: string, likeStatus: string, count: number) {
-    return await CommentModel.findOneAndUpdate(
-      { _id: new ObjectId(commentId) },
+      console.log("count", count);
+    const reactionCount = await ReactionCountModel.findOneAndUpdate(
+      { commentId },
       {
         $inc: {
-          "likesInfo.dislikesCount": count,
+          dislikesCount: count,
         },
+      },
+      { new: true, upsert: true }
+    );
+ const { dislikesCount } = reactionCount;
+    console.log(reactionCount);
+
+    return await CommentModel.findByIdAndUpdate(
+      { _id: new ObjectId(commentId) },
+      {
         $set: {
+          "likesInfo.dislikesCount": dislikesCount,
           "likesInfo.myStatus": likeStatus,
         },
       },
       { new: true }
     );
+  }
+
+  async getCommentCount(
+    commentId: string
+  ): Promise<ReactionCountDBType | null> {
+    return await ReactionCountModel.findOne({ commentId });
+  }
+
+  async createCommentCount(
+    commentId: string
+  ): Promise<ReactionCountDBType | null> {
+    return await ReactionCountModel.create({ commentId });
   }
 }

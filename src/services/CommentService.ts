@@ -97,6 +97,7 @@ export class CommentService {
 
   async reactToComment(data: LikeInputModel, commentId: string) {
     const comment = await this.commentRepository.getByIdComment(commentId);
+    const count = await this.commentRepository.getCommentCount(commentId);
 
     const { likeStatus } = data;
 
@@ -104,6 +105,10 @@ export class CommentService {
       throw ApiError.NotFoundError("Comment to react is not found", [
         `Comment with id ${commentId} does not exist`,
       ]);
+    }
+
+    if (!count) {
+      await this.commentRepository.createCommentCount(commentId);
     }
 
     const myStatus = comment.likesInfo.myStatus;

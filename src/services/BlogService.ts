@@ -8,7 +8,9 @@ export class BlogService {
   constructor(
     protected blogRepository: BlogRepository,
     protected postRepository: PostRepository
-  ) {}
+  ) {
+    
+  }
 
   async removeBlog(id: string) {
     return await this.blogRepository.removeBlog(id);
