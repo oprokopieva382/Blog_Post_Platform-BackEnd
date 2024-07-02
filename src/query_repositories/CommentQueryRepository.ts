@@ -6,7 +6,7 @@ import { CommentDTO } from "../DTO";
 import { CommentModel } from "../models";
 
 export class CommentQueryRepository {
- async getCommentsOfPost(
+  async getCommentsOfPost(
     postId: string,
     query: QueryCommentsType
   ): Promise<Paginator<CommentViewModel>> {
