@@ -16,3 +16,4 @@ export { validateUserEmailUnique } from "./validateUserEmailUnique";
 export { validateEmailResending } from "./validateEmailResending";
 export { validateEmailConfirmation } from "./validateEmailConfirmation";
 export { validateNewPasswordInputs } from "./validateNewPasswordInputs";
+export { validateCommentReaction } from "./validateCommentReaction";

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
-import { CommentInputModel } from "../../type-models";
+import { CommentInputModel, LikeInputModel } from "../../type-models";
 import { CommentService } from "../../services";
 import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
@@ -72,6 +72,29 @@ export class CommentController {
       }
 
       formatResponse(res, 204, {}, "Comment updated successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async reactToComment(
+    req: Request<CommentParamType, {}, LikeInputModel>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const result = await this.commentService.reactToComment(
+        req.body,
+        req.params.commentId
+      );
+
+      if (!result) {
+        throw ApiError.NotFoundError("Comment to react is not found", [
+          `Comment with id ${req.params.commentId} does not exist`,
+        ]);
+      }
+
+      formatResponse(res, 204, {}, "React to comment successfully");
     } catch (error) {
       next(error);
     }

@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { CommentInputModel } from "../type-models";
-import { CommentDBType } from "../cloud_DB/mongo_db_types";
+import {
+  CommentDBType} from "../cloud_DB/mongo_db_types";
 import { CommentModel } from "../models";
 
 export class CommentRepository {
@@ -25,9 +26,40 @@ export class CommentRepository {
         $set: {
           content,
         },
-      }
+      },
+      { new: true }
     );
 
     return updatedComment;
+  }
+
+  async likeReaction(commentId: string, likeStatus: string, count: number) {
+    return await CommentModel.findOneAndUpdate(
+      { _id: new ObjectId(commentId) },
+      {
+        $inc: {
+          "likesInfo.likesCount": count,
+        },
+        $set: {
+          "likesInfo.myStatus": likeStatus,
+        },
+      },
+      { new: true }
+    );
+  }
+
+  async dislikeReaction(commentId: string, likeStatus: string, count: number) {
+    return await CommentModel.findOneAndUpdate(
+      { _id: new ObjectId(commentId) },
+      {
+        $inc: {
+          "likesInfo.dislikesCount": count,
+        },
+        $set: {
+          "likesInfo.myStatus": likeStatus,
+        },
+      },
+      { new: true }
+    );
   }
 }
