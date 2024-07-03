@@ -37,16 +37,14 @@ export class CommentQueryRepository {
       _id: new ObjectId(id),
     })
       .populate({
-        path: "likesInfo.myStatus",
-        options: {
-          // strictPopulate: false,
-        },
+        path: "likesInfo.status",
+        select: "myStatus",
       })
-      .exec();
-    
-    console.log("getByIdComment in CommentQueryRepository", result);
-    return result;
-  }
+      .populate("post", "_id");
+      
+      console.log("getByIdComment in CommentQueryRepository", result);
+      return result;
+    }
 
   async getUserReactionStatus(userId: string, commentId: string) {
     return ReactionModel.findOne({ userId, commentId }).lean();

@@ -18,8 +18,7 @@ export class PostDBType {
     public title: string,
     public shortDescription: string,
     public content: string,
-    public blogId: Types.ObjectId,
-    public blogName: string,
+    public blog: BlogDBType,
     public createdAt?: string
   ) {}
 }
@@ -46,18 +45,22 @@ type ExpirationDate = Date;
 export class CommentDBType {
   constructor(
     public _id: Types.ObjectId,
-    public postId: string,
+    public post: PostDBType,
     public content: string,
     public commentatorInfo: {
       userId: string;
       userLogin: string;
     },
     public createdAt: string,
-    public myStatus: LikeStatus = LikeStatus.None,
     public likesInfo: {
       likesCount: number;
       dislikesCount: number;
-    } = { likesCount: 0, dislikesCount: 0 }
+      status: ReactionDBType[];
+    } = {
+      likesCount: 0,
+      dislikesCount: 0,
+      status: [],
+    }
   ) {}
 }
 
@@ -92,19 +95,9 @@ export class PasswordRecoveryDBType {
 export class ReactionDBType {
   constructor(
     public _id: Types.ObjectId,
-    //public commentId: string,
     public user: UserDBType,
-    public myStatus: LikeStatus,
+    public myStatus: LikeStatus[],
     public createdAt: string,
     public comment: CommentDBType
-  ) {}
-}
-
-export class ReactionCountDBType {
-  constructor(
-    public _id: Types.ObjectId,
-    public commentId: string,
-    public likesCount: Number,
-    public dislikesCount: Number
   ) {}
 }

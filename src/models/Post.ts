@@ -6,8 +6,7 @@ const postSchema = new Schema<PostDBType>({
   title: { type: String, required: true },
   shortDescription: { type: String, required: true },
   content: { type: String, required: true },
-  blogId: { type: Schema.Types.ObjectId, ref: "blogs", required: true },
-  blogName: { type: String, required: true },
+  blog: { type: Schema.Types.ObjectId, ref: "blogs", required: true },
   createdAt: { type: String },
 });
 

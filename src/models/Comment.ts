@@ -1,9 +1,12 @@
 import { Schema, model } from "mongoose";
 import { CommentDBType } from "../cloud_DB";
 
-const commentSchema = new Schema<CommentDBType>({
+const CommentSchema = new Schema<CommentDBType>({
   _id: { type: Schema.Types.ObjectId, required: true },
-  postId: { type: String, required: true },
+  post: {
+    type: Schema.Types.ObjectId,
+    ref: "posts",
+  },
   content: { type: String, required: true },
   commentatorInfo: {
     userId: { type: String, required: true },
@@ -20,7 +23,7 @@ const commentSchema = new Schema<CommentDBType>({
       default: 0,
       min: 0,
     },
-    myStatus: [
+    status: [
       {
         type: Schema.Types.ObjectId,
         ref: "comment-reactions",
@@ -31,4 +34,4 @@ const commentSchema = new Schema<CommentDBType>({
   createdAt: { type: String, required: true },
 });
 
-export const CommentModel = model("comments", commentSchema);
+export const CommentModel = model("comments", CommentSchema);

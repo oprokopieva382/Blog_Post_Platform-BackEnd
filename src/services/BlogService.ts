@@ -51,8 +51,7 @@ export class BlogService {
       title,
       shortDescription,
       content,
-      new ObjectId(blogId),
-      blog.name,
+      blog,
       new Date().toISOString()
     );
 

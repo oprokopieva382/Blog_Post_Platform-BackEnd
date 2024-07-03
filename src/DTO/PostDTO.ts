@@ -8,9 +8,8 @@ class PostDTO {
       title: post.title,
       shortDescription: post.shortDescription,
       content: post.content,
-      //blogId: post.blogId.toString(),
-      blogId: post.blogId._id.toString(),
-      blogName: post.blogName,
+      blogId: post.blog._id.toString(),
+      blogName: post.blog.name,
       createdAt: post.createdAt,
     };
   }
