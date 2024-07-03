@@ -85,7 +85,8 @@ export class CommentController {
     try {
       const result = await this.commentService.reactToComment(
         req.body,
-        req.params.commentId
+        req.params.commentId,
+        req.user
       );
 
       if (!result) {

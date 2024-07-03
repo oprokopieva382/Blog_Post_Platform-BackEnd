@@ -3,7 +3,7 @@ import { CommentViewModel, Paginator } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { QueryCommentsType } from "../types/query-type";
 import { CommentDTO } from "../DTO";
-import { CommentModel } from "../models";
+import { CommentModel, ReactionModel } from "../models";
 
 export class CommentQueryRepository {
   async getCommentsOfPost(
@@ -33,9 +33,29 @@ export class CommentQueryRepository {
     return commentsToView;
   }
 
-  async getByIdComment(id: string): Promise<CommentDBType | null> {
-    return await CommentModel.findOne({
+  async getByIdComment(id: string, userId: string ): Promise<CommentDBType | null> {
+    // const result = await CommentModel.findOne({
+    //   _id: new ObjectId(id),
+    // })
+    //   .populate({
+    //     path: "myStatus",
+    //     options: {
+    //       // strictPopulate: false,
+    //     },
+    //   })
+    //   .exec();
+ const comment = await CommentModel.findOne({
       _id: new ObjectId(id),
-    });
+    })
+    const likesForComment = await ReactionModel
+    .findOne({commentId: comment._id, userId})
+    
+    
+    console.log("getByIdComment in CommentQueryRepository", result);
+    return result;
+  }
+
+  async getUserReactionStatus(userId: string, commentId: string) {
+    return ReactionModel.findOne({ userId, commentId }).lean();
   }
 }

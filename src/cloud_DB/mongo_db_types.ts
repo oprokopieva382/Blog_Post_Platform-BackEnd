@@ -53,11 +53,11 @@ export class CommentDBType {
       userLogin: string;
     },
     public createdAt: string,
+    public myStatus: LikeStatus = LikeStatus.None,
     public likesInfo: {
       likesCount: number;
       dislikesCount: number;
-      myStatus: LikeStatus;
-    } = { likesCount: 0, dislikesCount: 0, myStatus: LikeStatus.None }
+    } = { likesCount: 0, dislikesCount: 0 }
   ) {}
 }
 
@@ -95,7 +95,8 @@ export class ReactionDBType {
     public commentId: string,
     public userId: string,
     public myStatus: LikeStatus,
-    public createdAt: string
+    public createdAt: string,
+    public comment: CommentDBType
   ) {}
 }
 

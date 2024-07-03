@@ -10,53 +10,102 @@ import { LikeStatus } from "../types/LikesStatus";
 export class CommentService {
   constructor(protected commentRepository: CommentRepository) {}
 
-  private async likeReaction(
+  private async likeComment(
     commentId: string,
-    likeStatus: string,
-    myStatus: LikeStatus
+    likeStatus: LikeStatus,
+    userId: string
   ) {
+    const comment = await this.commentRepository.getByIdComment(commentId);
+    if (!comment) {
+      throw ApiError.NotFoundError("Comment not found", [
+        `Comment with id ${commentId} does not exist`,
+      ]);
+    }
+
+    const userReaction = await this.commentRepository.getUserReactionStatus(
+      userId,
+      commentId
+    );
+    let myStatus = userReaction ? userReaction.myStatus : LikeStatus.None;
+
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
-      await this.commentRepository.dislikeReaction(commentId, likeStatus, -1);
-      return await this.commentRepository.likeReaction(
+      await this.commentRepository.setUserReaction(
+        userId,
         commentId,
-        likeStatus,
+        likeStatus
+      );
+      await this.commentRepository.dislikeComment(commentId, -1);
+      return await this.commentRepository.likeComment(
+        commentId,
         1
       );
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
-      return await this.commentRepository.likeReaction(
+      await this.commentRepository.setUserReaction(
+        userId,
         commentId,
-        LikeStatus.None,
+        LikeStatus.None
+      );
+      return await this.commentRepository.likeComment(
+        commentId,
         -1
       );
     }
-    return await this.commentRepository.likeReaction(commentId, likeStatus, 1);
+    await this.commentRepository.setUserReaction(userId, commentId, likeStatus);
+    return await this.commentRepository.likeComment(
+      commentId,
+      1
+    );
   }
-  private async dislikeReaction(
+
+  private async dislikeComment(
     commentId: string,
-    likeStatus: string,
-    myStatus: LikeStatus
+    likeStatus: LikeStatus,
+    userId: string
   ) {
+    const comment = await this.commentRepository.getByIdComment(commentId);
+    if (!comment) {
+      throw ApiError.NotFoundError("Comment not found", [
+        `Comment with id ${commentId} does not exist`,
+      ]);
+    }
+
+    const userReaction = await this.commentRepository.getUserReactionStatus(
+      userId,
+      commentId
+    );
+    let myStatus = userReaction ? userReaction.myStatus : LikeStatus.None;
+
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
-      await this.commentRepository.likeReaction(commentId, likeStatus, -1);
-      return await this.commentRepository.dislikeReaction(
+      await this.commentRepository.setUserReaction(
+        userId,
         commentId,
-        likeStatus,
+        likeStatus
+      );
+      await this.commentRepository.likeComment(commentId, -1);
+      return await this.commentRepository.dislikeComment(
+        commentId,
+
         1
       );
     }
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
-      return await this.commentRepository.dislikeReaction(
+      await this.commentRepository.setUserReaction(
+        userId,
         commentId,
-        LikeStatus.None,
+        LikeStatus.None
+      );
+      return await this.commentRepository.dislikeComment(
+        commentId,
         -1
       );
     }
-    return await this.commentRepository.dislikeReaction(
+    await this.commentRepository.setUserReaction(userId, commentId, likeStatus);
+    return await this.commentRepository.dislikeComment(
       commentId,
-      likeStatus,
+
       1
     );
   }
@@ -95,32 +144,33 @@ export class CommentService {
     return await this.commentRepository.updateComment(data, commentId);
   }
 
-  async reactToComment(data: LikeInputModel, commentId: string) {
-    const comment = await this.commentRepository.getByIdComment(commentId);
-    const count = await this.commentRepository.getCommentCount(commentId);
+  async getMyCommentReactionStatus(userId: string, commentId: string) {
+    const myReactionStatus = await this.commentRepository.getUserReactionStatus(
+      userId,
+      commentId
+    );
+    return myReactionStatus ? myReactionStatus.myStatus : LikeStatus.None;
+  }
 
+  async reactToComment(
+    data: LikeInputModel,
+    commentId: string,
+    user: UserViewModel
+  ) {
     const { likeStatus } = data;
-
-    if (!comment) {
-      throw ApiError.NotFoundError("Comment to react is not found", [
-        `Comment with id ${commentId} does not exist`,
-      ]);
-    }
-
-    if (!count) {
-      await this.commentRepository.createCommentCount(commentId);
-    }
-
-    const myStatus = comment.likesInfo.myStatus;
     let result;
 
     switch (likeStatus) {
       case LikeStatus.Like:
-        result = await this.likeReaction(commentId, likeStatus, myStatus);
+        result = await this.likeComment(commentId, likeStatus, user.id);
         break;
       case LikeStatus.Dislike:
-        result = await this.dislikeReaction(commentId, likeStatus, myStatus);
+        result = await this.dislikeComment(commentId, likeStatus, user.id);
         break;
+      default:
+        throw ApiError.BadRequestError("Invalid like status", [
+          "Invalid like status provided",
+        ]);
     }
 
     return result;

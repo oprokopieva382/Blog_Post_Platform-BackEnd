@@ -1,13 +1,21 @@
 import { ObjectId } from "mongodb";
 import { CommentInputModel } from "../type-models";
-import { CommentDBType, ReactionCountDBType } from "../cloud_DB/mongo_db_types";
-import { CommentModel, ReactionCountModel } from "../models";
+import { CommentDBType, ReactionDBType } from "../cloud_DB/mongo_db_types";
+import { CommentModel, ReactionModel } from "../models";
+import { LikeStatus } from "../types/LikesStatus";
+
 
 export class CommentRepository {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(commentId),
-    });
+    })
+      .populate("myStatus")
+      .exec();
+  }
+
+  async getUserReactionStatus(userId: string, commentId: string) {
+    return ReactionModel.findOne({ userId, commentId }).lean();
   }
 
   async removeComment(commentId: string) {
@@ -32,69 +40,43 @@ export class CommentRepository {
     return updatedComment;
   }
 
-  async likeReaction(commentId: string, likeStatus: string, count: number) {
-       console.log("count", count);
-    const reactionCount = await ReactionCountModel.findOneAndUpdate(
-      { commentId },
-      {
-        $inc: {
-          likesCount: count,
-        },
-      },
-      { new: true, upsert: true }
-    );
-
-    const { likesCount } = reactionCount;
-    console.log("reactionCount", reactionCount);
-    console.log(likesCount);
-
+  async likeComment(commentId: string, count: number) {
     return await CommentModel.findOneAndUpdate(
       { _id: new ObjectId(commentId) },
       {
-        $set: {
-          "likesInfo.likesCount": likesCount,
-          "likesInfo.myStatus": likeStatus,
-        },
+        $inc: { "likesInfo.likesCount": count },
       },
       { new: true }
     );
   }
 
-  async dislikeReaction(commentId: string, likeStatus: string, count: number) {
-      console.log("count", count);
-    const reactionCount = await ReactionCountModel.findOneAndUpdate(
-      { commentId },
+  async dislikeComment(
+    commentId: string,
+
+    count: number
+  ) {
+    return await CommentModel.findByIdAndUpdate(
+      { _id: new ObjectId(commentId) },
       {
-        $inc: {
-          dislikesCount: count,
+        $inc: { "likesInfo.dislikesCount": count },
+      },
+      { new: true }
+    );
+  }
+
+  async setUserReaction(
+    userId: string,
+    commentId: string,
+    myStatus: LikeStatus
+  ): Promise<ReactionDBType | null> {
+    return await ReactionModel.findOneAndUpdate(
+      { userId, comment: new ObjectId(commentId) },
+      {
+        $set: {
+          myStatus: myStatus,
         },
       },
       { new: true, upsert: true }
     );
- const { dislikesCount } = reactionCount;
-    console.log(reactionCount);
-
-    return await CommentModel.findByIdAndUpdate(
-      { _id: new ObjectId(commentId) },
-      {
-        $set: {
-          "likesInfo.dislikesCount": dislikesCount,
-          "likesInfo.myStatus": likeStatus,
-        },
-      },
-      { new: true }
-    );
-  }
-
-  async getCommentCount(
-    commentId: string
-  ): Promise<ReactionCountDBType | null> {
-    return await ReactionCountModel.findOne({ commentId });
-  }
-
-  async createCommentCount(
-    commentId: string
-  ): Promise<ReactionCountDBType | null> {
-    return await ReactionCountModel.create({ commentId });
   }
 }

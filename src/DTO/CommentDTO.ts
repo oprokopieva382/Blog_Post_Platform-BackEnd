@@ -13,7 +13,7 @@ class CommentDTO {
       likesInfo: {
         likesCount: comment.likesInfo.likesCount,
         dislikesCount: comment.likesInfo.dislikesCount,
-        myStatus: comment.likesInfo.myStatus
+        myStatus: comment.likesInfo.myStatus,
       },
       createdAt: comment.createdAt,
     };
