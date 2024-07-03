@@ -152,7 +152,7 @@ export class PostController {
       formatResponse(
         res,
         201,
-        CommentDTO.transform(result),
+        await CommentDTO.transform(result, req.user.id),
         "Comment created successfully"
       );
     } catch (error) {
