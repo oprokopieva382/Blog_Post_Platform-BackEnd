@@ -8,7 +8,7 @@ export class PostRepository {
   async getByIdPost(postId: string): Promise<PostDBType | null> {
     return await PostModel.findOne({
       _id: new ObjectId(postId),
-    });
+    }).populate("blogId", "_id");
   }
 
   async removePost(id: string) {

@@ -27,7 +27,7 @@ export class PostQueryRepository {
   }
 
   async getByIdPost(id: string): Promise<PostViewModel | null> {
-    const foundPost = await PostModel.findOne({ _id: new ObjectId(id) });
+    const foundPost = await PostModel.findOne({ _id: new ObjectId(id) }).populate("blogId", "_id");
     return foundPost ? PostDTO.transform(foundPost) : null;
   }
 }

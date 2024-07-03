@@ -29,27 +29,20 @@ export class CommentQueryRepository {
       totalCount: totalCommentsCount,
       items: comments.map((c) => CommentDTO.transform(c)),
     };
-
     return commentsToView;
   }
 
-  async getByIdComment(id: string, userId: string ): Promise<CommentDBType | null> {
-    // const result = await CommentModel.findOne({
-    //   _id: new ObjectId(id),
-    // })
-    //   .populate({
-    //     path: "myStatus",
-    //     options: {
-    //       // strictPopulate: false,
-    //     },
-    //   })
-    //   .exec();
- const comment = await CommentModel.findOne({
+  async getByIdComment(id: string ): Promise<CommentDBType | null> {
+    const result = await CommentModel.findOne({
       _id: new ObjectId(id),
     })
-    const likesForComment = await ReactionModel
-    .findOne({commentId: comment._id, userId})
-    
+      .populate({
+        path: "likesInfo.myStatus",
+        options: {
+          // strictPopulate: false,
+        },
+      })
+      .exec();
     
     console.log("getByIdComment in CommentQueryRepository", result);
     return result;

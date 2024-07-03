@@ -92,8 +92,8 @@ export class PasswordRecoveryDBType {
 export class ReactionDBType {
   constructor(
     public _id: Types.ObjectId,
-    public commentId: string,
-    public userId: string,
+    //public commentId: string,
+    public user: UserDBType,
     public myStatus: LikeStatus,
     public createdAt: string,
     public comment: CommentDBType

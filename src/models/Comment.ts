@@ -9,12 +9,6 @@ const commentSchema = new Schema<CommentDBType>({
     userId: { type: String, required: true },
     userLogin: { type: String, required: true },
   },
-  myStatus: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "comment-reactions",
-    },
-  ],
   likesInfo: {
     likesCount: {
       type: Number,
@@ -26,6 +20,12 @@ const commentSchema = new Schema<CommentDBType>({
       default: 0,
       min: 0,
     },
+    myStatus: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "comment-reactions",
+      },
+    ],
   },
 
   createdAt: { type: String, required: true },
