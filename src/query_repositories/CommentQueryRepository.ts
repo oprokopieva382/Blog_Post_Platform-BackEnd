@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { CommentViewModel, Paginator, UserViewModel } from "../type-models";
+import { CommentViewModel, Paginator } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { QueryCommentsType } from "../types/query-type";
 import { CommentDTO } from "../DTO";
@@ -8,13 +8,12 @@ import { CommentModel, ReactionModel } from "../models";
 export class CommentQueryRepository {
   async getCommentsOfPost(
     postId: string,
-    query: QueryCommentsType
+    query: QueryCommentsType,
+    userId: string
   ): Promise<Paginator<CommentViewModel>> {
     const totalCommentsCount = await CommentModel.countDocuments({
       post: postId.toString(),
     });
-
-    console.log("1. totalCommentsCount", totalCommentsCount);
 
     const comments: CommentDBType[] = await CommentModel.find({
       post: postId.toString(),
@@ -28,16 +27,16 @@ export class CommentQueryRepository {
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection });
 
-    console.log("2. comments", comments);
-
     const commentsToView = {
       pagesCount: Math.ceil(totalCommentsCount / query.pageSize),
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCommentsCount,
-      items: comments.map((c) => CommentDTO.transform(c)),
+      items: await Promise.all(
+        comments.map((c) => CommentDTO.transform(c, userId))
+      ),
     };
-    console.log("3. commentsToView in CommentQueryRepository", commentsToView);
+
     return commentsToView;
   }
 
@@ -56,6 +55,6 @@ export class CommentQueryRepository {
   }
 
   async getUserReactionStatus(userId: string, commentId: string) {
-    return ReactionModel.findOne({ userId, commentId }).lean();
+    return ReactionModel.findOne({ user: userId, comment: commentId });
   }
 }

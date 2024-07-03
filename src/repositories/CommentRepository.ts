@@ -9,13 +9,14 @@ export class CommentRepository {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(commentId),
-    })
-      .populate("myStatus")
-      .exec();
+    }).populate({
+      path: "likesInfo.status",
+      select: "myStatus",
+    });
   }
 
   async getUserReactionStatus(userId: string, commentId: string) {
-    return ReactionModel.findOne({ userId, commentId }).lean();
+    return ReactionModel.findOne({ user: userId, comment: commentId });
   }
 
   async removeComment(commentId: string) {
@@ -64,19 +65,19 @@ export class CommentRepository {
     );
   }
 
-  async setUserReaction(
+  async updateMyReaction(
     userId: string,
     commentId: string,
     myStatus: LikeStatus
   ): Promise<ReactionDBType | null> {
     return await ReactionModel.findOneAndUpdate(
-      { userId, comment: new ObjectId(commentId) },
+      { user: userId, comment: commentId },
       {
         $set: {
           myStatus: myStatus,
         },
       },
-      { new: true, upsert: true }
-    );
+      { new: true }
+    )
   }
 }

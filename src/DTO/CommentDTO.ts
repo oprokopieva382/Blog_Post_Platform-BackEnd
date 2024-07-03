@@ -1,11 +1,25 @@
 import { CommentDBType } from "../cloud_DB";
+import { commentQueryRepository } from "../composition-root";
 import { CommentViewModel } from "../type-models";
 import { LikeStatus } from "../types/LikesStatus";
 
 class CommentDTO {
-  static transform(comment: CommentDBType, userId?: string): CommentViewModel {
+  static async transform(
+    comment: CommentDBType,
+    userId?: string
+  ): Promise<CommentViewModel> {
     let userStatus: LikeStatus = LikeStatus.None;
-    console.log("comment", comment);
+    
+    console.log("1. userId", userId);
+    if (userId) {
+      const status = await commentQueryRepository.getUserReactionStatus(
+        userId,
+        comment._id.toString()
+      );
+      userStatus = status ? status.myStatus : LikeStatus.None;
+    }
+    console.log("2. comment", comment);
+    console.log("3. userStatus", userStatus);
     return {
       id: comment._id.toString(),
       content: comment.content,
@@ -16,9 +30,7 @@ class CommentDTO {
       likesInfo: {
         likesCount: comment.likesInfo.likesCount,
         dislikesCount: comment.likesInfo.dislikesCount,
-        myStatus: comment.likesInfo.status.myStatus
-          ? comment.likesInfo.status.myStatus
-          : userStatus,
+        myStatus: userStatus,
       },
       createdAt: comment.createdAt,
     };

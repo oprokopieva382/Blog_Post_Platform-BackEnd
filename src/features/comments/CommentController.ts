@@ -18,7 +18,7 @@ export class CommentController {
       const result = await this.commentQueryRepository.getByIdComment(
         req.params.id
       );
-
+console.log("req.user", req.user)
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No comment found"]);
       }
@@ -26,7 +26,7 @@ export class CommentController {
       formatResponse(
         res,
         200,
-        CommentDTO.transform(result),
+        CommentDTO.transform(result, req.user.id),
         "Comment retrieved successfully"
       );
     } catch (error) {
