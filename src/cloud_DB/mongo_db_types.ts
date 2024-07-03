@@ -55,15 +55,19 @@ export class CommentDBType {
     public likesInfo: {
       likesCount: number;
       dislikesCount: number;
-      status: ReactionDBType[];
-    } = {
-      likesCount: 0,
-      dislikesCount: 0,
-      status: [],
+      status: ReactionDBType;
     }
   ) {}
 }
-
+export class ReactionDBType {
+  constructor(
+    public _id: Types.ObjectId,
+    public user: UserDBType,
+    public myStatus: LikeStatus,
+    public createdAt: string,
+    public comment: CommentDBType
+  ) {}
+}
 export class SessionsDBType {
   constructor(
     public _id: Types.ObjectId,
@@ -92,12 +96,4 @@ export class PasswordRecoveryDBType {
   ) {}
 }
 
-export class ReactionDBType {
-  constructor(
-    public _id: Types.ObjectId,
-    public user: UserDBType,
-    public myStatus: LikeStatus[],
-    public createdAt: string,
-    public comment: CommentDBType
-  ) {}
-}
+

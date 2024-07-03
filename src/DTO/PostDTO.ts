@@ -3,7 +3,7 @@ import { PostViewModel } from "../type-models";
 
 class PostDTO {
   static transform(post: PostDBType): PostViewModel {
-    return {
+      return {
       id: post._id.toString(),
       title: post.title,
       shortDescription: post.shortDescription,

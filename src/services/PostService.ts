@@ -4,6 +4,7 @@ import { ApiError } from "../helper/api-errors";
 import { PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
 import { BlogRepository, PostRepository } from "../repositories";
+import { CommentModel, PostModel } from "../models";
 
 export class PostService {
   constructor(
@@ -18,28 +19,27 @@ export class PostService {
   async createPost(data: PostInputModel) {
     const { title, shortDescription, content, blogId } = data;
 
-    const isBlogExist = await this.blogRepository.getByIdBlog(blogId);
-    if (!isBlogExist) {
+    const blog = await this.blogRepository.getByIdBlog(blogId);
+    if (!blog) {
       throw ApiError.NotFoundError("Blog is not found", [
         `Blog with id ${data.blogId} does not exist`,
       ]);
     }
 
-    const newPost = {
+    const newPost = new PostModel({
       _id: new ObjectId(),
-      title,
-      shortDescription,
-      content,
-      blogId: new ObjectId(blogId),
-      blogName: isBlogExist.name,
+      title: title,
+      shortDescription: shortDescription,
+      content: content,
+      blog: blogId,
       createdAt: new Date().toISOString(),
-    };
-
-    const createdPost = await this.postRepository.createPost(newPost);
-
+    });
+  
+    const createdPost = await newPost.save();
+    
     const post = this.postRepository.getByIdPost(createdPost._id.toString());
 
-    if (!post) {
+    if (!createdPost) {
       throw ApiError.NotFoundError("Not found", ["No post found"]);
     }
 
@@ -70,27 +70,32 @@ export class PostService {
     user: UserViewModel
   ): Promise<CommentDBType | null> {
     const { content } = data;
-    const isPostExist = await this.postRepository.getByIdPost(postId);
+    const post = await this.postRepository.getByIdPost(postId);
 
-    if (!isPostExist) {
+    if (!post) {
       throw ApiError.NotFoundError("Post is not found", [
         `Post with id ${postId} does not exist`,
       ]);
     }
 
-    const newComment = new CommentDBType(
-      new ObjectId(),
-      postId,
-      content,
-      {
+    const newComment = new CommentModel({
+      _id: new ObjectId(),
+      post: postId,
+      content: content,
+      commentatorInfo: {
         userId: user.id,
         userLogin: user.login,
       },
-      new Date().toISOString()
-    );
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        status: [],
+      },
+      createdAt: new Date().toISOString(),
+    });
 
-    const createdComment = await this.postRepository.createComment(newComment);
-
+    const createdComment = await newComment.save();
+    
     if (!createdComment) {
       throw ApiError.NotFoundError("Comment is not found", [
         `Comment does not exist`,

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { CommentViewModel, Paginator } from "../type-models";
+import { CommentViewModel, Paginator, UserViewModel } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { QueryCommentsType } from "../types/query-type";
 import { CommentDTO } from "../DTO";
@@ -17,6 +17,11 @@ export class CommentQueryRepository {
     const comments: CommentDBType[] = await CommentModel.find({
       postId: postId.toString(),
     })
+      .populate({
+        path: "likesInfo.status",
+        select: "myStatus",
+      })
+      .populate("post", "_id")
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection })
@@ -29,10 +34,11 @@ export class CommentQueryRepository {
       totalCount: totalCommentsCount,
       items: comments.map((c) => CommentDTO.transform(c)),
     };
+    console.log("commentsToView in CommentQueryRepository", commentsToView);
     return commentsToView;
   }
 
-  async getByIdComment(id: string ): Promise<CommentDBType | null> {
+  async getByIdComment(id: string): Promise<CommentDBType | null> {
     const result = await CommentModel.findOne({
       _id: new ObjectId(id),
     })
@@ -41,10 +47,10 @@ export class CommentQueryRepository {
         select: "myStatus",
       })
       .populate("post", "_id");
-      
-      console.log("getByIdComment in CommentQueryRepository", result);
-      return result;
-    }
+
+    console.log("getByIdComment in CommentQueryRepository", result);
+    return result;
+  }
 
   async getUserReactionStatus(userId: string, commentId: string) {
     return ReactionModel.findOne({ userId, commentId }).lean();

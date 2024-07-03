@@ -10,14 +10,10 @@ const ReactionSchema = new Schema<ReactionDBType>({
     required: true,
   },
   myStatus: {
-    type: [
-      {
-        type: String,
-        enum: Object.values(LikeStatus),
-        default: LikeStatus.None,
-        required: true,
-      },
-    ],
+    type: String,
+    enum: Object.values(LikeStatus),
+    default: LikeStatus.None,
+    required: true,
   },
   comment: {
     type: Schema.Types.ObjectId,
