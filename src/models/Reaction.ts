@@ -7,12 +7,17 @@ const ReactionSchema = new Schema<ReactionDBType>({
   user: {
     type: Schema.Types.ObjectId,
     ref: "users",
+    required: true,
   },
   myStatus: {
-    type: String,
-    enum: Object.values(LikeStatus),
-    default: LikeStatus.None,
-    required: true,
+    type: [
+      {
+        type: String,
+        enum: Object.values(LikeStatus),
+        default: LikeStatus.None,
+        required: true,
+      },
+    ],
   },
   comment: {
     type: Schema.Types.ObjectId,
