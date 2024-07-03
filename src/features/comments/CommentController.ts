@@ -26,7 +26,7 @@ export class CommentController {
       formatResponse(
         res,
         200,
-        CommentDTO.transform(result),
+        await CommentDTO.transform(result, req.user.id),
         "Comment retrieved successfully"
       );
     } catch (error) {
@@ -85,7 +85,8 @@ export class CommentController {
     try {
       const result = await this.commentService.reactToComment(
         req.body,
-        req.params.commentId
+        req.params.commentId,
+        req.user
       );
 
       if (!result) {

@@ -10,6 +10,7 @@ export class PostQueryRepository {
     const totalPostsCount = await PostModel.countDocuments();
 
     const posts: PostDBType[] = await PostModel.find()
+      .populate("blog")
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection })
@@ -27,7 +28,9 @@ export class PostQueryRepository {
   }
 
   async getByIdPost(id: string): Promise<PostViewModel | null> {
-    const foundPost = await PostModel.findOne({ _id: new ObjectId(id) });
+    const foundPost = await PostModel.findOne({
+      _id: new ObjectId(id),
+    }).populate("blog");
     return foundPost ? PostDTO.transform(foundPost) : null;
   }
 }

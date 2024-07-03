@@ -8,7 +8,7 @@ export class PostRepository {
   async getByIdPost(postId: string): Promise<PostDBType | null> {
     return await PostModel.findOne({
       _id: new ObjectId(postId),
-    });
+    }).populate("blog");
   }
 
   async removePost(id: string) {
@@ -43,7 +43,7 @@ export class PostRepository {
   async getByIdComment(id: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(id),
-    });
+    }).populate(["post", "likesInfo.status"]);
   }
 
   async createComment(

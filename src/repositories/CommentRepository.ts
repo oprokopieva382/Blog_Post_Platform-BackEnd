@@ -1,14 +1,22 @@
 import { ObjectId } from "mongodb";
 import { CommentInputModel } from "../type-models";
-import {
-  CommentDBType} from "../cloud_DB/mongo_db_types";
-import { CommentModel } from "../models";
+import { CommentDBType, ReactionDBType } from "../cloud_DB/mongo_db_types";
+import { CommentModel, ReactionModel } from "../models";
+import { LikeStatus } from "../types/LikesStatus";
+
 
 export class CommentRepository {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(commentId),
+    }).populate({
+      path: "likesInfo.status",
+      select: "myStatus",
     });
+  }
+
+  async getUserReactionStatus(userId: string, commentId: string) {
+    return ReactionModel.findOne({ user: userId, comment: commentId });
   }
 
   async removeComment(commentId: string) {
@@ -33,33 +41,43 @@ export class CommentRepository {
     return updatedComment;
   }
 
-  async likeReaction(commentId: string, likeStatus: string, count: number) {
+  async likeComment(commentId: string, count: number) {
     return await CommentModel.findOneAndUpdate(
       { _id: new ObjectId(commentId) },
       {
-        $inc: {
-          "likesInfo.likesCount": count,
-        },
-        $set: {
-          "likesInfo.myStatus": likeStatus,
-        },
+        $inc: { "likesInfo.likesCount": count },
       },
       { new: true }
     );
   }
 
-  async dislikeReaction(commentId: string, likeStatus: string, count: number) {
-    return await CommentModel.findOneAndUpdate(
+  async dislikeComment(
+    commentId: string,
+
+    count: number
+  ) {
+    return await CommentModel.findByIdAndUpdate(
       { _id: new ObjectId(commentId) },
       {
-        $inc: {
-          "likesInfo.dislikesCount": count,
-        },
-        $set: {
-          "likesInfo.myStatus": likeStatus,
-        },
+        $inc: { "likesInfo.dislikesCount": count },
       },
       { new: true }
     );
+  }
+
+  async updateMyReaction(
+    userId: string,
+    commentId: string,
+    myStatus: LikeStatus
+  ): Promise<ReactionDBType | null> {
+    return await ReactionModel.findOneAndUpdate(
+      { user: userId, comment: commentId },
+      {
+        $set: {
+          myStatus: myStatus,
+        },
+      },
+      { new: true }
+    )
   }
 }

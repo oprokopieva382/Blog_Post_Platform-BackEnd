@@ -6,4 +6,4 @@ export { UserModel } from "./User";
 export { SessionModel } from "./Session";
 export { PasswordModel } from "./PasswordRecovery";
 export { ReactionModel } from "./Reaction";
-export { ReactionCountModel } from "./ReactionCount";
+

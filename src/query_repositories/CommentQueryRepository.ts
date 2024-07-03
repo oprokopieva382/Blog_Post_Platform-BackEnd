@@ -3,39 +3,58 @@ import { CommentViewModel, Paginator } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { QueryCommentsType } from "../types/query-type";
 import { CommentDTO } from "../DTO";
-import { CommentModel } from "../models";
+import { CommentModel, ReactionModel } from "../models";
 
 export class CommentQueryRepository {
   async getCommentsOfPost(
     postId: string,
-    query: QueryCommentsType
+    query: QueryCommentsType,
+    userId: string
   ): Promise<Paginator<CommentViewModel>> {
     const totalCommentsCount = await CommentModel.countDocuments({
-      postId: postId.toString(),
+      post: postId.toString(),
     });
 
     const comments: CommentDBType[] = await CommentModel.find({
-      postId: postId.toString(),
+      post: postId.toString(),
     })
+      .populate({
+        path: "likesInfo.status",
+        select: "myStatus",
+      })
+      .populate("post", "_id")
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
-      .sort({ [query.sortBy]: query.sortDirection })
-      .lean();
+      .sort({ [query.sortBy]: query.sortDirection });
 
     const commentsToView = {
       pagesCount: Math.ceil(totalCommentsCount / query.pageSize),
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCommentsCount,
-      items: comments.map((c) => CommentDTO.transform(c)),
+      items: await Promise.all(
+        comments.map((c) => CommentDTO.transform(c, userId))
+      ),
     };
 
     return commentsToView;
   }
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
-    return await CommentModel.findOne({
+    const result = await CommentModel.findOne({
       _id: new ObjectId(id),
-    });
+    })
+      .populate({
+        path: "likesInfo.status",
+        select: "myStatus",
+      })
+      .populate("post", "_id");
+
+    console.log("getByIdComment in CommentQueryRepository", result);
+    return result;
+  }
+
+  async getUserReactionStatus(userId: string, commentId: string) {
+    return ReactionModel.findOne({ user: userId, comment: commentId });
   }
 }

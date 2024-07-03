@@ -30,6 +30,7 @@ postRouter.put(
 );
 postRouter.get(
   "/:postId/comments",
+  isAuthorizedMiddleware,
   postController.getPostComments.bind(postController)
 );
 postRouter.post(

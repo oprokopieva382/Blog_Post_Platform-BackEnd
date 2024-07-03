@@ -8,7 +8,9 @@ export class BlogService {
   constructor(
     protected blogRepository: BlogRepository,
     protected postRepository: PostRepository
-  ) {}
+  ) {
+    
+  }
 
   async removeBlog(id: string) {
     return await this.blogRepository.removeBlog(id);
@@ -38,9 +40,9 @@ export class BlogService {
     data: BlogPostInputModel
   ): Promise<PostDBType | null> {
     const { title, shortDescription, content } = data;
-    const isBlogExist = await this.blogRepository.getByIdBlog(blogId);
+    const blog = await this.blogRepository.getByIdBlog(blogId);
 
-    if (!isBlogExist) {
+    if (!blog) {
       throw ApiError.NotFoundError("Not found", ["No blog found"]);
     }
 
@@ -49,8 +51,7 @@ export class BlogService {
       title,
       shortDescription,
       content,
-      new ObjectId(blogId),
-      isBlogExist.name,
+      blog,
       new Date().toISOString()
     );
 

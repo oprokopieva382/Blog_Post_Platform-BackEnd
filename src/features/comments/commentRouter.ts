@@ -1,10 +1,18 @@
 import { Router } from "express";
-import { isAuthorizedMiddleware, validateComment, validateCommentReaction } from "../../middlewares";
+import {
+  isAuthorizedMiddleware,
+  validateComment,
+  validateCommentReaction,
+} from "../../middlewares";
 import { commentController } from "../../composition-root";
 
 export const commentRouter = Router();
 
-commentRouter.get("/:id", commentController.getById.bind(commentController));
+commentRouter.get(
+  "/:id",
+  isAuthorizedMiddleware,
+  commentController.getById.bind(commentController)
+);
 commentRouter.delete(
   "/:commentId",
   isAuthorizedMiddleware,
