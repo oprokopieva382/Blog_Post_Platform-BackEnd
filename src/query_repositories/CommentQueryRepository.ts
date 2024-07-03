@@ -11,11 +11,13 @@ export class CommentQueryRepository {
     query: QueryCommentsType
   ): Promise<Paginator<CommentViewModel>> {
     const totalCommentsCount = await CommentModel.countDocuments({
-      postId: postId.toString(),
+      post: postId.toString(),
     });
 
+    console.log("1. totalCommentsCount", totalCommentsCount);
+
     const comments: CommentDBType[] = await CommentModel.find({
-      postId: postId.toString(),
+      post: postId.toString(),
     })
       .populate({
         path: "likesInfo.status",
@@ -24,8 +26,9 @@ export class CommentQueryRepository {
       .populate("post", "_id")
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
-      .sort({ [query.sortBy]: query.sortDirection })
-      .lean();
+      .sort({ [query.sortBy]: query.sortDirection });
+
+    console.log("2. comments", comments);
 
     const commentsToView = {
       pagesCount: Math.ceil(totalCommentsCount / query.pageSize),
@@ -34,7 +37,7 @@ export class CommentQueryRepository {
       totalCount: totalCommentsCount,
       items: comments.map((c) => CommentDTO.transform(c)),
     };
-    console.log("commentsToView in CommentQueryRepository", commentsToView);
+    console.log("3. commentsToView in CommentQueryRepository", commentsToView);
     return commentsToView;
   }
 
