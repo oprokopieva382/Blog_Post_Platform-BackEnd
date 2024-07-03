@@ -7,7 +7,7 @@ const postSchema = new Schema<PostDBType>({
   shortDescription: { type: String, required: true },
   content: { type: String, required: true },
   blog: { type: Schema.Types.ObjectId, ref: "blogs", required: true },
-  createdAt: { type: String },
+  createdAt: { type: String }
 });
 
 export const PostModel = model("posts", postSchema);
