@@ -69,12 +69,11 @@ export class CommentService {
         LikeStatus.None
       );
 
-      await this.commentRepository.updateMyReaction(
+      return await this.commentRepository.updateMyReaction(
         userId,
         commentId,
-        LikeStatus.None
+        LikeStatus.Like
       );
-      return await this.commentRepository.likeComment(commentId, -1);
     }
 
     console.log(
@@ -152,12 +151,11 @@ export class CommentService {
         LikeStatus.None
       );
 
-      await this.commentRepository.updateMyReaction(
+      return await this.commentRepository.updateMyReaction(
         userId,
         commentId,
-        LikeStatus.None
+        LikeStatus.Dislike
       );
-      return await this.commentRepository.dislikeComment(commentId, -1);
     }
 
     console.log(

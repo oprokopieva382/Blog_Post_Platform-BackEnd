@@ -89,9 +89,7 @@ export class CommentController {
         req.user!
       );
 
-      console.log("req.params.commentId", req.params.commentId);
-
-      if (!result) {
+            if (!result) {
         throw ApiError.NotFoundError("Comment to react is not found", [
           `Comment with id ${req.params.commentId} does not exist`,
         ]);
