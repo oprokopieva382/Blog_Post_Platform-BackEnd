@@ -50,7 +50,6 @@ export class CommentQueryRepository {
       })
       .populate("post", "_id");
 
-    console.log("getByIdComment in CommentQueryRepository", result);
     return result;
   }
 

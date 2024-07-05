@@ -82,14 +82,14 @@ export class CommentController {
     res: Response,
     next: NextFunction
   ) {
-     try {
+    try {
       const result = await this.commentService.reactToComment(
         req.body,
         req.params.commentId,
         req.user!
       );
 
-            if (!result) {
+      if (!result) {
         throw ApiError.NotFoundError("Comment to react is not found", [
           `Comment with id ${req.params.commentId} does not exist`,
         ]);
@@ -97,7 +97,6 @@ export class CommentController {
 
       formatResponse(res, 204, {}, "React to comment successfully");
     } catch (error) {
-      console.log(error, " error ");
       next(error);
     }
   }

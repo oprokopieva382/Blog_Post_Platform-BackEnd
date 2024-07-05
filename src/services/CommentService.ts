@@ -30,8 +30,6 @@ export class CommentService {
       commentId
     );
 
-    console.log("1. userReaction from DB", userReaction);
-
     if (!userReaction) {
       const newReaction = new ReactionModel({
         _id: new ObjectId(),
@@ -46,14 +44,7 @@ export class CommentService {
       myStatus = userReaction.myStatus;
     }
 
-    console.log("2. myStatus", myStatus);
-
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
-      console.log(
-        "3. if myStatus DISLIKE & likeStatus LIKE, set myStatus - ",
-        likeStatus
-      );
-
       await this.commentRepository.updateMyReaction(
         userId,
         commentId,
@@ -64,22 +55,12 @@ export class CommentService {
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
-      console.log(
-        "4. if myStatus LIKE & likeStatus LIKE, set myStatus - ",
-        LikeStatus.None
-      );
-
       return await this.commentRepository.updateMyReaction(
         userId,
         commentId,
         LikeStatus.Like
       );
     }
-
-    console.log(
-      "5. if myStatus NONE & likeStatus LIKE, set myStatus - ",
-      likeStatus
-    );
 
     await this.commentRepository.updateMyReaction(
       userId,
@@ -108,8 +89,6 @@ export class CommentService {
       commentId
     );
 
-    console.log("1. userReaction from DB", userReaction);
-
     if (!userReaction) {
       const newReaction = new ReactionModel({
         _id: new ObjectId(),
@@ -124,14 +103,7 @@ export class CommentService {
       myStatus = userReaction.myStatus;
     }
 
-    console.log("2. myStatus", myStatus);
-
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
-      console.log(
-        "3. if myStatus LIKE & likeStatus DISLIKE, set myStatus - ",
-        likeStatus
-      );
-
       await this.commentRepository.updateMyReaction(
         userId,
         commentId,
@@ -146,11 +118,6 @@ export class CommentService {
     }
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
-      console.log(
-        "4. if myStatus DISLIKE & likeStatus DISLIKE, set myStatus - ",
-        LikeStatus.None
-      );
-
       return await this.commentRepository.updateMyReaction(
         userId,
         commentId,
@@ -158,10 +125,6 @@ export class CommentService {
       );
     }
 
-    console.log(
-      "5. if myStatus NONE & likeStatus DISLIKE, set myStatus - ",
-      likeStatus
-    );
     await this.commentRepository.updateMyReaction(
       userId,
       commentId,
@@ -190,8 +153,6 @@ export class CommentService {
       commentId
     );
 
-    console.log("1. userReaction from DB", userReaction);
-
     if (!userReaction) {
       const newReaction = new ReactionModel({
         _id: new ObjectId(),
@@ -206,14 +167,7 @@ export class CommentService {
       myStatus = userReaction.myStatus;
     }
 
-    console.log("2. myStatus", myStatus);
-
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.None) {
-      console.log(
-        "3. if myStatus LIKE & likeStatus NONE, set myStatus - ",
-        likeStatus
-      );
-
       await this.commentRepository.updateMyReaction(
         userId,
         commentId,
@@ -223,11 +177,6 @@ export class CommentService {
     }
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.None) {
-      console.log(
-        "4. if myStatus DISLIKE & likeStatus NONE, set myStatus - ",
-        LikeStatus.None
-      );
-
       await this.commentRepository.updateMyReaction(
         userId,
         commentId,
