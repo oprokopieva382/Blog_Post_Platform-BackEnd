@@ -64,8 +64,7 @@ export class ReactionDBType {
     public _id: Types.ObjectId,
     public user: UserDBType,
     public myStatus: LikeStatus,
-    public createdAt: string,
-    public comment: CommentDBType
+    public createdAt: string
   ) {}
 }
 export class SessionsDBType {
@@ -95,5 +94,3 @@ export class PasswordRecoveryDBType {
     public createdAt: string
   ) {}
 }
-
-

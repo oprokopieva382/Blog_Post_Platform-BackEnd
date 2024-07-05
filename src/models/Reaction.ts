@@ -1,27 +1,20 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 import { ReactionDBType } from "../cloud_DB/mongo_db_types";
-import { LikeStatus } from "../types/LikesStatus";
 
-const ReactionSchema = new Schema<ReactionDBType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "users",
-    required: true,
+const ReactionSchema = new Schema(
+  {
+    _id: { type: Schema.Types.ObjectId, required: true },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "users",
+      required: true,
+    },
+    createdAt: { type: String, required: true },
   },
-  myStatus: {
-    type: String,
-    enum: Object.values(LikeStatus),
-    default: LikeStatus.None,
-    required: true,
-  },
-  comment: {
-    type: Schema.Types.ObjectId,
-    ref: "comments",
-  },
-  createdAt: { type: String, required: true },
-});
+  { discriminatorKey: "category" }
+);
 
-export const ReactionModel = model("comment-reactions", ReactionSchema);
-
-
+export const ReactionModel = model<ReactionDBType & Document>(
+  "reactions",
+  ReactionSchema
+);
