@@ -1,22 +1,21 @@
 import { ObjectId } from "mongodb";
 import { CommentInputModel } from "../type-models";
-import { CommentDBType, ReactionDBType } from "../cloud_DB/mongo_db_types";
-import { CommentModel, ReactionModel } from "../models";
+import { CommentDBType } from "../cloud_DB/mongo_db_types";
+import { CommentModel, CommentReactionModel} from "../models";
 import { LikeStatus } from "../types/LikesStatus";
-
 
 export class CommentRepository {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(commentId),
     }).populate({
-      path: "likesInfo.status",
+      path: "status",
       select: "myStatus",
     });
   }
 
   async getUserReactionStatus(userId: string, commentId: string) {
-    return ReactionModel.findOne({ user: userId, comment: commentId });
+    return CommentReactionModel.findOne({ user: userId, comment: commentId });
   }
 
   async removeComment(commentId: string) {
@@ -45,7 +44,7 @@ export class CommentRepository {
     return await CommentModel.findOneAndUpdate(
       { _id: new ObjectId(commentId) },
       {
-        $inc: { "likesInfo.likesCount": count },
+        $inc: { likesCount: count },
       },
       { new: true }
     );
@@ -59,7 +58,7 @@ export class CommentRepository {
     return await CommentModel.findByIdAndUpdate(
       { _id: new ObjectId(commentId) },
       {
-        $inc: { "likesInfo.dislikesCount": count },
+        $inc: { dislikesCount: count },
       },
       { new: true }
     );
@@ -69,15 +68,13 @@ export class CommentRepository {
     userId: string,
     commentId: string,
     myStatus: LikeStatus
-  ): Promise<ReactionDBType | null> {
-    return await ReactionModel.findOneAndUpdate(
+  ): Promise<CommentDBType | null> {
+    return await CommentReactionModel.findOneAndUpdate(
       { user: userId, comment: commentId },
       {
-        $set: {
-          myStatus: myStatus,
-        },
+        $set: { myStatus },
       },
       { new: true }
-    )
+    );
   }
 }

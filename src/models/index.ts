@@ -7,4 +7,5 @@ export { SessionModel } from "./Session";
 export { PasswordModel } from "./PasswordRecovery";
 export { ReactionModel } from "./ReactionBase";
 export { CommentReactionModel } from "./CommentReaction";
+export { PostReactionModel } from "./PostReaction";
 

@@ -43,7 +43,7 @@ export class PostRepository {
   async getByIdComment(id: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({
       _id: new ObjectId(id),
-    }).populate(["post", "likesInfo.status"]);
+    }).populate(["post", "status"]);
   }
 
   async createComment(

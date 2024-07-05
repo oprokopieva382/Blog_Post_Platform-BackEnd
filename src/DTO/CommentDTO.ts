@@ -14,9 +14,10 @@ class CommentDTO {
       const status = await commentQueryRepository.getUserReactionStatus(
         userId,
         comment._id.toString()
-      );
+      ) as any;
       userStatus = status ? status.myStatus : LikeStatus.None;
     }
+  
     return {
       id: comment._id.toString(),
       content: comment.content,
@@ -25,8 +26,8 @@ class CommentDTO {
         userLogin: comment.commentatorInfo.userLogin,
       },
       likesInfo: {
-        likesCount: comment.likesInfo.likesCount,
-        dislikesCount: comment.likesInfo.dislikesCount,
+        likesCount: comment.likesCount,
+        dislikesCount: comment.dislikesCount,
         myStatus: userStatus,
       },
       createdAt: comment.createdAt,

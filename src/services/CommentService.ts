@@ -7,7 +7,7 @@ import {
 } from "../type-models";
 import { CommentRepository } from "../repositories";
 import { LikeStatus } from "../types/LikesStatus";
-import { ReactionModel } from "../models";
+import { CommentReactionModel, ReactionModel } from "../models";
 
 export class CommentService {
   constructor(protected commentRepository: CommentRepository) {}
@@ -25,24 +25,26 @@ export class CommentService {
     }
     let myStatus;
 
-    const userReaction = await this.commentRepository.getUserReactionStatus(
+    const userReaction = (await this.commentRepository.getUserReactionStatus(
       userId,
       commentId
-    );
+    )) as any;
 
     if (!userReaction) {
-      const newReaction = new ReactionModel({
+      const newReaction = new CommentReactionModel({
         _id: new ObjectId(),
         user: userId,
         myStatus: LikeStatus.None,
         comment: commentId,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       });
 
       await newReaction.save();
     } else {
       myStatus = userReaction.myStatus;
     }
+
+console.log("userReaction", userReaction);
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
       await this.commentRepository.updateMyReaction(
@@ -87,7 +89,7 @@ export class CommentService {
     const userReaction = await this.commentRepository.getUserReactionStatus(
       userId,
       commentId
-    );
+    ) as any;
 
     if (!userReaction) {
       const newReaction = new ReactionModel({
@@ -151,7 +153,7 @@ export class CommentService {
     const userReaction = await this.commentRepository.getUserReactionStatus(
       userId,
       commentId
-    );
+    ) as any;
 
     if (!userReaction) {
       const newReaction = new ReactionModel({
@@ -229,7 +231,7 @@ export class CommentService {
     const myReactionStatus = await this.commentRepository.getUserReactionStatus(
       userId,
       commentId
-    );
+    ) as any;
     return myReactionStatus ? myReactionStatus.myStatus : LikeStatus.None;
   }
 
