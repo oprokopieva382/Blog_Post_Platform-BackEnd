@@ -1,7 +1,7 @@
 import { Schema, model, Document } from "mongoose";
 import { ReactionDBType } from "../cloud_DB/mongo_db_types";
 
-const ReactionSchema = new Schema(
+const ReactionBaseSchema = new Schema(
   {
     _id: { type: Schema.Types.ObjectId, required: true },
     user: {
@@ -16,5 +16,5 @@ const ReactionSchema = new Schema(
 
 export const ReactionModel = model<ReactionDBType & Document>(
   "reactions",
-  ReactionSchema
+  ReactionBaseSchema
 );
