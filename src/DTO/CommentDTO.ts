@@ -10,7 +10,6 @@ class CommentDTO {
   ): Promise<CommentViewModel> {
     let userStatus: LikeStatus = LikeStatus.None;
 
-    console.log("1. userId", userId);
     if (userId) {
       const status = await commentQueryRepository.getUserReactionStatus(
         userId,
@@ -18,8 +17,6 @@ class CommentDTO {
       );
       userStatus = status ? status.myStatus : LikeStatus.None;
     }
-    console.log("2. comment", comment);
-    console.log("3. userStatus", userStatus);
     return {
       id: comment._id.toString(),
       content: comment.content,

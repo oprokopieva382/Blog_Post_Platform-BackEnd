@@ -6,6 +6,7 @@ import {
   validatePost,
 } from "../../middlewares";
 import { postController } from "../../composition-root";
+import { softAccessMiddleware } from "../../middlewares/softAccessMiddleware";
 
 export const postRouter = Router();
 
@@ -30,7 +31,7 @@ postRouter.put(
 );
 postRouter.get(
   "/:postId/comments",
-  isAuthorizedMiddleware,
+  softAccessMiddleware,
   postController.getPostComments.bind(postController)
 );
 postRouter.post(

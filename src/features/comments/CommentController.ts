@@ -26,7 +26,7 @@ export class CommentController {
       formatResponse(
         res,
         200,
-        await CommentDTO.transform(result, req.user.id),
+        await CommentDTO.transform(result, req?.user?.id),
         "Comment retrieved successfully"
       );
     } catch (error) {
@@ -38,7 +38,7 @@ export class CommentController {
     try {
       const result = await this.commentService.removeComment(
         req.params.commentId,
-        req.user
+        req.user!
       );
 
       if (!result) {
@@ -62,7 +62,7 @@ export class CommentController {
       const result = await this.commentService.updateComment(
         req.body,
         req.params.commentId,
-        req.user
+        req.user!
       );
 
       if (!result) {
@@ -86,7 +86,7 @@ export class CommentController {
       const result = await this.commentService.reactToComment(
         req.body,
         req.params.commentId,
-        req.user
+        req.user!
       );
 
       if (!result) {

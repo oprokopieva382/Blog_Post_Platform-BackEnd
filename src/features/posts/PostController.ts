@@ -112,11 +112,10 @@ export class PostController {
 
   async getPostComments(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("req.user", req.user);
       const result = await this.commentQueryRepository.getCommentsOfPost(
         req.params.postId,
         commentsQueryFilter(req.query),
-        req.user.id
+        req?.user?.id
       );
 
       if (result.items.length === 0 || !result) {
@@ -140,7 +139,7 @@ export class PostController {
       const result = await this.postService.createPostComment(
         req.params.postId,
         req.body,
-        req.user
+        req.user!
       );
 
       if (!result) {
@@ -152,7 +151,7 @@ export class PostController {
       formatResponse(
         res,
         201,
-        await CommentDTO.transform(result, req.user.id),
+        await CommentDTO.transform(result, req.user!.id),
         "Comment created successfully"
       );
     } catch (error) {

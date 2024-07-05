@@ -5,11 +5,8 @@ import {
   validationResult,
 } from "express-validator";
 import { ApiError } from "../helper/api-errors";
-import { LikeStatus } from "../types/LikesStatus";
 
-export const isValidLikeStatus = (value: any): boolean => {
-  return Object.values(LikeStatus).includes(value);
-};
+const validLikeStatusRegex = /^(Like|None|Dislike)$/;
 
 export const validateCommentReaction = async (
   req: Request,
@@ -24,12 +21,8 @@ export const validateCommentReaction = async (
         .trim()
         .isString()
         .withMessage("likeStatus field must be a string")
-        .custom((value) => {
-          if (!isValidLikeStatus(value)) {
-            throw new Error("Invalid likeStatus value.");
-          }
-          return true;
-        })
+        .matches(validLikeStatusRegex)
+        .withMessage("regex validation failure")
     );
 
     await Promise.all(allBodyValidation.map((item) => item.run(req)));
@@ -39,6 +32,7 @@ export const validateCommentReaction = async (
       const errorsMessages = errors.array({
         onlyFirstError: true,
       }) as FieldValidationError[];
+
       throw ApiError.BadRequestError(
         "Validation failed",
         errorsMessages.map((error) => ({

@@ -5,12 +5,13 @@ import {
   validateCommentReaction,
 } from "../../middlewares";
 import { commentController } from "../../composition-root";
+import { softAccessMiddleware } from "../../middlewares/softAccessMiddleware";
 
 export const commentRouter = Router();
 
 commentRouter.get(
   "/:id",
-  isAuthorizedMiddleware,
+  softAccessMiddleware,
   commentController.getById.bind(commentController)
 );
 commentRouter.delete(

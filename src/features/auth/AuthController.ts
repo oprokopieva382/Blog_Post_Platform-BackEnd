@@ -14,7 +14,7 @@ export class AuthController {
 
   async me(req: Request, res: Response, next: NextFunction) {
     try {
-      const me = await this.userQueryRepository.getByIdUser(req.user.id);
+      const me = await this.userQueryRepository.getByIdUser(req.user!.id);
       if (!me) {
         throw ApiError.UnauthorizedError("Not authorized", [
           "Authorization failed. Can't find user with such id",

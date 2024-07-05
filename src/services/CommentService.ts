@@ -30,8 +30,6 @@ export class CommentService {
       commentId
     );
 
-    console.log("1. userReaction from DB", userReaction);
-
     if (!userReaction) {
       const newReaction = new ReactionModel({
         _id: new ObjectId(),
@@ -46,14 +44,7 @@ export class CommentService {
       myStatus = userReaction.myStatus;
     }
 
-    console.log("2. myStatus", myStatus);
-
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
-      console.log(
-        "3. if myStatus DISLIKE & likeStatus LIKE, set myStatus - ",
-        likeStatus
-      );
-
       await this.commentRepository.updateMyReaction(
         userId,
         commentId,
@@ -64,23 +55,12 @@ export class CommentService {
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
-      console.log(
-        "4. if myStatus LIKE & likeStatus LIKE, set myStatus - ",
-        LikeStatus.None
-      );
-
-      await this.commentRepository.updateMyReaction(
+      return await this.commentRepository.updateMyReaction(
         userId,
         commentId,
-        LikeStatus.None
+        LikeStatus.Like
       );
-      return await this.commentRepository.likeComment(commentId, -1);
     }
-
-    console.log(
-      "5. if myStatus NONE & likeStatus LIKE, set myStatus - ",
-      likeStatus
-    );
 
     await this.commentRepository.updateMyReaction(
       userId,
@@ -109,7 +89,69 @@ export class CommentService {
       commentId
     );
 
-    console.log("1. userReaction from DB", userReaction);
+    if (!userReaction) {
+      const newReaction = new ReactionModel({
+        _id: new ObjectId(),
+        user: userId,
+        myStatus: LikeStatus.None,
+        comment: commentId,
+        createdAt: new Date().toISOString(),
+      });
+
+      await newReaction.save();
+    } else {
+      myStatus = userReaction.myStatus;
+    }
+
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
+      await this.commentRepository.updateMyReaction(
+        userId,
+        commentId,
+        likeStatus
+      );
+      await this.commentRepository.likeComment(commentId, -1);
+      return await this.commentRepository.dislikeComment(
+        commentId,
+
+        1
+      );
+    }
+
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
+      return await this.commentRepository.updateMyReaction(
+        userId,
+        commentId,
+        LikeStatus.Dislike
+      );
+    }
+
+    await this.commentRepository.updateMyReaction(
+      userId,
+      commentId,
+      likeStatus
+    );
+    return await this.commentRepository.dislikeComment(commentId, 1);
+  }
+
+  private async noneComment(
+    commentId: string,
+    likeStatus: LikeStatus,
+    userId: string
+  ) {
+    const comment = await this.commentRepository.getByIdComment(commentId);
+
+    if (!comment) {
+      throw ApiError.NotFoundError("Comment not found", [
+        `Comment with id ${commentId} does not exist`,
+      ]);
+    }
+
+    let myStatus;
+
+    const userReaction = await this.commentRepository.getUserReactionStatus(
+      userId,
+      commentId
+    );
 
     if (!userReaction) {
       const newReaction = new ReactionModel({
@@ -125,33 +167,16 @@ export class CommentService {
       myStatus = userReaction.myStatus;
     }
 
-    console.log("2. myStatus", myStatus);
-
-    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
-      console.log(
-        "3. if myStatus LIKE & likeStatus DISLIKE, set myStatus - ",
-        likeStatus
-      );
-
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.None) {
       await this.commentRepository.updateMyReaction(
         userId,
         commentId,
         likeStatus
       );
-      await this.commentRepository.likeComment(commentId, -1);
-      return await this.commentRepository.dislikeComment(
-        commentId,
-
-        1
-      );
+      return await this.commentRepository.likeComment(commentId, -1);
     }
 
-    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
-      console.log(
-        "4. if myStatus DISLIKE & likeStatus DISLIKE, set myStatus - ",
-        LikeStatus.None
-      );
-
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.None) {
       await this.commentRepository.updateMyReaction(
         userId,
         commentId,
@@ -159,17 +184,11 @@ export class CommentService {
       );
       return await this.commentRepository.dislikeComment(commentId, -1);
     }
-
-    console.log(
-      "5. if myStatus NONE & likeStatus DISLIKE, set myStatus - ",
-      likeStatus
-    );
-    await this.commentRepository.updateMyReaction(
+    return await this.commentRepository.updateMyReaction(
       userId,
       commentId,
       likeStatus
     );
-    return await this.commentRepository.dislikeComment(commentId, 1);
   }
 
   async removeComment(commentId: string, user: UserViewModel) {
@@ -228,6 +247,9 @@ export class CommentService {
         break;
       case LikeStatus.Dislike:
         result = await this.dislikeComment(commentId, likeStatus, user.id);
+        break;
+      case LikeStatus.None:
+        result = await this.noneComment(commentId, likeStatus, user.id);
         break;
       default:
         throw ApiError.BadRequestError("Invalid like status", [

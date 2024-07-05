@@ -6,6 +6,7 @@ declare global {
       userId: string;
       deviceId: string;
       user: UserViewModel;
+      //optionalUser?: UserViewModel;
     }
   }
 }
