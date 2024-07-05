@@ -45,9 +45,6 @@ export class PostService {
       myStatus = reaction.myStatus;
     }
 
-    console.log("userId", userId);
-    console.log("reaction", reaction);
-
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
       await this.postRepository.updateMyReaction(userId, postId, likeStatus);
       await this.postRepository.dislikePost(postId, -1);
@@ -80,12 +77,12 @@ export class PostService {
 
     let myStatus;
 
-    const userReaction = (await this.postRepository.getReactionStatus(
+    const reaction = (await this.postRepository.getReactionStatus(
       userId,
       postId
     )) as any;
 
-    if (!userReaction) {
+    if (!reaction) {
       const newReaction = new PostReactionModel({
         _id: new ObjectId(),
         user: userId,
@@ -96,7 +93,7 @@ export class PostService {
 
       await newReaction.save();
     } else {
-      myStatus = userReaction.myStatus;
+      myStatus = reaction.myStatus;
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
@@ -192,6 +189,9 @@ export class PostService {
       content: content,
       blog: blogId,
       createdAt: new Date().toISOString(),
+      likesCount: 0,
+      dislikesCount: 0,
+      status: [],
     });
 
     const createdPost = await newPost.save();
@@ -245,11 +245,9 @@ export class PostService {
         userId: user.id,
         userLogin: user.login,
       },
-      likesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        status: [],
-      },
+      likesCount: 0,
+      dislikesCount: 0,
+      status: [],
       createdAt: new Date().toISOString(),
     });
 

@@ -17,7 +17,7 @@ class PostDTO {
       )) as any;
       userStatus = status ? status.myStatus : LikeStatus.None;
     }
-console.log("post info", post)
+
     return {
       id: post._id.toString(),
       title: post.title,

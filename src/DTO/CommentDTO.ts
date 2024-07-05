@@ -11,7 +11,7 @@ class CommentDTO {
     let userStatus: LikeStatus = LikeStatus.None;
 
     if (userId) {
-      const status = await commentQueryRepository.getUserReactionStatus(
+      const status = await commentQueryRepository.getReactionStatus(
         userId,
         comment._id.toString()
       ) as any;

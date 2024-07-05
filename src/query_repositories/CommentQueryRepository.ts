@@ -51,7 +51,7 @@ export class CommentQueryRepository {
       .populate("post", "_id");
   }
 
-  async getUserReactionStatus(userId: string, commentId: string) {
+  async getReactionStatus(userId: string, commentId: string) {
     return CommentReactionModel.findOne({ user: userId, comment: commentId });
   }
 }

@@ -14,7 +14,7 @@ export class CommentRepository {
     });
   }
 
-  async getUserReactionStatus(userId: string, commentId: string) {
+  async getReactionStatus(userId: string, commentId: string) {
     return CommentReactionModel.findOne({ user: userId, comment: commentId });
   }
 
@@ -50,10 +50,7 @@ export class CommentRepository {
     );
   }
 
-  async dislikeComment(
-    commentId: string,
-    count: number
-  ) {
+  async dislikeComment(commentId: string, count: number) {
     return await CommentModel.findByIdAndUpdate(
       { _id: new ObjectId(commentId) },
       {

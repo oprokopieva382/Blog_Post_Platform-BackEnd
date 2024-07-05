@@ -7,7 +7,7 @@ import {
 } from "../type-models";
 import { CommentRepository } from "../repositories";
 import { LikeStatus } from "../types/LikesStatus";
-import { CommentReactionModel, ReactionModel } from "../models";
+import { CommentReactionModel } from "../models";
 
 export class CommentService {
   constructor(protected commentRepository: CommentRepository) {}
@@ -25,12 +25,12 @@ export class CommentService {
     }
     let myStatus;
 
-    const userReaction = (await this.commentRepository.getUserReactionStatus(
+    const reaction = (await this.commentRepository.getReactionStatus(
       userId,
       commentId
     )) as any;
 
-    if (!userReaction) {
+    if (!reaction) {
       const newReaction = new CommentReactionModel({
         _id: new ObjectId(),
         user: userId,
@@ -41,7 +41,7 @@ export class CommentService {
 
       await newReaction.save();
     } else {
-      myStatus = userReaction.myStatus;
+      myStatus = reaction.myStatus;
     }
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
@@ -84,13 +84,13 @@ export class CommentService {
 
     let myStatus;
 
-    const userReaction = await this.commentRepository.getUserReactionStatus(
+    const reaction = await this.commentRepository.getReactionStatus(
       userId,
       commentId
     ) as any;
 
-    if (!userReaction) {
-      const newReaction = new ReactionModel({
+    if (!reaction) {
+      const newReaction = new CommentReactionModel({
         _id: new ObjectId(),
         user: userId,
         myStatus: LikeStatus.None,
@@ -100,7 +100,7 @@ export class CommentService {
 
       await newReaction.save();
     } else {
-      myStatus = userReaction.myStatus;
+      myStatus = reaction.myStatus;
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
@@ -148,13 +148,13 @@ export class CommentService {
 
     let myStatus;
 
-    const userReaction = await this.commentRepository.getUserReactionStatus(
+    const reaction = await this.commentRepository.getReactionStatus(
       userId,
       commentId
     ) as any;
 
-    if (!userReaction) {
-      const newReaction = new ReactionModel({
+    if (!reaction) {
+      const newReaction = new CommentReactionModel({
         _id: new ObjectId(),
         user: userId,
         myStatus: LikeStatus.None,
@@ -164,7 +164,7 @@ export class CommentService {
 
       await newReaction.save();
     } else {
-      myStatus = userReaction.myStatus;
+      myStatus = reaction.myStatus;
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.None) {
@@ -226,7 +226,7 @@ export class CommentService {
   }
 
   async getMyCommentReactionStatus(userId: string, commentId: string) {
-    const myReactionStatus = await this.commentRepository.getUserReactionStatus(
+    const myReactionStatus = await this.commentRepository.getReactionStatus(
       userId,
       commentId
     ) as any;
