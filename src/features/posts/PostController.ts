@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
-import { PostInputModel, PostViewModel } from "../../type-models";
+import { LikeInputModel, PostInputModel, PostViewModel } from "../../type-models";
 import { PostService } from "../../services";
 import {
   CommentQueryRepository,
@@ -158,4 +158,28 @@ export class PostController {
       next(error);
     }
   }
+
+  // async reactToPost(
+  //   req: Request<{ postId: string }, {}, LikeInputModel>,
+  //   res: Response,
+  //   next: NextFunction
+  // ) {
+  //   try {
+  //     const result = await this.postService.reactToPost(
+  //       req.body,
+  //       req.params.postId,
+  //       req.user!
+  //     );
+
+  //     if (!result) {
+  //       throw ApiError.NotFoundError("Post to react is not found", [
+  //         `Post with id ${req.params.postId} does not exist`,
+  //       ]);
+  //     }
+
+  //     formatResponse(res, 204, {}, "React to post successfully");
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 }

@@ -2,11 +2,12 @@ import { Router } from "express";
 import {
   isAdminMiddleware,
   isAuthorizedMiddleware,
+  softAccessMiddleware,
   validateComment,
   validatePost,
+  validateReaction,
 } from "../../middlewares";
 import { postController } from "../../composition-root";
-import { softAccessMiddleware } from "../../middlewares/softAccessMiddleware";
 
 export const postRouter = Router();
 
@@ -40,3 +41,9 @@ postRouter.post(
   validateComment,
   postController.createPostComment.bind(postController)
 );
+// postRouter.put(
+//   "/:postId/like-status",
+//   isAuthorizedMiddleware,
+//   validateReaction,
+//   postController.reactToPost.bind(postController)
+// );

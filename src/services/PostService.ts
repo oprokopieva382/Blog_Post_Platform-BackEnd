@@ -1,10 +1,11 @@
 import { ObjectId } from "mongodb";
 import { CommentDBType } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
-import { PostInputModel, UserViewModel } from "../type-models";
+import { LikeInputModel, PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
 import { BlogRepository, PostRepository } from "../repositories";
 import { CommentModel, PostModel } from "../models";
+import { LikeStatus } from "../types/LikesStatus";
 
 export class PostService {
   constructor(
@@ -34,9 +35,9 @@ export class PostService {
       blog: blogId,
       createdAt: new Date().toISOString(),
     });
-  
+
     const createdPost = await newPost.save();
-    
+
     const post = this.postRepository.getByIdPost(createdPost._id.toString());
 
     if (!createdPost) {
@@ -95,7 +96,7 @@ export class PostService {
     });
 
     const createdComment = await newComment.save();
-    
+
     if (!createdComment) {
       throw ApiError.NotFoundError("Comment is not found", [
         `Comment does not exist`,
@@ -106,4 +107,27 @@ export class PostService {
       createdComment._id.toString()
     );
   }
+
+  // async reactToPost(data: LikeInputModel, postId: string, user: UserViewModel) {
+  //   const { likeStatus } = data;
+  //   let result;
+
+  //   switch (likeStatus) {
+  //     case LikeStatus.Like:
+  //       result = await this.likePost(postId, likeStatus, user.id);
+  //       break;
+  //     case LikeStatus.Dislike:
+  //       result = await this.dislikePost(postId, likeStatus, user.id);
+  //       break;
+  //     case LikeStatus.None:
+  //       result = await this.nonePost(postId, likeStatus, user.id);
+  //       break;
+  //     default:
+  //       throw ApiError.BadRequestError("Invalid like status", [
+  //         "Invalid like status provided",
+  //       ]);
+  //   }
+
+  //   return result;
+  // }
 }
