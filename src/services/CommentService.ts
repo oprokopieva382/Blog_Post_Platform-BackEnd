@@ -172,6 +172,78 @@ export class CommentService {
     return await this.commentRepository.dislikeComment(commentId, 1);
   }
 
+  private async noneComment(
+    commentId: string,
+    likeStatus: LikeStatus,
+    userId: string
+  ) {
+    const comment = await this.commentRepository.getByIdComment(commentId);
+
+    if (!comment) {
+      throw ApiError.NotFoundError("Comment not found", [
+        `Comment with id ${commentId} does not exist`,
+      ]);
+    }
+
+    let myStatus;
+
+    const userReaction = await this.commentRepository.getUserReactionStatus(
+      userId,
+      commentId
+    );
+
+    console.log("1. userReaction from DB", userReaction);
+
+    if (!userReaction) {
+      const newReaction = new ReactionModel({
+        _id: new ObjectId(),
+        user: userId,
+        myStatus: LikeStatus.None,
+        comment: commentId,
+        createdAt: new Date().toISOString(),
+      });
+
+      await newReaction.save();
+    } else {
+      myStatus = userReaction.myStatus;
+    }
+
+    console.log("2. myStatus", myStatus);
+
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.None) {
+      console.log(
+        "3. if myStatus LIKE & likeStatus NONE, set myStatus - ",
+        likeStatus
+      );
+
+      await this.commentRepository.updateMyReaction(
+        userId,
+        commentId,
+        likeStatus
+      );
+      return await this.commentRepository.likeComment(commentId, -1);
+    }
+
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.None) {
+      console.log(
+        "4. if myStatus DISLIKE & likeStatus NONE, set myStatus - ",
+        LikeStatus.None
+      );
+
+      await this.commentRepository.updateMyReaction(
+        userId,
+        commentId,
+        LikeStatus.None
+      );
+      return await this.commentRepository.dislikeComment(commentId, -1);
+    }
+    return await this.commentRepository.updateMyReaction(
+      userId,
+      commentId,
+      likeStatus
+    );
+  }
+
   async removeComment(commentId: string, user: UserViewModel) {
     const foundComment = await this.commentRepository.getByIdComment(commentId);
 
@@ -228,6 +300,9 @@ export class CommentService {
         break;
       case LikeStatus.Dislike:
         result = await this.dislikeComment(commentId, likeStatus, user.id);
+        break;
+      case LikeStatus.None:
+        result = await this.noneComment(commentId, likeStatus, user.id);
         break;
       default:
         throw ApiError.BadRequestError("Invalid like status", [

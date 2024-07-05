@@ -9,7 +9,7 @@ export class CommentQueryRepository {
   async getCommentsOfPost(
     postId: string,
     query: QueryCommentsType,
-    userId: string
+    userId?: string
   ): Promise<Paginator<CommentViewModel>> {
     const totalCommentsCount = await CommentModel.countDocuments({
       post: postId.toString(),

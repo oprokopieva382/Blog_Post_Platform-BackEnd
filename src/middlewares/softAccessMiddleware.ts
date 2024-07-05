@@ -1,17 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../helper/api-errors";
 import { jwtService, userQueryRepository } from "../composition-root";
 
-export const isAuthorizedMiddleware = async (
+export const softAccessMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     if (!req.headers.authorization) {
-      throw ApiError.UnauthorizedError("Not authorized", [
-        "Authorization failed. No token provided",
-      ]);
+     return next()
     }
 
     const token = req.headers.authorization.split(" ")[1];
@@ -19,17 +16,13 @@ export const isAuthorizedMiddleware = async (
     const userId = await jwtService.getUserIdByAccessToken(token);
 
     if (!userId) {
-      throw ApiError.UnauthorizedError("Not authorized", [
-        "Authorization failed. Access token is incorrect or expired",
-      ]);
+     return next()
     }
 
     //getting authorizedUser from cache or DB
     const authorizedUser = await userQueryRepository.getByIdUser(userId);
     if (!authorizedUser) {
-      throw ApiError.UnauthorizedError("Not authorized", [
-        "Authorization failed. Can't find user with such id",
-      ]);
+     return next()
     }
 
     req.user = authorizedUser;
