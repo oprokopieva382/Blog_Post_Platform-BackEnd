@@ -8,7 +8,7 @@ export const softAccessMiddleware = async (
 ) => {
   try {
     if (!req.headers.authorization) {
-     return next()
+      return next();
     }
 
     const token = req.headers.authorization.split(" ")[1];
@@ -16,13 +16,13 @@ export const softAccessMiddleware = async (
     const userId = await jwtService.getUserIdByAccessToken(token);
 
     if (!userId) {
-     return next()
+      return next();
     }
 
     //getting authorizedUser from cache or DB
     const authorizedUser = await userQueryRepository.getByIdUser(userId);
     if (!authorizedUser) {
-     return next()
+      return next();
     }
 
     req.user = authorizedUser;
