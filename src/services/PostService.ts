@@ -4,7 +4,7 @@ import { ApiError } from "../helper/api-errors";
 import { LikeInputModel, PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
 import { BlogRepository, PostRepository } from "../repositories";
-import { CommentModel, PostModel } from "../models";
+import { CommentModel, PostModel, PostReactionModel } from "../models";
 import { LikeStatus } from "../types/LikesStatus";
 
 export class PostService {
@@ -12,6 +12,164 @@ export class PostService {
     protected blogRepository: BlogRepository,
     protected postRepository: PostRepository
   ) {}
+
+  private async likePost(
+    postId: string,
+    likeStatus: LikeStatus,
+    userId: string
+  ) {
+    const post = await this.postRepository.getByIdPost(postId);
+    if (!post) {
+      throw ApiError.NotFoundError("Post not found", [
+        `Post with id ${postId} does not exist`,
+      ]);
+    }
+    let myStatus;
+
+    const reaction = (await this.postRepository.getReactionStatus(
+      userId,
+      postId
+    )) as any;
+
+    if (!reaction) {
+      const newReaction = new PostReactionModel({
+        _id: new ObjectId(),
+        user: userId,
+        myStatus: LikeStatus.None,
+        post: postId,
+        createdAt: new Date().toISOString(),
+      });
+
+      await newReaction.save();
+    } else {
+      myStatus = reaction.myStatus;
+    }
+
+    console.log("userId", userId);
+    console.log("reaction", reaction);
+
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
+      await this.postRepository.updateMyReaction(userId, postId, likeStatus);
+      await this.postRepository.dislikePost(postId, -1);
+      return await this.postRepository.likePost(postId, 1);
+    }
+
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
+      return await this.postRepository.updateMyReaction(
+        userId,
+        postId,
+        LikeStatus.Like
+      );
+    }
+
+    await this.postRepository.updateMyReaction(userId, postId, likeStatus);
+    return await this.postRepository.likePost(postId, 1);
+  }
+
+  private async dislikePost(
+    postId: string,
+    likeStatus: LikeStatus,
+    userId: string
+  ) {
+    const post = await this.postRepository.getByIdPost(postId);
+    if (!post) {
+      throw ApiError.NotFoundError("Post not found", [
+        `Post with id ${postId} does not exist`,
+      ]);
+    }
+
+    let myStatus;
+
+    const userReaction = (await this.postRepository.getReactionStatus(
+      userId,
+      postId
+    )) as any;
+
+    if (!userReaction) {
+      const newReaction = new PostReactionModel({
+        _id: new ObjectId(),
+        user: userId,
+        myStatus: LikeStatus.None,
+        post: postId,
+        createdAt: new Date().toISOString(),
+      });
+
+      await newReaction.save();
+    } else {
+      myStatus = userReaction.myStatus;
+    }
+
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
+      await this.postRepository.updateMyReaction(userId, postId, likeStatus);
+      await this.postRepository.likePost(postId, -1);
+      return await this.postRepository.dislikePost(postId, 1);
+    }
+
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
+      return await this.postRepository.updateMyReaction(
+        userId,
+        postId,
+        LikeStatus.Dislike
+      );
+    }
+
+    await this.postRepository.updateMyReaction(userId, postId, likeStatus);
+    return await this.postRepository.dislikePost(postId, 1);
+  }
+
+  private async nonePost(
+    postId: string,
+    likeStatus: LikeStatus,
+    userId: string
+  ) {
+    const post = await this.postRepository.getByIdComment(postId);
+
+    if (!post) {
+      throw ApiError.NotFoundError("Post not found", [
+        `Post with id ${postId} does not exist`,
+      ]);
+    }
+
+    let myStatus;
+
+    const reaction = (await this.postRepository.getReactionStatus(
+      userId,
+      postId
+    )) as any;
+
+    if (!reaction) {
+      const newReaction = new PostReactionModel({
+        _id: new ObjectId(),
+        user: userId,
+        myStatus: LikeStatus.None,
+        post: postId,
+        createdAt: new Date().toISOString(),
+      });
+
+      await newReaction.save();
+    } else {
+      myStatus = reaction.myStatus;
+    }
+
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.None) {
+      await this.postRepository.updateMyReaction(userId, postId, likeStatus);
+      return await this.postRepository.likePost(postId, -1);
+    }
+
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.None) {
+      await this.postRepository.updateMyReaction(
+        userId,
+        postId,
+        LikeStatus.None
+      );
+      return await this.postRepository.dislikePost(postId, -1);
+    }
+    return await this.postRepository.updateMyReaction(
+      userId,
+      postId,
+      likeStatus
+    );
+  }
 
   async removePost(id: string) {
     return await this.postRepository.removePost(id);
@@ -108,26 +266,26 @@ export class PostService {
     );
   }
 
-  // async reactToPost(data: LikeInputModel, postId: string, user: UserViewModel) {
-  //   const { likeStatus } = data;
-  //   let result;
+  async reactToPost(data: LikeInputModel, postId: string, user: UserViewModel) {
+    const { likeStatus } = data;
+    let result;
 
-  //   switch (likeStatus) {
-  //     case LikeStatus.Like:
-  //       result = await this.likePost(postId, likeStatus, user.id);
-  //       break;
-  //     case LikeStatus.Dislike:
-  //       result = await this.dislikePost(postId, likeStatus, user.id);
-  //       break;
-  //     case LikeStatus.None:
-  //       result = await this.nonePost(postId, likeStatus, user.id);
-  //       break;
-  //     default:
-  //       throw ApiError.BadRequestError("Invalid like status", [
-  //         "Invalid like status provided",
-  //       ]);
-  //   }
+    switch (likeStatus) {
+      case LikeStatus.Like:
+        result = await this.likePost(postId, likeStatus, user.id);
+        break;
+      case LikeStatus.Dislike:
+        result = await this.dislikePost(postId, likeStatus, user.id);
+        break;
+      case LikeStatus.None:
+        result = await this.nonePost(postId, likeStatus, user.id);
+        break;
+      default:
+        throw ApiError.BadRequestError("Invalid like status", [
+          "Invalid like status provided",
+        ]);
+    }
 
-  //   return result;
-  // }
+    return result;
+  }
 }

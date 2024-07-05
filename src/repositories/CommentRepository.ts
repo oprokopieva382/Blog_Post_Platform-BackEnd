@@ -52,7 +52,6 @@ export class CommentRepository {
 
   async dislikeComment(
     commentId: string,
-
     count: number
   ) {
     return await CommentModel.findByIdAndUpdate(

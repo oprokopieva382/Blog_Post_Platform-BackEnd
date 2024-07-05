@@ -11,8 +11,16 @@ import { postController } from "../../composition-root";
 
 export const postRouter = Router();
 
-postRouter.get("/", postController.getAll.bind(postController));
-postRouter.get("/:id", postController.getById.bind(postController));
+postRouter.get(
+  "/",
+  softAccessMiddleware,
+  postController.getAll.bind(postController)
+);
+postRouter.get(
+  "/:id",
+  softAccessMiddleware,
+  postController.getById.bind(postController)
+);
 postRouter.post(
   "/",
   isAdminMiddleware,
@@ -41,9 +49,9 @@ postRouter.post(
   validateComment,
   postController.createPostComment.bind(postController)
 );
-// postRouter.put(
-//   "/:postId/like-status",
-//   isAuthorizedMiddleware,
-//   validateReaction,
-//   postController.reactToPost.bind(postController)
-// );
+postRouter.put(
+  "/:postId/like-status",
+  isAuthorizedMiddleware,
+  validateReaction,
+  postController.reactToPost.bind(postController)
+);

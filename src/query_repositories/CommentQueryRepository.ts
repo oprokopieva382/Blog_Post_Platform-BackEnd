@@ -41,7 +41,7 @@ export class CommentQueryRepository {
   }
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
-    const result = await CommentModel.findOne({
+    return await CommentModel.findOne({
       _id: new ObjectId(id),
     })
       .populate({
@@ -49,8 +49,6 @@ export class CommentQueryRepository {
         select: "myStatus",
       })
       .populate("post", "_id");
-
-    return result;
   }
 
   async getUserReactionStatus(userId: string, commentId: string) {

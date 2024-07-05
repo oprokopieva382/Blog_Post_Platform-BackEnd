@@ -44,8 +44,6 @@ export class CommentService {
       myStatus = userReaction.myStatus;
     }
 
-console.log("userReaction", userReaction);
-
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
       await this.commentRepository.updateMyReaction(
         userId,

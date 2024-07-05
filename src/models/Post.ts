@@ -7,7 +7,23 @@ const postSchema = new Schema<PostDBType>({
   shortDescription: { type: String, required: true },
   content: { type: String, required: true },
   blog: { type: Schema.Types.ObjectId, ref: "blogs", required: true },
-  createdAt: { type: String }
+  likesCount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  dislikesCount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  status: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "PostReaction",
+    },
+  ],
+  createdAt: { type: String },
 });
 
 export const PostModel = model("posts", postSchema);

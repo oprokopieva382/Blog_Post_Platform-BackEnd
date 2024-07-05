@@ -38,10 +38,10 @@ export class PostDBType {
     public shortDescription: string,
     public content: string,
     public blog: BlogDBType,
+    public likesCount: number,
+    public dislikesCount: number,
+    public status: Types.ObjectId[],
     public createdAt?: string,
-    public likesCount?: number,
-    public dislikesCount?: number,
-    public status?: Types.ObjectId[]
   ) {}
 }
 export class CommentDBType {
