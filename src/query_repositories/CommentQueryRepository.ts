@@ -3,7 +3,7 @@ import { CommentViewModel, Paginator } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { QueryCommentsType } from "../types/query-type";
 import { CommentDTO } from "../DTO";
-import { CommentModel, ReactionModel } from "../models";
+import { CommentModel, CommentReactionModel } from "../models";
 
 export class CommentQueryRepository {
   async getCommentsOfPost(
@@ -18,11 +18,11 @@ export class CommentQueryRepository {
     const comments: CommentDBType[] = await CommentModel.find({
       post: postId.toString(),
     })
+      .populate("post", "_id")
       .populate({
-        path: "likesInfo.status",
+        path: "status",
         select: "myStatus",
       })
-      .populate("post", "_id")
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection });
@@ -41,19 +41,17 @@ export class CommentQueryRepository {
   }
 
   async getByIdComment(id: string): Promise<CommentDBType | null> {
-    const result = await CommentModel.findOne({
+    return await CommentModel.findOne({
       _id: new ObjectId(id),
     })
       .populate({
-        path: "likesInfo.status",
+        path: "status",
         select: "myStatus",
       })
       .populate("post", "_id");
-
-    return result;
   }
 
-  async getUserReactionStatus(userId: string, commentId: string) {
-    return ReactionModel.findOne({ user: userId, comment: commentId });
+  async getReactionStatus(userId: string, commentId: string) {
+    return CommentReactionModel.findOne({ user: userId, comment: commentId });
   }
 }

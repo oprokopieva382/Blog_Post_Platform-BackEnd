@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
-import { PostInputModel, PostViewModel } from "../../type-models";
+import {
+  LikeInputModel,
+  PostInputModel,
+  PostViewModel,
+} from "../../type-models";
 import { PostService } from "../../services";
 import {
   CommentQueryRepository,
@@ -22,7 +26,8 @@ export class PostController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.postQueryRepository.getAllPosts(
-        queryFilter(req.query)
+        queryFilter(req.query),
+        req?.user?.id
       );
 
       if (!result) {
@@ -37,15 +42,18 @@ export class PostController {
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = (await this.postQueryRepository.getByIdPost(
-        req.params.id
-      )) as PostViewModel;
+      const result = await this.postQueryRepository.getByIdPost(req.params.id);
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No post found"]);
       }
 
-      formatResponse(res, 200, result, "Post retrieved successfully");
+      formatResponse(
+        res,
+        200,
+        await PostDTO.transform(result, req?.user?.id),
+        "Post retrieved successfully"
+      );
     } catch (error) {
       next(error);
     }
@@ -66,7 +74,7 @@ export class PostController {
       formatResponse(
         res,
         201,
-        PostDTO.transform(result),
+        await PostDTO.transform(result),
         "Post created successfully"
       );
     } catch (error) {
@@ -154,6 +162,30 @@ export class PostController {
         await CommentDTO.transform(result, req.user!.id),
         "Comment created successfully"
       );
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async reactToPost(
+    req: Request<{ postId: string }, {}, LikeInputModel>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const result = await this.postService.reactToPost(
+        req.body,
+        req.params.postId,
+        req.user!
+      );
+
+      if (!result) {
+        throw ApiError.NotFoundError("Post to react is not found", [
+          `Post with id ${req.params.postId} does not exist`,
+        ]);
+      }
+
+      formatResponse(res, 204, {}, "React to post successfully");
     } catch (error) {
       next(error);
     }

@@ -1,6 +1,7 @@
 export { isAdminMiddleware } from "./isAdminMiddleware";
 export { isAuthorizedMiddleware } from "./isAuthorizedMiddleware";
 export { isAuthorizedRefreshToken } from "./isAuthorizedRefreshToken";
+export { softAccessMiddleware } from "./softAccessMiddleware";
 export { rateLimitMiddleware } from "./rateLimitMiddleware";
 export { errorHandlerMiddleware } from "./errorHandlerMiddleware";
 export { validateBlog } from "./validateBlog";
@@ -16,4 +17,4 @@ export { validateUserEmailUnique } from "./validateUserEmailUnique";
 export { validateEmailResending } from "./validateEmailResending";
 export { validateEmailConfirmation } from "./validateEmailConfirmation";
 export { validateNewPasswordInputs } from "./validateNewPasswordInputs";
-export { validateCommentReaction } from "./validateCommentReaction";
+export { validateReaction } from "./validateReaction";

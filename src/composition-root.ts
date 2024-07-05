@@ -55,7 +55,7 @@ const userService = new UserService(userRepository, bcryptService);
 //QUERY-REPOSITORIES
 export const userQueryRepository = new UserQueryRepository();
 const deviceQueryRepository = new DeviceQueryRepository();
-const postQueryRepository = new PostQueryRepository();
+export const postQueryRepository = new PostQueryRepository();
 export const commentQueryRepository = new CommentQueryRepository();
 const blogQueryRepository = new BlogQueryRepository();
 

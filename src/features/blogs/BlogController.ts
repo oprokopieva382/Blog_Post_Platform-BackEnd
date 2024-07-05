@@ -137,7 +137,7 @@ export class BlogController {
       formatResponse(
         res,
         201,
-        PostDTO.transform(result),
+        await PostDTO.transform(result),
         "Post created successfully"
       );
     } catch (error) {

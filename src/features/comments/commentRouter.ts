@@ -1,11 +1,11 @@
 import { Router } from "express";
 import {
   isAuthorizedMiddleware,
+  softAccessMiddleware,
   validateComment,
-  validateCommentReaction,
+  validateReaction,
 } from "../../middlewares";
 import { commentController } from "../../composition-root";
-import { softAccessMiddleware } from "../../middlewares/softAccessMiddleware";
 
 export const commentRouter = Router();
 
@@ -28,6 +28,6 @@ commentRouter.put(
 commentRouter.put(
   "/:commentId/like-status",
   isAuthorizedMiddleware,
-  validateCommentReaction,
+  validateReaction,
   commentController.reactToComment.bind(commentController)
 );

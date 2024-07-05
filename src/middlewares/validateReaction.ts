@@ -8,7 +8,7 @@ import { ApiError } from "../helper/api-errors";
 
 const validLikeStatusRegex = /^(Like|None|Dislike)$/;
 
-export const validateCommentReaction = async (
+export const validateReaction = async (
   req: Request,
   res: Response,
   next: NextFunction

@@ -3,14 +3,21 @@ import { PostDBType } from "../cloud_DB";
 import { Paginator, PostViewModel } from "../type-models";
 import { QueryType } from "../types/query-type";
 import { PostDTO } from "../DTO";
-import { PostModel } from "../models";
+import { PostModel, PostReactionModel } from "../models";
 
 export class PostQueryRepository {
-  async getAllPosts(query: QueryType): Promise<Paginator<PostViewModel>> {
+  async getAllPosts(
+    query: QueryType,
+    userId?: string
+  ): Promise<Paginator<PostViewModel>> {
     const totalPostsCount = await PostModel.countDocuments();
 
     const posts: PostDBType[] = await PostModel.find()
       .populate("blog")
+      .populate({
+        path: "status",
+        select: "myStatus",
+      })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection })
@@ -21,16 +28,24 @@ export class PostQueryRepository {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => PostDTO.transform(p)),
+      items: await Promise.all(posts.map((p) => PostDTO.transform(p, userId))),
     };
 
     return postsToView;
   }
 
-  async getByIdPost(id: string): Promise<PostViewModel | null> {
-    const foundPost = await PostModel.findOne({
+  async getByIdPost(id: string): Promise<PostDBType | null> {
+    return await PostModel.findOne({
       _id: new ObjectId(id),
-    }).populate("blog");
-    return foundPost ? PostDTO.transform(foundPost) : null;
+    })
+      .populate("blog")
+      .populate({
+        path: "status",
+        select: "myStatus",
+      });
+  }
+
+  async getReactionStatus(userId: string, postId: string) {
+    return PostReactionModel.findOne({ user: userId, post: postId });
   }
 }

@@ -2,16 +2,25 @@ import { Router } from "express";
 import {
   isAdminMiddleware,
   isAuthorizedMiddleware,
+  softAccessMiddleware,
   validateComment,
   validatePost,
+  validateReaction,
 } from "../../middlewares";
 import { postController } from "../../composition-root";
-import { softAccessMiddleware } from "../../middlewares/softAccessMiddleware";
 
 export const postRouter = Router();
 
-postRouter.get("/", postController.getAll.bind(postController));
-postRouter.get("/:id", postController.getById.bind(postController));
+postRouter.get(
+  "/",
+  softAccessMiddleware,
+  postController.getAll.bind(postController)
+);
+postRouter.get(
+  "/:id",
+  softAccessMiddleware,
+  postController.getById.bind(postController)
+);
 postRouter.post(
   "/",
   isAdminMiddleware,
@@ -39,4 +48,10 @@ postRouter.post(
   isAuthorizedMiddleware,
   validateComment,
   postController.createPostComment.bind(postController)
+);
+postRouter.put(
+  "/:postId/like-status",
+  isAuthorizedMiddleware,
+  validateReaction,
+  postController.reactToPost.bind(postController)
 );

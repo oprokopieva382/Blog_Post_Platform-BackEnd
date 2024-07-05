@@ -12,24 +12,22 @@ const CommentSchema = new Schema<CommentDBType>({
     userId: { type: String, required: true },
     userLogin: { type: String, required: true },
   },
-  likesInfo: {
-    likesCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    dislikesCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    status: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "comment-reactions",
-      },
-    ],
+  likesCount: {
+    type: Number,
+    default: 0,
+    min: 0,
   },
+  dislikesCount: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  status: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "CommentReaction",
+    },
+  ],
 
   createdAt: { type: String, required: true },
 });
