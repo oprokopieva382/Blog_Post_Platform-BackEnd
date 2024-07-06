@@ -17,7 +17,7 @@ const postSchema = new Schema<PostDBType>({
     default: 0,
     min: 0,
   },
-  status: [
+  reactionInfo: [
     {
       type: Schema.Types.ObjectId,
       ref: "PostReaction",

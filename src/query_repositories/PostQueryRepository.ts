@@ -4,6 +4,11 @@ import { Paginator, PostViewModel } from "../type-models";
 import { QueryType } from "../types/query-type";
 import { PostDTO } from "../DTO";
 import { PostModel, PostReactionModel } from "../models";
+import {
+  LikeDetailsDBType,
+  PostReactionDBType,
+} from "../cloud_DB/mongo_db_types";
+import { LikeStatus } from "../types/LikesStatus";
 
 export class PostQueryRepository {
   async getAllPosts(
@@ -15,7 +20,7 @@ export class PostQueryRepository {
     const posts: PostDBType[] = await PostModel.find()
       .populate("blog")
       .populate({
-        path: "status",
+        path: "reactionInfo",
         select: "myStatus",
       })
       .skip((query.pageNumber - 1) * query.pageSize)
@@ -40,12 +45,23 @@ export class PostQueryRepository {
     })
       .populate("blog")
       .populate({
-        path: "status",
+        path: "reactionInfo",
         select: "myStatus",
       });
   }
 
   async getReactionStatus(userId: string, postId: string) {
     return PostReactionModel.findOne({ user: userId, post: postId });
+  }
+
+  async getPostReactions(postId: string): Promise<LikeDetailsDBType[] | null> {
+    return await PostReactionModel.find({
+      post: postId,
+      myStatus: LikeStatus.Like,
+    })
+      .populate({
+        path: "latestReactions.user",
+        select: ["login", "_id"],
+      })
   }
 }

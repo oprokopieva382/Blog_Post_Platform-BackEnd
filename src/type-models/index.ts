@@ -18,3 +18,4 @@ export { RegistrationConfirmationCodeModel } from "./RegistrationConfirmationCod
 export { PasswordRecoveryInputModel } from "./PasswordRecoveryInputModel";
 export { NewPasswordRecoveryInputModel } from "./NewPasswordRecoveryInputModel";
 export { ExtendedLikesInfoViewModel } from "./ExtendedLikesInfoViewModel";
+export { LikeDetailsViewModel } from "./LikeDetailsViewModel";

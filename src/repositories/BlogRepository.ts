@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { BlogInputModel } from "../type-models";
-import { BlogDBType, PostDBType } from "../cloud_DB";
+import { BlogDBType } from "../cloud_DB";
 import { BlogModel, PostModel } from "../models";
 
 export class BlogRepository {
@@ -16,8 +16,14 @@ export class BlogRepository {
     });
   }
 
-  async createBlog(newBlog: BlogDBType) {
-    return await BlogModel.create(newBlog);
+  async createBlog(name: string, description: string, websiteUrl: string) {
+    return await BlogModel.create({
+      _id: new ObjectId(),
+      name: name,
+      description: description,
+      websiteUrl: websiteUrl,
+      createdAt: new Date().toISOString(),
+    });
   }
 
   async updateBlog(data: BlogInputModel, id: string) {
@@ -32,7 +38,22 @@ export class BlogRepository {
     });
   }
 
-  async createPost(newPost: PostDBType) {
-    return await PostModel.create(newPost);
+  async createPost(
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string
+  ) {
+    return await PostModel.create({
+      _id: new ObjectId(),
+      title: title,
+      shortDescription: shortDescription,
+      content: content,
+      blog: blogId,
+      createdAt: new Date().toISOString(),
+      likesCount: 0,
+      dislikesCount: 0,
+      status: [],
+    });
   }
 }
