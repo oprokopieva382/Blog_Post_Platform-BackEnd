@@ -1,10 +1,8 @@
-import { ObjectId } from "mongodb";
 import { CommentDBType } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { LikeInputModel, PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
 import { BlogRepository, PostRepository } from "../repositories";
-import { CommentModel } from "../models";
 import { LikeStatus } from "../types/LikesStatus";
 
 export class PostService {
@@ -190,14 +188,7 @@ export class PostService {
         `Blog with id ${data.blogId} does not exist`,
       ]);
     }
-    await this.postRepository.updatePost(data, id, isBlogExist.name);
-
-    const post = await this.postRepository.getByIdPost(id);
-
-    if (!post) {
-      throw ApiError.NotFoundError("Not found", ["No post found"]);
-    }
-    return post;
+    return await this.postRepository.updatePost(data, id, isBlogExist.name);
   }
 
   async createPostComment(
@@ -214,31 +205,7 @@ export class PostService {
       ]);
     }
 
-    const newComment = new CommentModel({
-      _id: new ObjectId(),
-      post: postId,
-      content: content,
-      commentatorInfo: {
-        userId: user.id,
-        userLogin: user.login,
-      },
-      likesCount: 0,
-      dislikesCount: 0,
-      status: [],
-      createdAt: new Date().toISOString(),
-    });
-
-    const createdComment = await newComment.save();
-
-    if (!createdComment) {
-      throw ApiError.NotFoundError("Comment is not found", [
-        `Comment does not exist`,
-      ]);
-    }
-
-    return await this.postRepository.getByIdComment(
-      createdComment._id.toString()
-    );
+    return await this.postRepository.createComment(postId, content, user.id, user.login)
   }
 
   async reactToPost(data: LikeInputModel, postId: string, user: UserViewModel) {

@@ -22,21 +22,19 @@ export class PostRepository {
     title: string,
     shortDescription: string,
     content: string,
-    blogId
-  : string) {
-    return await PostModel.create(
-      {
-        _id: new ObjectId(),
-        title: title,
-        shortDescription: shortDescription,
-        content: content,
-        blog: blogId,
-        createdAt: new Date().toISOString(),
-        likesCount: 0,
-        dislikesCount: 0,
-        status: [],
-      }
-    );
+    blogId: string
+  ) {
+    return await PostModel.create({
+      _id: new ObjectId(),
+      title: title,
+      shortDescription: shortDescription,
+      content: content,
+      blog: blogId,
+      createdAt: new Date().toISOString(),
+      likesCount: 0,
+      dislikesCount: 0,
+      status: [],
+    });
   }
 
   async updatePost(data: PostInputModel, id: string, blogName: string) {
@@ -63,9 +61,24 @@ export class PostRepository {
   }
 
   async createComment(
-    newComment: CommentDBType
+    postId: string,
+    content: string,
+    userId: string,
+    userLogin: string
   ): Promise<CommentDBType | null> {
-    return await CommentModel.create(newComment);
+    return await CommentModel.create({
+      _id: new ObjectId(),
+      post: postId,
+      content: content,
+      commentatorInfo: {
+        userId: userId,
+        userLogin: userLogin,
+      },
+      likesCount: 0,
+      dislikesCount: 0,
+      status: [],
+      createdAt: new Date().toISOString(),
+    });
   }
 
   async getReactionStatus(userId: string, postId: string) {
