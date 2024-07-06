@@ -28,7 +28,7 @@ export class BlogQueryRepository {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: posts.map((p) => PostDTO.transform(p)),
+      items: await Promise.all(posts.map((p) => PostDTO.transform(p))),
     };
 
     return postsToView;
