@@ -11,11 +11,11 @@ class PostDTO {
     let userStatus: LikeStatus = LikeStatus.None;
 
     if (userId) {
-      const status = (await postQueryRepository.getReactionStatus(
+      const reactionInfo = (await postQueryRepository.getReactionStatus(
         userId,
         post._id.toString()
       )) as any;
-      userStatus = status ? status.myStatus : LikeStatus.None;
+      userStatus = reactionInfo ? reactionInfo.myStatus : LikeStatus.None;
     }
 
     return {

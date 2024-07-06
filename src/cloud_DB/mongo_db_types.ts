@@ -40,7 +40,7 @@ export class PostDBType {
     public blog: BlogDBType,
     public likesCount: number,
     public dislikesCount: number,
-    public status: Types.ObjectId[],
+    public reactionInfo: Types.ObjectId[],
     public createdAt?: string,
   ) {}
 }

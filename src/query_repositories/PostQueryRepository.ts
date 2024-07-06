@@ -15,7 +15,7 @@ export class PostQueryRepository {
     const posts: PostDBType[] = await PostModel.find()
       .populate("blog")
       .populate({
-        path: "status",
+        path: "reactionInfo",
         select: "myStatus",
       })
       .skip((query.pageNumber - 1) * query.pageSize)
@@ -40,7 +40,7 @@ export class PostQueryRepository {
     })
       .populate("blog")
       .populate({
-        path: "status",
+        path: "reactionInfo",
         select: "myStatus",
       });
   }
