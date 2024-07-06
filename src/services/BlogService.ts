@@ -1,9 +1,7 @@
-import { ObjectId } from "mongodb";
-import { BlogDBType, PostDBType } from "../cloud_DB";
+import {  PostDBType } from "../cloud_DB";
 import { BlogInputModel, BlogPostInputModel } from "../type-models";
 import { BlogRepository, PostRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
-import { PostModel } from "../models";
 
 export class BlogService {
   constructor(
@@ -17,17 +15,7 @@ export class BlogService {
 
   async createBlog(data: BlogInputModel) {
     const { name, description, websiteUrl } = data;
-    const newBlog = new BlogDBType(
-      new ObjectId(),
-      name,
-      description,
-      websiteUrl,
-      new Date().toISOString()
-    );
-
-    const createdBlog = await this.blogRepository.createBlog(newBlog);
-
-    return this.blogRepository.getByIdBlog(createdBlog._id.toString());
+    return this.blogRepository.createBlog(name, description, websiteUrl);
   }
 
   async updateBlog(data: BlogInputModel, id: string) {
@@ -45,28 +33,11 @@ export class BlogService {
       throw ApiError.NotFoundError("Not found", ["No blog found"]);
     }
 
-    const newPost = new PostModel({
-      _id: new ObjectId(),
-      title: title,
-      shortDescription: shortDescription,
-      content: content,
-      blog: blogId,
-      createdAt: new Date().toISOString(),
-      likesCount: 0,
-      dislikesCount: 0,
-      status: [],
-    });
-
-    const createdPost = await newPost.save();
-
-    const result = await this.postRepository.getByIdPost(
-      createdPost._id.toString()
+    return await this.postRepository.createPost(
+      title,
+      shortDescription,
+      content,
+      blogId
     );
-
-    if (!result) {
-      throw ApiError.NotFoundError("Not found", ["No post found"]);
-    }
-
-    return result;
   }
 }

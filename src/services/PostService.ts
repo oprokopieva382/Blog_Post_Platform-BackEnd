@@ -4,7 +4,7 @@ import { ApiError } from "../helper/api-errors";
 import { LikeInputModel, PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
 import { BlogRepository, PostRepository } from "../repositories";
-import { CommentModel, PostModel, PostReactionModel } from "../models";
+import { CommentModel } from "../models";
 import { LikeStatus } from "../types/LikesStatus";
 
 export class PostService {
@@ -32,15 +32,7 @@ export class PostService {
     )) as any;
 
     if (!reaction) {
-      const newReaction = new PostReactionModel({
-        _id: new ObjectId(),
-        user: userId,
-        myStatus: LikeStatus.None,
-        post: postId,
-        createdAt: new Date().toISOString(),
-      });
-
-      await newReaction.save();
+      await this.postRepository.createDefaultReaction(userId, postId);
     } else {
       myStatus = reaction.myStatus;
     }
@@ -72,13 +64,11 @@ export class PostService {
     await this.postRepository.updateMyReaction(userId, postId, likeStatus);
     const likedPost = await this.postRepository.likePost(postId, 1);
 
-    const YO = await this.postRepository.addLikedUser(
+    return await this.postRepository.addLikedUser(
       userId,
       likedPost!.createdAt,
       postId
     );
-    console.log("YO", YO);
-    return YO;
   }
 
   private async dislikePost(
@@ -101,15 +91,7 @@ export class PostService {
     )) as any;
 
     if (!reaction) {
-      const newReaction = new PostReactionModel({
-        _id: new ObjectId(),
-        user: userId,
-        myStatus: LikeStatus.None,
-        post: postId,
-        createdAt: new Date().toISOString(),
-      });
-
-      await newReaction.save();
+      await this.postRepository.createDefaultReaction(userId, postId);
     } else {
       myStatus = reaction.myStatus;
     }
@@ -153,15 +135,7 @@ export class PostService {
     )) as any;
 
     if (!reaction) {
-      const newReaction = new PostReactionModel({
-        _id: new ObjectId(),
-        user: userId,
-        myStatus: LikeStatus.None,
-        post: postId,
-        createdAt: new Date().toISOString(),
-      });
-
-      await newReaction.save();
+      await this.postRepository.createDefaultReaction(userId, postId);
     } else {
       myStatus = reaction.myStatus;
     }
@@ -200,27 +174,12 @@ export class PostService {
       ]);
     }
 
-    const newPost = new PostModel({
-      _id: new ObjectId(),
-      title: title,
-      shortDescription: shortDescription,
-      content: content,
-      blog: blogId,
-      createdAt: new Date().toISOString(),
-      likesCount: 0,
-      dislikesCount: 0,
-      status: [],
-    });
-
-    const createdPost = await newPost.save();
-
-    const post = this.postRepository.getByIdPost(createdPost._id.toString());
-
-    if (!createdPost) {
-      throw ApiError.NotFoundError("Not found", ["No post found"]);
-    }
-
-    return post;
+    return await this.postRepository.createPost(
+      title,
+      shortDescription,
+      content,
+      blogId
+    );
   }
 
   async updatePost(data: PostInputModel, id: string) {
