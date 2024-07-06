@@ -104,7 +104,7 @@ export class AuthService {
 
     await this.userRepository.createUser(newUser);
 
-    await this.emailService.sendEmail(
+    await this.emailService.sendRegistrationEmail(
       newUser.email,
       newUser.emailConfirmation.confirmationCode
     );
@@ -135,7 +135,7 @@ export class AuthService {
     const newCode = randomUUID();
     await this.authRepository.updateCode(findUser._id, newCode);
 
-    this.emailService.sendEmail(data.email, newCode);
+    this.emailService.sendRegistrationEmail(data.email, newCode);
 
     return findUser;
   }
@@ -200,7 +200,7 @@ export class AuthService {
       passwordRecovery
     );
 
-    await this.emailService.passwordRecovery(email, recoveryCode);
+    await this.emailService.sendPasswordRecoveryEmail(email, recoveryCode);
   }
 
   async setNewPassword(data: NewPasswordRecoveryInputModel) {
