@@ -41,7 +41,7 @@ export class PostDBType {
     public likesCount: number,
     public dislikesCount: number,
     public reactionInfo: Types.ObjectId[],
-    public createdAt?: string,
+    public createdAt: string,
   ) {}
 }
 export class CommentDBType {
@@ -64,6 +64,21 @@ export class ReactionDBType {
     public _id: Types.ObjectId,
     public user: UserDBType,
     public createdAt: string
+  ) {}
+}
+export class LikeDetailsDBType {
+  constructor(
+    public user?: Types.ObjectId,
+    public description?: string,
+    public addedAt?: Date
+  ) {}
+}
+
+export class PostReactionDBType {
+  constructor(
+    public post?: Types.ObjectId,
+    public myStatus?: LikeStatus,
+    public latestReactions?: LikeDetailsDBType[]
   ) {}
 }
 export class SessionsDBType {

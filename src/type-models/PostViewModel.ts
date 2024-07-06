@@ -9,7 +9,7 @@ export type PostViewModel = {
    * Post to blogId joint (required field)
    * Post to blogName joint (required field)
    * Post createdAt (date-time string)
-   * Post extendedLikesInfo (required & ref to ExtendedLikesInfoViewModel)
+   * Post extendedLikesInfo (optional & ref to ExtendedLikesInfoViewModel)
    */
   id: string;
   title: string;

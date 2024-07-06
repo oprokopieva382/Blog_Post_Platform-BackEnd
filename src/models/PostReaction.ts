@@ -1,8 +1,9 @@
 import { Schema } from "mongoose";
 import { LikeStatus } from "../types/LikesStatus";
 import { ReactionModel } from "./ReactionBase";
+import { LikeDetailsDBType, PostReactionDBType } from "../cloud_DB/mongo_db_types";
 
-const LatestReactionSchema = new Schema({
+const LatestReactionSchema = new Schema<LikeDetailsDBType>({
   user: {
     type: Schema.Types.ObjectId,
     ref: "users",
@@ -18,7 +19,7 @@ const LatestReactionSchema = new Schema({
   },
 });
 
-const PostReactionSchema = new Schema({
+const PostReactionSchema = new Schema<PostReactionDBType>({
   post: {
     type: Schema.Types.ObjectId,
     ref: "posts",

@@ -48,7 +48,17 @@ export class PostService {
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
       await this.postRepository.updateMyReaction(userId, postId, likeStatus);
       await this.postRepository.dislikePost(postId, -1);
-      return await this.postRepository.likePost(postId, 1);
+
+      const likedPost = await this.postRepository.likePost(postId, 1);
+
+      const YO = await this.postRepository.addLikedUser(
+        userId,
+        likedPost!.createdAt,
+        postId
+      );
+
+      console.log("YO", YO);
+      return YO;
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
@@ -60,7 +70,15 @@ export class PostService {
     }
 
     await this.postRepository.updateMyReaction(userId, postId, likeStatus);
-    return await this.postRepository.likePost(postId, 1);
+    const likedPost = await this.postRepository.likePost(postId, 1);
+
+    const YO = await this.postRepository.addLikedUser(
+      userId,
+      likedPost!.createdAt,
+      postId
+    );
+    console.log("YO", YO);
+    return YO;
   }
 
   private async dislikePost(

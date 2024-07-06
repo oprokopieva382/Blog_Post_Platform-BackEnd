@@ -57,24 +57,21 @@ export class PostRepository {
     return PostReactionModel.findOne({ user: userId, post: postId });
   }
 
-  async likePost(postId: string, count: number) {
-    return await PostModel.findOneAndUpdate(
+  async dislikePost(postId: string, count: number) {
+    return await PostModel.findByIdAndUpdate(
       { _id: new ObjectId(postId) },
       {
-        $inc: { likesCount: count },
+        $inc: { dislikesCount: count },
       },
       { new: true }
     );
   }
 
-  async dislikePost(
-    postId: string,
-    count: number
-  ) {
-    return await PostModel.findByIdAndUpdate(
+  async likePost(postId: string, count: number) {
+    return await PostModel.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       {
-        $inc: { dislikesCount: count },
+        $inc: { likesCount: count },
       },
       { new: true }
     );
@@ -92,5 +89,21 @@ export class PostRepository {
       },
       { new: true }
     );
+  }
+
+  async addLikedUser(userId: string, createdAt: string, postId: string) {
+     return await PostReactionModel.findOneAndUpdate(
+      { user: userId, post: postId },
+      {
+        $push: {
+          latestReactions: {
+            user: userId,
+            addedAt: createdAt,
+            //description: "random",
+          },
+        },
+      },
+      { new: true, upsert: true }
+    ).populate("latestReactions.user", "login _id");
   }
 }
