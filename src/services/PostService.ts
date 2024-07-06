@@ -16,12 +16,6 @@ export class PostService {
     likeStatus: LikeStatus,
     userId: string
   ) {
-    const post = await this.postRepository.getByIdPost(postId);
-    if (!post) {
-      throw ApiError.NotFoundError("Post not found", [
-        `Post with id ${postId} does not exist`,
-      ]);
-    }
     let myStatus;
 
     const reaction = (await this.postRepository.getReactionStatus(
@@ -29,33 +23,23 @@ export class PostService {
       postId
     )) as any;
 
-    if (!reaction) {
-      await this.postRepository.createDefaultReaction(userId, postId);
-    } else {
-      myStatus = reaction.myStatus;
+    !reaction
+      ? await this.postRepository.createDefaultReaction(userId, postId)
+      : (myStatus = reaction.myStatus);
+
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
+      return;
     }
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
       await this.postRepository.updateMyReaction(userId, postId, likeStatus);
       await this.postRepository.dislikePost(postId, -1);
-
       const likedPost = await this.postRepository.likePost(postId, 1);
 
-      const YO = await this.postRepository.addLikedUser(
+      return await this.postRepository.addLikedUser(
         userId,
         likedPost!.createdAt,
         postId
-      );
-
-      console.log("YO", YO);
-      return YO;
-    }
-
-    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
-      return await this.postRepository.updateMyReaction(
-        userId,
-        postId,
-        LikeStatus.Like
       );
     }
 
@@ -74,13 +58,6 @@ export class PostService {
     likeStatus: LikeStatus,
     userId: string
   ) {
-    const post = await this.postRepository.getByIdPost(postId);
-    if (!post) {
-      throw ApiError.NotFoundError("Post not found", [
-        `Post with id ${postId} does not exist`,
-      ]);
-    }
-
     let myStatus;
 
     const reaction = (await this.postRepository.getReactionStatus(
@@ -88,24 +65,18 @@ export class PostService {
       postId
     )) as any;
 
-    if (!reaction) {
-      await this.postRepository.createDefaultReaction(userId, postId);
-    } else {
-      myStatus = reaction.myStatus;
+    !reaction
+      ? await this.postRepository.createDefaultReaction(userId, postId)
+      : (myStatus = reaction.myStatus);
+
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
+      return;
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
       await this.postRepository.updateMyReaction(userId, postId, likeStatus);
       await this.postRepository.likePost(postId, -1);
       return await this.postRepository.dislikePost(postId, 1);
-    }
-
-    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
-      return await this.postRepository.updateMyReaction(
-        userId,
-        postId,
-        LikeStatus.Dislike
-      );
     }
 
     await this.postRepository.updateMyReaction(userId, postId, likeStatus);
@@ -117,14 +88,6 @@ export class PostService {
     likeStatus: LikeStatus,
     userId: string
   ) {
-    const post = await this.postRepository.getByIdComment(postId);
-
-    if (!post) {
-      throw ApiError.NotFoundError("Post not found", [
-        `Post with id ${postId} does not exist`,
-      ]);
-    }
-
     let myStatus;
 
     const reaction = (await this.postRepository.getReactionStatus(
@@ -132,11 +95,9 @@ export class PostService {
       postId
     )) as any;
 
-    if (!reaction) {
-      await this.postRepository.createDefaultReaction(userId, postId);
-    } else {
-      myStatus = reaction.myStatus;
-    }
+    !reaction
+      ? await this.postRepository.createDefaultReaction(userId, postId)
+      : (myStatus = reaction.myStatus);
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.None) {
       await this.postRepository.updateMyReaction(userId, postId, likeStatus);
@@ -151,6 +112,7 @@ export class PostService {
       );
       return await this.postRepository.dislikePost(postId, -1);
     }
+
     return await this.postRepository.updateMyReaction(
       userId,
       postId,
@@ -205,10 +167,22 @@ export class PostService {
       ]);
     }
 
-    return await this.postRepository.createComment(postId, content, user.id, user.login)
+    return await this.postRepository.createComment(
+      postId,
+      content,
+      user.id,
+      user.login
+    );
   }
 
   async reactToPost(data: LikeInputModel, postId: string, user: UserViewModel) {
+    const post = await this.postRepository.getByIdPost(postId);
+    if (!post) {
+      throw ApiError.NotFoundError("Post not found", [
+        `Post with id ${postId} does not exist`,
+      ]);
+    }
+
     const { likeStatus } = data;
     let result;
 

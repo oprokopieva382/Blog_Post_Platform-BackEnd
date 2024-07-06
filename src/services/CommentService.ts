@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { ApiError } from "../helper/api-errors";
 import {
   CommentInputModel,
@@ -7,7 +6,6 @@ import {
 } from "../type-models";
 import { CommentRepository } from "../repositories";
 import { LikeStatus } from "../types/LikesStatus";
-import { CommentReactionModel } from "../models";
 
 export class CommentService {
   constructor(protected commentRepository: CommentRepository) {}
@@ -17,12 +15,6 @@ export class CommentService {
     likeStatus: LikeStatus,
     userId: string
   ) {
-    const comment = await this.commentRepository.getByIdComment(commentId);
-    if (!comment) {
-      throw ApiError.NotFoundError("Comment not found", [
-        `Comment with id ${commentId} does not exist`,
-      ]);
-    }
     let myStatus;
 
     const reaction = (await this.commentRepository.getReactionStatus(
@@ -30,18 +22,12 @@ export class CommentService {
       commentId
     )) as any;
 
-    if (!reaction) {
-      const newReaction = new CommentReactionModel({
-        _id: new ObjectId(),
-        user: userId,
-        myStatus: LikeStatus.None,
-        comment: commentId,
-        createdAt: new Date().toISOString()
-      });
+    !reaction
+      ? await this.commentRepository.createDefaultReaction(userId, commentId)
+      : (myStatus = reaction.myStatus);
 
-      await newReaction.save();
-    } else {
-      myStatus = reaction.myStatus;
+    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
+      return;
     }
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
@@ -52,14 +38,6 @@ export class CommentService {
       );
       await this.commentRepository.dislikeComment(commentId, -1);
       return await this.commentRepository.likeComment(commentId, 1);
-    }
-
-    if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
-      return await this.commentRepository.updateMyReaction(
-        userId,
-        commentId,
-        LikeStatus.Like
-      );
     }
 
     await this.commentRepository.updateMyReaction(
@@ -75,32 +53,19 @@ export class CommentService {
     likeStatus: LikeStatus,
     userId: string
   ) {
-    const comment = await this.commentRepository.getByIdComment(commentId);
-    if (!comment) {
-      throw ApiError.NotFoundError("Comment not found", [
-        `Comment with id ${commentId} does not exist`,
-      ]);
-    }
-
     let myStatus;
 
-    const reaction = await this.commentRepository.getReactionStatus(
+    const reaction = (await this.commentRepository.getReactionStatus(
       userId,
       commentId
-    ) as any;
+    )) as any;
 
-    if (!reaction) {
-      const newReaction = new CommentReactionModel({
-        _id: new ObjectId(),
-        user: userId,
-        myStatus: LikeStatus.None,
-        comment: commentId,
-        createdAt: new Date().toISOString(),
-      });
+    !reaction
+      ? await this.commentRepository.createDefaultReaction(userId, commentId)
+      : (myStatus = reaction.myStatus);
 
-      await newReaction.save();
-    } else {
-      myStatus = reaction.myStatus;
+    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
+      return;
     }
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Dislike) {
@@ -110,19 +75,7 @@ export class CommentService {
         likeStatus
       );
       await this.commentRepository.likeComment(commentId, -1);
-      return await this.commentRepository.dislikeComment(
-        commentId,
-
-        1
-      );
-    }
-
-    if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Dislike) {
-      return await this.commentRepository.updateMyReaction(
-        userId,
-        commentId,
-        LikeStatus.Dislike
-      );
+      return await this.commentRepository.dislikeComment(commentId, 1);
     }
 
     await this.commentRepository.updateMyReaction(
@@ -138,34 +91,16 @@ export class CommentService {
     likeStatus: LikeStatus,
     userId: string
   ) {
-    const comment = await this.commentRepository.getByIdComment(commentId);
-
-    if (!comment) {
-      throw ApiError.NotFoundError("Comment not found", [
-        `Comment with id ${commentId} does not exist`,
-      ]);
-    }
-
     let myStatus;
 
-    const reaction = await this.commentRepository.getReactionStatus(
+    const reaction = (await this.commentRepository.getReactionStatus(
       userId,
       commentId
-    ) as any;
+    )) as any;
 
-    if (!reaction) {
-      const newReaction = new CommentReactionModel({
-        _id: new ObjectId(),
-        user: userId,
-        myStatus: LikeStatus.None,
-        comment: commentId,
-        createdAt: new Date().toISOString(),
-      });
-
-      await newReaction.save();
-    } else {
-      myStatus = reaction.myStatus;
-    }
+    !reaction
+      ? await this.commentRepository.createDefaultReaction(userId, commentId)
+      : (myStatus = reaction.myStatus);
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.None) {
       await this.commentRepository.updateMyReaction(
@@ -184,6 +119,7 @@ export class CommentService {
       );
       return await this.commentRepository.dislikeComment(commentId, -1);
     }
+    
     return await this.commentRepository.updateMyReaction(
       userId,
       commentId,
@@ -226,10 +162,10 @@ export class CommentService {
   }
 
   async getMyCommentReactionStatus(userId: string, commentId: string) {
-    const myReactionStatus = await this.commentRepository.getReactionStatus(
+    const myReactionStatus = (await this.commentRepository.getReactionStatus(
       userId,
       commentId
-    ) as any;
+    )) as any;
     return myReactionStatus ? myReactionStatus.myStatus : LikeStatus.None;
   }
 
@@ -238,6 +174,13 @@ export class CommentService {
     commentId: string,
     user: UserViewModel
   ) {
+    const comment = await this.commentRepository.getByIdComment(commentId);
+    if (!comment) {
+      throw ApiError.NotFoundError("Comment not found", [
+        `Comment with id ${commentId} does not exist`,
+      ]);
+    }
+
     const { likeStatus } = data;
     let result;
 
