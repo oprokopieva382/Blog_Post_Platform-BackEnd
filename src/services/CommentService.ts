@@ -1,3 +1,4 @@
+import { inject, injectable } from "inversify";
 import { ApiError } from "../helper/api-errors";
 import {
   CommentInputModel,
@@ -7,8 +8,11 @@ import {
 import { CommentRepository } from "../repositories";
 import { LikeStatus } from "../types/LikesStatus";
 
+@injectable()
 export class CommentService {
-  constructor(protected commentRepository: CommentRepository) {}
+  constructor(
+    @inject(CommentRepository) protected commentRepository: CommentRepository
+  ) {}
 
   private async likeComment(
     commentId: string,
@@ -119,7 +123,7 @@ export class CommentService {
       );
       return await this.commentRepository.dislikeComment(commentId, -1);
     }
-    
+
     return await this.commentRepository.updateMyReaction(
       userId,
       commentId,

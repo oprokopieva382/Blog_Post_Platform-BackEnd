@@ -1,9 +1,11 @@
 import { ObjectId } from "mongodb";
+import { injectable } from "inversify";
 import { CommentInputModel } from "../type-models";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { CommentModel, CommentReactionModel } from "../models";
 import { LikeStatus } from "../types/LikesStatus";
 
+@injectable()
 export class CommentRepository {
   async getByIdComment(commentId: string): Promise<CommentDBType | null> {
     return await CommentModel.findOne({

@@ -1,16 +1,15 @@
 import { ObjectId } from "mongodb";
+import { injectable } from "inversify";
 import { BlogDBType, PostDBType } from "../cloud_DB";
-import { BlogViewModel, Paginator, PostViewModel } from "../type-models";
+import { BlogViewModel, Paginator } from "../type-models";
 import { QueryType } from "../types/query-type";
 import { ApiError } from "../helper/api-errors";
-import { BlogDTO, PostDTO } from "../DTO";
+import { BlogDTO } from "../DTO";
 import { BlogModel, PostModel } from "../models";
 
+@injectable()
 export class BlogQueryRepository {
-  async getPostsOfBlog(
-    blogId: string,
-    query: QueryType
-  ): Promise<Paginator<PostViewModel>> {
+  async getPostsOfBlog(blogId: string, query: QueryType) {
     const totalPostsCount = await PostModel.countDocuments({
       blogId: new ObjectId(blogId),
     });
@@ -28,7 +27,7 @@ export class BlogQueryRepository {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: await Promise.all(posts.map((p) => PostDTO.transform(p))),
+      items: posts,
     };
 
     return postsToView;

@@ -1,16 +1,20 @@
 import { NextFunction, Request, Response } from "express";
+import { inject, injectable } from "inversify";
 import { formatResponse } from "../../utils/responseFormatter";
 import { CommentInputModel, LikeInputModel } from "../../type-models";
 import { CommentService } from "../../services";
 import { CommentParamType } from ".";
 import { ApiError } from "../../helper/api-errors";
-import { CommentDTO } from "../../DTO";
 import { CommentQueryRepository } from "../../query_repositories";
+import { CommentDTO } from "../../DTO";
 
+@injectable()
 export class CommentController {
   constructor(
-    protected commentService: CommentService,
-    protected commentQueryRepository: CommentQueryRepository
+    @inject(CommentService) protected commentService: CommentService,
+    @inject(CommentQueryRepository)
+    protected commentQueryRepository: CommentQueryRepository,
+    @inject(CommentDTO) protected commentDTO: CommentDTO
   ) {}
 
   async getById(req: Request, res: Response, next: NextFunction) {
@@ -26,7 +30,7 @@ export class CommentController {
       formatResponse(
         res,
         200,
-        await CommentDTO.transform(result, req?.user?.id),
+        await this.commentDTO.transform(result, req?.user?.id),
         "Comment retrieved successfully"
       );
     } catch (error) {

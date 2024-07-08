@@ -1,3 +1,4 @@
+import { container } from "../../composition-root";
 import { Router } from "express";
 import {
   isAuthorizedMiddleware,
@@ -5,8 +6,10 @@ import {
   validateComment,
   validateReaction,
 } from "../../middlewares";
-import { commentController } from "../../composition-root";
+import { CommentController } from "./CommentController";
 
+const commentController =
+  container.resolve<CommentController>(CommentController);
 export const commentRouter = Router();
 
 commentRouter.get(

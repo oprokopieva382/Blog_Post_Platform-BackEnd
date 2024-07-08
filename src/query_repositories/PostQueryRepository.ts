@@ -1,20 +1,16 @@
 import { ObjectId } from "mongodb";
+import { injectable } from "inversify";
 import { PostDBType } from "../cloud_DB";
-import { Paginator, PostViewModel } from "../type-models";
 import { QueryType } from "../types/query-type";
-import { PostDTO } from "../DTO";
 import { PostModel, PostReactionModel } from "../models";
 import {
   LikeDetailsDBType,
-  PostReactionDBType,
 } from "../cloud_DB/mongo_db_types";
 import { LikeStatus } from "../types/LikesStatus";
 
+@injectable()
 export class PostQueryRepository {
-  async getAllPosts(
-    query: QueryType,
-    userId?: string
-  ): Promise<Paginator<PostViewModel>> {
+  async getAllPosts(query: QueryType) {
     const totalPostsCount = await PostModel.countDocuments();
 
     const posts: PostDBType[] = await PostModel.find()
@@ -33,7 +29,7 @@ export class PostQueryRepository {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalPostsCount,
-      items: await Promise.all(posts.map((p) => PostDTO.transform(p, userId))),
+      items: posts,
     };
 
     return postsToView;
@@ -58,10 +54,9 @@ export class PostQueryRepository {
     return await PostReactionModel.find({
       post: postId,
       myStatus: LikeStatus.Like,
-    })
-      .populate({
-        path: "latestReactions.user",
-        select: ["login", "_id"],
-      })
+    }).populate({
+      path: "latestReactions.user",
+      select: ["login", "_id"],
+    });
   }
 }

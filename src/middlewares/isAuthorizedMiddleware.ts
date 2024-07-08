@@ -1,6 +1,13 @@
+import "reflect-metadata";
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../helper/api-errors";
-import { jwtService, userQueryRepository } from "../composition-root";
+import { JwtService } from "../services";
+import { UserQueryRepository } from "../query_repositories";
+import { container } from "../composition-root";
+
+const jwtService = container.get<JwtService>(JwtService);
+const userQueryRepository =
+  container.get<UserQueryRepository>(UserQueryRepository);
 
 export const isAuthorizedMiddleware = async (
   req: Request,

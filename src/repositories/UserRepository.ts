@@ -1,7 +1,9 @@
 import { ObjectId } from "mongodb";
+import { injectable } from "inversify";
 import { UserDBType } from "../cloud_DB";
 import { UserModel } from "../models";
 
+@injectable()
 export class UserRepository {
   async createUser(newUser: UserDBType) {
     return await UserModel.create(newUser);

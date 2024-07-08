@@ -1,5 +1,5 @@
 {
-  "name": "Blog_Post_Platform-BackEnd",
+  "name": "blog_post_platform-backEnd",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:oprokopieva382/Blog_Post_Platform-BackEnd.git",
@@ -12,6 +12,7 @@
     "test": "jest -i --detectOpenHandles --no-cache --watchAll --testPathPattern=__tests__/e2e/.*.e2e.test.ts"
   },
   "dependencies": {
+    "@types/inversify": "^2.0.33",
     "@types/mongoose": "^5.11.97",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
@@ -19,12 +20,14 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.1",
     "express-validator": "^7.0.1",
+    "inversify": "^6.0.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
     "mongoose": "^8.4.3",
     "ngrok": "^5.0.0-beta.2",
     "nodemailer": "^6.9.13",
     "redis": "^4.6.14",
+    "reflect-metadata": "^0.2.2",
     "winston": "^3.13.0"
   },
   "devDependencies": {

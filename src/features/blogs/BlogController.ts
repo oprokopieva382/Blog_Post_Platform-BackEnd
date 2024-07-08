@@ -1,3 +1,4 @@
+import { inject, injectable } from "inversify";
 import { NextFunction, Request, Response } from "express";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
@@ -8,10 +9,13 @@ import { ApiError } from "../../helper/api-errors";
 import { BlogDTO, PostDTO } from "../../DTO";
 import { BlogQueryRepository } from "../../query_repositories";
 
+@injectable()
 export class BlogController {
   constructor(
-    protected blogService: BlogService,
-    protected blogQueryRepository: BlogQueryRepository
+    @inject(BlogService) protected blogService: BlogService,
+    @inject(BlogQueryRepository)
+    protected blogQueryRepository: BlogQueryRepository,
+    @inject(PostDTO) protected postDTO: PostDTO
   ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -111,7 +115,16 @@ export class BlogController {
         ]);
       }
 
-      formatResponse(res, 200, result, "Posts found successfully");
+      const transformedPosts = await Promise.all(
+        result.items.map((p) => this.postDTO.transform(p, req?.user?.id))
+      );
+
+      const response = {
+        ...result,
+        items: transformedPosts,
+      };
+
+      formatResponse(res, 200, response, "Posts found successfully");
     } catch (error) {
       next(error);
     }
@@ -137,7 +150,7 @@ export class BlogController {
       formatResponse(
         res,
         201,
-        await PostDTO.transform(result),
+        await this.postDTO.transform(result),
         "Post created successfully"
       );
     } catch (error) {

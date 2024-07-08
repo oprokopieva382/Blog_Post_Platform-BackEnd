@@ -1,7 +1,9 @@
+import { injectable } from "inversify";
 import { MeViewModel, UserViewModel } from "../type-models";
 
+@injectable()
 class AuthDTO {
-  static transform(me: UserViewModel): MeViewModel {
+  transform(me: UserViewModel): MeViewModel {
     return {
       email: me.email,
       login: me.login,

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { inject, injectable } from "inversify";
 import { UserInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
 import { UserService } from "../../services";
@@ -7,9 +8,11 @@ import { ApiError } from "../../helper/api-errors";
 import { UserDTO } from "../../DTO";
 import { UserQueryRepository } from "../../query_repositories";
 
+@injectable()
 export class UserController {
   constructor(
-    protected userService: UserService,
+    @inject(UserService) protected userService: UserService,
+    @inject(UserQueryRepository)
     protected userQueryRepository: UserQueryRepository
   ) {}
 

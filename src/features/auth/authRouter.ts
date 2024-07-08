@@ -13,8 +13,11 @@ import {
   rateLimitMiddleware,
   validateNewPasswordInputs,
 } from "../../middlewares";
-import { authController } from "../../composition-root";
+import { container } from "../../composition-root";
+import { AuthController } from "./AuthController";
 
+
+const authController = container.resolve(AuthController)
 export const authRouter = Router();
 
 authRouter.get(

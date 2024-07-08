@@ -4,8 +4,10 @@ import {
   validatePostOfBlog,
   validateBlog,
 } from "../../middlewares";
-import { blogController } from "../../composition-root";
+import { container } from "../../composition-root";
+import { BlogController } from "./BlogController";
 
+const blogController = container.resolve(BlogController);
 export const blogRouter = Router();
 
 blogRouter.get("/", blogController.getAll.bind(blogController));

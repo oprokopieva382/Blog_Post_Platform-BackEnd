@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { inject, injectable } from "inversify";
 import { randomUUID } from "crypto";
 import { add } from "date-fns/add";
 import { UserInputModel } from "../type-models";
@@ -7,10 +8,11 @@ import { BcryptService } from "./BcryptService";
 import { ApiError } from "../helper/api-errors";
 import { UserDBType } from "../cloud_DB";
 
+@injectable()
 export class UserService {
   constructor(
-    protected userRepository: UserRepository,
-    protected bcryptService: BcryptService
+    @inject(UserRepository) protected userRepository: UserRepository,
+    @inject(BcryptService) protected bcryptService: BcryptService
   ) {}
 
   async createUser(data: UserInputModel) {

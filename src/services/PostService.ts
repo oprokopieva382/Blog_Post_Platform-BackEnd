@@ -1,14 +1,17 @@
+import { inject, injectable } from "inversify";
 import { CommentDBType } from "../cloud_DB";
 import { ApiError } from "../helper/api-errors";
 import { LikeInputModel, PostInputModel, UserViewModel } from "../type-models";
 import { CommentInputModel } from "../type-models/CommentInputModel";
-import { BlogRepository, PostRepository } from "../repositories";
+import { BlogRepository, CommentRepository, PostRepository } from "../repositories";
 import { LikeStatus } from "../types/LikesStatus";
 
+@injectable()
 export class PostService {
   constructor(
-    protected blogRepository: BlogRepository,
-    protected postRepository: PostRepository
+    @inject(BlogRepository) protected blogRepository: BlogRepository,
+    @inject(PostRepository) protected postRepository: PostRepository,
+    @inject(CommentRepository) protected commentRepository: CommentRepository
   ) {}
 
   private async likePost(
@@ -204,4 +207,5 @@ export class PostService {
 
     return result;
   }
+
 }
