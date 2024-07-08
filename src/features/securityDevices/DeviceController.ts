@@ -1,12 +1,15 @@
 import { NextFunction, Response, Request } from "express";
+import { inject, injectable } from "inversify";
 import { ApiError } from "../../helper/api-errors";
 import { formatResponse } from "../../utils/responseFormatter";
 import { DeviceService } from "../../services";
 import { DeviceQueryRepository } from "../../query_repositories";
 
+@injectable()
 export class DeviceController {
   constructor(
-    protected deviceService: DeviceService,
+    @inject(DeviceService) protected deviceService: DeviceService,
+    @inject(DeviceQueryRepository)
     protected deviceQueryRepository: DeviceQueryRepository
   ) {}
 

@@ -1,6 +1,10 @@
+import "reflect-metadata";
 import { Response, Request, NextFunction } from "express";
 import { ApiError } from "../helper/api-errors";
-import { authRepository } from "../composition-root";
+import { AuthRepository } from "../repositories";
+import { container } from "../composition-root";
+
+const authRepository = container.get<AuthRepository>(AuthRepository);
 
 export const validateUserLoginUnique = async (
   req: Request,

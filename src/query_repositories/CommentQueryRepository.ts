@@ -1,16 +1,16 @@
 import { ObjectId } from "mongodb";
-import { CommentViewModel, Paginator } from "../type-models";
+import { injectable } from "inversify";
 import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { QueryCommentsType } from "../types/query-type";
-import { CommentDTO } from "../DTO";
+
 import { CommentModel, CommentReactionModel } from "../models";
 
+@injectable()
 export class CommentQueryRepository {
   async getCommentsOfPost(
     postId: string,
     query: QueryCommentsType,
-    userId?: string
-  ): Promise<Paginator<CommentViewModel>> {
+    ) {
     const totalCommentsCount = await CommentModel.countDocuments({
       post: postId.toString(),
     });
@@ -32,9 +32,7 @@ export class CommentQueryRepository {
       page: query.pageNumber,
       pageSize: query.pageSize,
       totalCount: totalCommentsCount,
-      items: await Promise.all(
-        comments.map((c) => CommentDTO.transform(c, userId))
-      ),
+      items: comments
     };
 
     return commentsToView;

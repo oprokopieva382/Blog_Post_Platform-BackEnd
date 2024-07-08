@@ -1,32 +1,34 @@
+import { inject, injectable } from "inversify";
 import { PostDBType } from "../cloud_DB";
-import { postQueryRepository } from "../composition-root";
+import { PostQueryRepository } from "../query_repositories";
 import { LikeDetailsViewModel, PostViewModel } from "../type-models";
 import { LikeStatus } from "../types/LikesStatus";
 import { sortLikes } from "../utils/sortLikes";
 
+@injectable()
 class PostDTO {
-  static async transform(
-    post: PostDBType,
-    userId?: string
-  ): Promise<PostViewModel> {
+  constructor(
+    @inject(PostQueryRepository)
+    protected postQueryRepository: PostQueryRepository
+  ) {}
+
+  async transform(post: PostDBType, userId?: string): Promise<PostViewModel> {
     let userStatus: LikeStatus = LikeStatus.None;
     let newestLikes: LikeDetailsViewModel[] = [];
 
     if (userId) {
-      const reactionInfo = (await postQueryRepository.getReactionStatus(
+      const reactionInfo = (await this.postQueryRepository.getReactionStatus(
         userId,
         post._id.toString()
       )) as any;
       userStatus = reactionInfo ? reactionInfo.myStatus : LikeStatus.None;
     }
 
-    const postReactions = await postQueryRepository.getPostReactions(
+    const postReactionsInfo = await this.postQueryRepository.getPostReactionsInfo(
       post._id.toString()
     );
-
-    const sortedLikes = sortLikes(postReactions);
-
-    //console.log("post Likes - ", likes);
+   
+    const sortedLikes = sortLikes(postReactionsInfo);
 
     sortedLikes.map((like: any) => {
       newestLikes.push({
@@ -36,8 +38,6 @@ class PostDTO {
         addedAt: like.addedAt,
       });
     });
-
-    //console.log("post latest Likes - ", newestLikes);
 
     return {
       id: post._id.toString(),

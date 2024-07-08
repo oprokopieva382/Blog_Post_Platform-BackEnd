@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { NextFunction, Request, Response } from "express";
 import {
   FieldValidationError,
@@ -5,7 +6,10 @@ import {
   validationResult,
 } from "express-validator";
 import { ApiError } from "../helper/api-errors";
-import { blogRepository } from "../composition-root";
+import { BlogRepository } from "../repositories";
+import { container } from "../composition-root";
+
+const blogRepository = container.get<BlogRepository>(BlogRepository);
 
 const validateBlogId = async (blogId: string) => {
   const blog = await blogRepository.getByIdBlog(blogId);

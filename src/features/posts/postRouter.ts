@@ -7,8 +7,10 @@ import {
   validatePost,
   validateReaction,
 } from "../../middlewares";
-import { postController } from "../../composition-root";
+import { container } from "../../composition-root";
+import { PostController } from "./PostController";
 
+const postController = container.resolve(PostController);
 export const postRouter = Router();
 
 postRouter.get(

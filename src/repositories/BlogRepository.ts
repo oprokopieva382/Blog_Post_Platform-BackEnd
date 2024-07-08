@@ -1,8 +1,10 @@
+import { injectable } from "inversify";
 import { ObjectId } from "mongodb";
 import { BlogInputModel } from "../type-models";
 import { BlogDBType } from "../cloud_DB";
 import { BlogModel, PostModel } from "../models";
 
+@injectable()
 export class BlogRepository {
   async getByIdBlog(id: string): Promise<BlogDBType | null> {
     return await BlogModel.findOne({

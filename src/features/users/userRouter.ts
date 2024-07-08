@@ -3,8 +3,10 @@ import {
   isAdminMiddleware,
   validateRegistrationInput,
 } from "../../middlewares";
-import { userController } from "../../composition-root";
+import { container } from "../../composition-root";
+import { UserController } from "./UserController";
 
+const userController = container.resolve(UserController);
 export const userRouter = Router();
 
 userRouter.get(

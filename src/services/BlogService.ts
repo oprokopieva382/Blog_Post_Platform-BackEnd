@@ -1,12 +1,14 @@
+import { inject, injectable } from "inversify";
 import {  PostDBType } from "../cloud_DB";
 import { BlogInputModel, BlogPostInputModel } from "../type-models";
 import { BlogRepository, PostRepository } from "../repositories";
 import { ApiError } from "../helper/api-errors";
 
+@injectable()
 export class BlogService {
   constructor(
-    protected blogRepository: BlogRepository,
-    protected postRepository: PostRepository
+    @inject(BlogRepository) protected blogRepository: BlogRepository,
+    @inject(PostRepository) protected postRepository: PostRepository
   ) {}
 
   async removeBlog(id: string) {

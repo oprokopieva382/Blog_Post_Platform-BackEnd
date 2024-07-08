@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { inject, injectable } from "inversify";
 import { formatResponse } from "../../utils/responseFormatter";
 import { ParamType } from ".";
-import {
-  LikeInputModel,
-  PostInputModel,
-  PostViewModel,
-} from "../../type-models";
+import { LikeInputModel, PostInputModel } from "../../type-models";
 import { PostService } from "../../services";
 import {
   CommentQueryRepository,
@@ -14,27 +11,42 @@ import {
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { CommentInputModel } from "../../type-models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
-import { CommentDTO, PostDTO } from "../../DTO";
+import { CommentDTO } from "../../DTO/CommentDTO";
+import { PostDTO } from "../../DTO/PostDTO";
 
+
+@injectable()
 export class PostController {
   constructor(
-    protected postService: PostService,
+    @inject(PostService) protected postService: PostService,
+    @inject(PostQueryRepository)
     protected postQueryRepository: PostQueryRepository,
-    protected commentQueryRepository: CommentQueryRepository
+    @inject(CommentQueryRepository)
+    protected commentQueryRepository: CommentQueryRepository,
+    @inject(CommentDTO) protected commentDTO: CommentDTO,
+    @inject(PostDTO) protected postDTO: PostDTO
   ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.postQueryRepository.getAllPosts(
-        queryFilter(req.query),
-        req?.user?.id
+        queryFilter(req.query)
       );
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No posts found"]);
       }
 
-      formatResponse(res, 200, result, "Posts retrieved successfully");
+      const sortedPosts = await Promise.all(
+        result.items.map((p) => this.postDTO.transform(p, req?.user?.id))
+      );
+
+      const response = {
+        ...result,
+        items: sortedPosts,
+      };
+
+      formatResponse(res, 200, response, "Posts retrieved successfully");
     } catch (error) {
       next(error);
     }
@@ -43,7 +55,7 @@ export class PostController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.postQueryRepository.getByIdPost(req.params.id);
-
+     
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No post found"]);
       }
@@ -51,7 +63,7 @@ export class PostController {
       formatResponse(
         res,
         200,
-        await PostDTO.transform(result, req?.user?.id),
+        await this.postDTO.transform(result, req?.user?.id),
         "Post retrieved successfully"
       );
     } catch (error) {
@@ -74,7 +86,7 @@ export class PostController {
       formatResponse(
         res,
         201,
-        await PostDTO.transform(result),
+        await this.postDTO.transform(result),
         "Post created successfully"
       );
     } catch (error) {
@@ -122,8 +134,7 @@ export class PostController {
     try {
       const result = await this.commentQueryRepository.getCommentsOfPost(
         req.params.postId,
-        commentsQueryFilter(req.query),
-        req?.user?.id
+        commentsQueryFilter(req.query)
       );
 
       if (result.items.length === 0 || !result) {
@@ -132,7 +143,16 @@ export class PostController {
         ]);
       }
 
-      formatResponse(res, 200, result, "Comments found successfully");
+      const transformedComments = await Promise.all(
+        result.items.map((c) => this.commentDTO.transform(c, req?.user?.id))
+      );
+
+      const response = {
+        ...result,
+        items: transformedComments,
+      };
+
+      formatResponse(res, 200, response, "Comments found successfully");
     } catch (error) {
       next(error);
     }
@@ -159,7 +179,7 @@ export class PostController {
       formatResponse(
         res,
         201,
-        await CommentDTO.transform(result, req.user!.id),
+        await this.commentDTO.transform(result, req.user!.id),
         "Comment created successfully"
       );
     } catch (error) {

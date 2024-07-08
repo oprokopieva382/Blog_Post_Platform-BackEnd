@@ -1,6 +1,8 @@
+import { injectable } from "inversify";
 import nodemailer from "nodemailer";
 import { SETTINGS } from "../settings";
 
+@injectable()
 export class EmailService {
   private async sendEmail(to: string, subject: string, html: string) {
     const transporter = nodemailer.createTransport({
@@ -18,7 +20,6 @@ export class EmailService {
       html,
     });
 
-    console.log("Email sent: ", emailInfo.response);
     return !!emailInfo;
   }
 

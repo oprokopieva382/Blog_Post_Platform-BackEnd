@@ -1,10 +1,12 @@
+import { inject, injectable } from "inversify";
 import { ApiError } from "../helper/api-errors";
 import { AuthRepository, DeviceRepository } from "../repositories";
 
+@injectable()
 export class DeviceService {
   constructor(
-    protected authRepository: AuthRepository,
-    protected deviceRepository: DeviceRepository
+    @inject(AuthRepository) protected authRepository: AuthRepository,
+    @inject(DeviceRepository) protected deviceRepository: DeviceRepository
   ) {}
 
   async delete(deviceId: string, userId: string) {

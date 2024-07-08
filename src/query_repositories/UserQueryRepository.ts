@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { injectable } from "inversify";
 import { UserDBType } from "../cloud_DB";
 import { Paginator, UserViewModel } from "../type-models";
 import { QueryUserType } from "../types/query-type";
@@ -6,6 +7,7 @@ import { UserDTO } from "../DTO";
 import { cache } from "../utils/decorators";
 import { UserModel } from "../models";
 
+@injectable()
 export class UserQueryRepository {
   async getAllUsers(query: QueryUserType): Promise<Paginator<UserViewModel>> {
     const searchByLogin = query.searchLoginTerm
@@ -44,7 +46,7 @@ export class UserQueryRepository {
     const result = await UserModel.findOne({
       _id: new ObjectId(id),
     });
-    
+
     return result ? UserDTO.transform(result) : null;
   }
 }

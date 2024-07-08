@@ -1,15 +1,21 @@
+import { inject, injectable } from "inversify";
 import { NextFunction, Request, Response } from "express";
 import { LoginInputModel } from "../../type-models";
 import { formatResponse } from "../../utils/responseFormatter";
-import { AuthService } from "../../services";
+//import { AuthService } from "../../services";
 import { ApiError } from "../../helper/api-errors";
-import { AuthDTO } from "../../DTO";
-import { UserQueryRepository } from "../../query_repositories";
 
+import { UserQueryRepository } from "../../query_repositories";
+import { AuthService } from "../../services/AuthService";
+import { AuthDTO } from "../../DTO/AuthDTO";
+
+@injectable()
 export class AuthController {
   constructor(
-    protected authService: AuthService,
-    protected userQueryRepository: UserQueryRepository
+    @inject(AuthService) protected authService: AuthService,
+    @inject(UserQueryRepository)
+    protected userQueryRepository: UserQueryRepository,
+    @inject(AuthDTO) protected authDTO: AuthDTO
   ) {}
 
   async me(req: Request, res: Response, next: NextFunction) {
@@ -20,7 +26,7 @@ export class AuthController {
           "Authorization failed. Can't find user with such id",
         ]);
       }
-      formatResponse(res, 200, AuthDTO.transform(me), "User authorized");
+      formatResponse(res, 200, this.authDTO.transform(me), "User authorized");
     } catch (error) {
       next(error);
     }

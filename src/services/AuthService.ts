@@ -1,16 +1,17 @@
 import { randomUUID } from "crypto";
+import { inject, injectable } from "inversify";
 import { Request } from "express";
+import { ObjectId } from "mongodb";
 import { add } from "date-fns/add";
 import { fromUnixTime } from "date-fns/fromUnixTime";
-import { ObjectId } from "mongodb";
-import { BcryptService, EmailService, JwtService } from ".";
+
 import {
   LoginInputModel,
   NewPasswordRecoveryInputModel,
   RegistrationConfirmationCodeModel,
   UserInputModel,
 } from "../type-models";
-import { AuthRepository, UserRepository } from "../repositories";
+
 import { RegistrationEmailResending } from "../types/RegistrationEmailResending";
 import { ApiError } from "../helper/api-errors";
 import { SessionData } from "../types/SessionData";
@@ -20,16 +21,26 @@ import {
   SessionsDBType,
   UserDBType,
 } from "../cloud_DB";
+import { BcryptService } from "./BcryptService";
+import { EmailService } from "./EmailService";
+import { JwtService } from "./JwtService";
+import { AuthRepository } from "../repositories/AuthRepository";
+import { UserRepository } from "../repositories/UserRepository";
 
+@injectable()
 export class AuthService {
   constructor(
-    protected authRepository: AuthRepository,
-    protected userRepository: UserRepository,
-    protected bcryptService: BcryptService,
-    protected emailService: EmailService,
-    protected jwtService: JwtService
-  ) {
-  }
+    @inject(AuthRepository) protected authRepository: AuthRepository,
+    @inject(UserRepository) protected userRepository: UserRepository,
+    @inject(BcryptService) protected bcryptService: BcryptService,
+    @inject(EmailService) protected emailService: EmailService,
+    @inject(JwtService) protected jwtService: JwtService
+   // protected authRepository: AuthRepository,
+   // protected userRepository: UserRepository,
+   // protected bcryptService: BcryptService,
+   // protected emailService: EmailService,
+   // protected jwtService: JwtService
+  ) {}
 
   async loginUser(data: LoginInputModel, req: Request) {
     const userData = await this.authRepository.getByLoginOrEmail(
@@ -59,9 +70,14 @@ export class AuthService {
     const user = UserDTO.transform(userData);
 
     const accessToken = await this.jwtService.createAccessToken(user.id);
-    const refreshToken = await this.jwtService.createRefreshToken(user.id, deviceId);
+    const refreshToken = await this.jwtService.createRefreshToken(
+      user.id,
+      deviceId
+    );
 
-    const { iat, exp } = await this.jwtService.validateRefreshToken(refreshToken);
+    const { iat, exp } = await this.jwtService.validateRefreshToken(
+      refreshToken
+    );
 
     await this.createSession({
       userId: user.id,

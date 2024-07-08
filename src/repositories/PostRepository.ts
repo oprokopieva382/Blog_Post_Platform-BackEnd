@@ -1,3 +1,4 @@
+import { injectable } from "inversify";
 import { ObjectId } from "mongodb";
 import { PostInputModel } from "../type-models";
 import { PostDBType } from "../cloud_DB";
@@ -5,6 +6,7 @@ import { CommentDBType } from "../cloud_DB/mongo_db_types";
 import { CommentModel, PostModel, PostReactionModel } from "../models";
 import { LikeStatus } from "../types/LikesStatus";
 
+@injectable()
 export class PostRepository {
   async getByIdPost(postId: string): Promise<PostDBType | null> {
     return await PostModel.findOne({

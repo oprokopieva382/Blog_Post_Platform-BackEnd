@@ -1,5 +1,12 @@
+import "reflect-metadata";
 import { NextFunction, Request, Response } from "express";
-import { jwtService, userQueryRepository } from "../composition-root";
+import { UserQueryRepository } from "../query_repositories";
+import { JwtService } from "../services";
+import { container } from "../composition-root";
+
+const jwtService = container.get<JwtService>(JwtService);
+const userQueryRepository =
+  container.get<UserQueryRepository>(UserQueryRepository);
 
 export const softAccessMiddleware = async (
   req: Request,
@@ -24,6 +31,7 @@ export const softAccessMiddleware = async (
     if (!authorizedUser) {
       return next();
     }
+    console.log(authorizedUser)
 
     req.user = authorizedUser;
     next();

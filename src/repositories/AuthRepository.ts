@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { injectable } from "inversify";
 import {
   UserDBType,
   PasswordRecoveryDBType,
@@ -6,6 +7,7 @@ import {
 } from "../cloud_DB";
 import { PasswordModel, SessionModel, UserModel } from "../models";
 
+@injectable()
 export class AuthRepository {
   async getByLoginOrEmail(data: string): Promise<UserDBType | null> {
     return await UserModel.findOne({
