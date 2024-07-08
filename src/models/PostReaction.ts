@@ -34,7 +34,8 @@ const PostReactionSchema = new Schema<PostReactionDBType>({
   latestReactions: {
     type: [LatestReactionSchema],
     default: [],
-  },
+  }
+
 });
 
 export const PostReactionModel = ReactionModel.discriminator(

@@ -3,6 +3,7 @@ import {
   isAdminMiddleware,
   validatePostOfBlog,
   validateBlog,
+  softAccessMiddleware,
 } from "../../middlewares";
 import { container } from "../../composition-root";
 import { BlogController } from "./BlogController";
@@ -15,6 +16,7 @@ blogRouter.get("/", blogController.getAll.bind(blogController));
 blogRouter.get("/:id", blogController.getById.bind(blogController));
 blogRouter.get(
   "/:blogId/posts",
+  softAccessMiddleware,
   blogController.getBlogPosts.bind(blogController)
 );
 

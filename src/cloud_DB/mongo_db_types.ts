@@ -78,7 +78,8 @@ export class PostReactionDBType {
   constructor(
     public post?: Types.ObjectId,
     public myStatus?: LikeStatus,
-    public latestReactions?: LikeDetailsDBType[]
+    public latestReactions?: LikeDetailsDBType[],
+   
   ) {}
 }
 export class SessionsDBType {

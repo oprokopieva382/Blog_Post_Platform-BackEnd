@@ -11,12 +11,13 @@ import { BlogModel, PostModel } from "../models";
 export class BlogQueryRepository {
   async getPostsOfBlog(blogId: string, query: QueryType) {
     const totalPostsCount = await PostModel.countDocuments({
-      blogId: new ObjectId(blogId),
+      blog: blogId.toString(),
     });
 
     const posts: PostDBType[] = await PostModel.find({
-      blogId: new ObjectId(blogId),
+      blog: blogId.toString(),
     })
+      .populate(["blog", "reactionInfo"])
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection })
