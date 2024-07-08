@@ -32,23 +32,19 @@ export class PostController {
       const result = await this.postQueryRepository.getAllPosts(
         queryFilter(req.query)
       );
-      //console.log("result", result)
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No posts found"]);
       }
 
-      const transformedPosts = await Promise.all(
+      const sortedPosts = await Promise.all(
         result.items.map((p) => this.postDTO.transform(p, req?.user?.id))
       );
-          //console.log("transformedPosts", transformedPosts);
 
       const response = {
         ...result,
-        items: transformedPosts,
+        items: sortedPosts,
       };
-
-        //console.log("response", response);
 
       formatResponse(res, 200, response, "Posts retrieved successfully");
     } catch (error) {
@@ -59,8 +55,7 @@ export class PostController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.postQueryRepository.getByIdPost(req.params.id);
-        console.log("result", result);
-
+     
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No post found"]);
       }

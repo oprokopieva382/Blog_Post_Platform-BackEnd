@@ -16,10 +16,6 @@ export class PostQueryRepository {
     const posts: PostDBType[] = await PostModel.find()
       .populate("blog")
       .populate("reactionInfo")
-      // .populate({
-      //   path: "reactionInfo",
-      //   select: "myStatus",
-      // })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection })
@@ -42,14 +38,6 @@ export class PostQueryRepository {
     })
       .populate("blog")
       .populate("reactionInfo")
-      // .populate({
-      //   path: "reactionInfo",
-      //   select: "myStatus",
-      // })
-      // .populate({
-      //   path: "reactionInfo.latestReactions.user",
-      //   select: ["login", "_id"],
-      // })
       .exec();
   }
 
@@ -57,7 +45,7 @@ export class PostQueryRepository {
     return PostReactionModel.findOne({ user: userId, post: postId });
   }
 
-  async getPostReactions(postId: string): Promise<LikeDetailsDBType[] | null> {
+  async getPostReactionsInfo(postId: string): Promise<LikeDetailsDBType[] | null> {
     return await PostReactionModel.find({
       post: postId,
       myStatus: LikeStatus.Like,

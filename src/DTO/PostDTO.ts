@@ -12,15 +12,10 @@ class PostDTO {
     protected postQueryRepository: PostQueryRepository
   ) {}
 
-  async transform(
-    post: PostDBType,
-    userId?: string
-  ): Promise<PostViewModel> {
+  async transform(post: PostDBType, userId?: string): Promise<PostViewModel> {
     let userStatus: LikeStatus = LikeStatus.None;
     let newestLikes: LikeDetailsViewModel[] = [];
 
-  //console.log("userId", userId);
-    //console.log("post._id.toString()", post._id.toString());
     if (userId) {
       const reactionInfo = (await this.postQueryRepository.getReactionStatus(
         userId,
@@ -29,13 +24,11 @@ class PostDTO {
       userStatus = reactionInfo ? reactionInfo.myStatus : LikeStatus.None;
     }
 
-    const postReactions = await this.postQueryRepository.getPostReactions(
+    const postReactionsInfo = await this.postQueryRepository.getPostReactionsInfo(
       post._id.toString()
     );
- console.log("postReactions", postReactions);
-    const sortedLikes = sortLikes(postReactions);
-
-    console.log("sortedLikes", sortedLikes);
+   
+    const sortedLikes = sortLikes(postReactionsInfo);
 
     sortedLikes.map((like: any) => {
       newestLikes.push({
