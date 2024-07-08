@@ -5,7 +5,11 @@ export const sortLikes = (postLikes: any): LikeDetailsDBType[] => {
     (postLike: any) => postLike.latestReactions
   );
   
-console.log("latestReactions before sort", latestReactions);
+//console.log("latestReactions before sort", latestReactions);
+//console.log(
+//   "latestReactions before sort latestReactions[0]",
+//   latestReactions[0]
+// );
 
   const afterSort =  latestReactions
     .sort(
@@ -14,7 +18,7 @@ console.log("latestReactions before sort", latestReactions);
     )
     .slice(-3);
 
-    console.log("latestReactions after sort", afterSort);
+    //console.log("latestReactions after sort", afterSort);
 
     return afterSort
 };

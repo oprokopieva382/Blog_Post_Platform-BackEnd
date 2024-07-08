@@ -19,8 +19,8 @@ class PostDTO {
     let userStatus: LikeStatus = LikeStatus.None;
     let newestLikes: LikeDetailsViewModel[] = [];
 
-  console.log("userId", userId);
-    console.log("post._id.toString()", post._id.toString());
+  //console.log("userId", userId);
+    //console.log("post._id.toString()", post._id.toString());
     if (userId) {
       const reactionInfo = (await this.postQueryRepository.getReactionStatus(
         userId,

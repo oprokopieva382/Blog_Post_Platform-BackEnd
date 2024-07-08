@@ -15,10 +15,11 @@ export class PostQueryRepository {
 
     const posts: PostDBType[] = await PostModel.find()
       .populate("blog")
-      .populate({
-        path: "reactionInfo",
-        select: "myStatus",
-      })
+      .populate("reactionInfo")
+      // .populate({
+      //   path: "reactionInfo",
+      //   select: "myStatus",
+      // })
       .skip((query.pageNumber - 1) * query.pageSize)
       .limit(query.pageSize)
       .sort({ [query.sortBy]: query.sortDirection })
@@ -40,10 +41,16 @@ export class PostQueryRepository {
       _id: new ObjectId(id),
     })
       .populate("blog")
-      .populate({
-        path: "reactionInfo",
-        select: "myStatus",
-      });
+      .populate("reactionInfo")
+      // .populate({
+      //   path: "reactionInfo",
+      //   select: "myStatus",
+      // })
+      // .populate({
+      //   path: "reactionInfo.latestReactions.user",
+      //   select: ["login", "_id"],
+      // })
+      .exec();
   }
 
   async getReactionStatus(userId: string, postId: string) {

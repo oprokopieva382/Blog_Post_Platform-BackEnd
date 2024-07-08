@@ -11,7 +11,9 @@ import {
 import { commentsQueryFilter, queryFilter } from "../../utils/queryFilter";
 import { CommentInputModel } from "../../type-models/CommentInputModel";
 import { ApiError } from "../../helper/api-errors";
-import { CommentDTO, PostDTO } from "../../DTO";
+import { CommentDTO } from "../../DTO/CommentDTO";
+import { PostDTO } from "../../DTO/PostDTO";
+
 
 @injectable()
 export class PostController {
@@ -30,7 +32,7 @@ export class PostController {
       const result = await this.postQueryRepository.getAllPosts(
         queryFilter(req.query)
       );
-      console.log("result", result)
+      //console.log("result", result)
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No posts found"]);
@@ -39,14 +41,14 @@ export class PostController {
       const transformedPosts = await Promise.all(
         result.items.map((p) => this.postDTO.transform(p, req?.user?.id))
       );
-          console.log("transformedPosts", transformedPosts);
+          //console.log("transformedPosts", transformedPosts);
 
       const response = {
         ...result,
         items: transformedPosts,
       };
 
-        console.log("response", response);
+        //console.log("response", response);
 
       formatResponse(res, 200, response, "Posts retrieved successfully");
     } catch (error) {
@@ -57,6 +59,7 @@ export class PostController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await this.postQueryRepository.getByIdPost(req.params.id);
+        console.log("result", result);
 
       if (!result) {
         throw ApiError.NotFoundError("Not found", ["No post found"]);
