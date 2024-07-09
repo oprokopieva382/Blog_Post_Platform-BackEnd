@@ -31,27 +31,27 @@ export class PostService {
       : (myStatus = reaction.myStatus);
 
     if (myStatus === LikeStatus.Like && likeStatus === LikeStatus.Like) {
-      return;
+      return true;
     }
 
     if (myStatus === LikeStatus.Dislike && likeStatus === LikeStatus.Like) {
       await this.postRepository.updateMyReaction(userId, postId, likeStatus);
       await this.postRepository.dislikePost(postId, -1);
-      const likedPost = await this.postRepository.likePost(postId, 1);
-
+      await this.postRepository.likePost(postId, 1);
+     
       return await this.postRepository.addLikedUser(
         userId,
-        likedPost!.createdAt,
+        new Date().toISOString(),
         postId
       );
     }
 
     await this.postRepository.updateMyReaction(userId, postId, likeStatus);
-    const likedPost = await this.postRepository.likePost(postId, 1);
+    await this.postRepository.likePost(postId, 1);
 
     return await this.postRepository.addLikedUser(
       userId,
-      likedPost!.createdAt,
+      new Date().toISOString(),
       postId
     );
   }
@@ -180,9 +180,10 @@ export class PostService {
 
   async reactToPost(data: LikeInputModel, postId: string, user: UserViewModel) {
     const post = await this.postRepository.getByIdPost(postId);
+
     if (!post) {
       throw ApiError.NotFoundError("Post not found", [
-        `Post with id ${postId} does not exist`,
+        `Post with id ${postId} does not exist in Service`,
       ]);
     }
 

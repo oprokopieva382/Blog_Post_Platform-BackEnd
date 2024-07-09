@@ -26,7 +26,7 @@ export class PostRepository {
     content: string,
     blogId: string
   ) {
-    return await PostModel.create({
+    const newPost = await PostModel.create({
       _id: new ObjectId(),
       title: title,
       shortDescription: shortDescription,
@@ -37,6 +37,7 @@ export class PostRepository {
       dislikesCount: 0,
       status: [],
     });
+    return await newPost.populate("blog")
   }
 
   async updatePost(data: PostInputModel, id: string, blogName: string) {

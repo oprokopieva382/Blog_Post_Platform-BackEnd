@@ -4,21 +4,13 @@ export const sortLikes = (postLikes: any): LikeDetailsDBType[] => {
   let latestReactions: LikeDetailsDBType[] = postLikes.flatMap(
     (postLike: any) => postLike.latestReactions
   );
-  
-//console.log("latestReactions before sort", latestReactions);
-//console.log(
-//   "latestReactions before sort latestReactions[0]",
-//   latestReactions[0]
-// );
 
-  const afterSort =  latestReactions
+  const afterSort = latestReactions
     .sort(
       (a: any, b: any) =>
         new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime()
     )
-    .slice(-3);
+    .slice(0, 3);
 
-    //console.log("latestReactions after sort", afterSort);
-
-    return afterSort
+  return afterSort;
 };

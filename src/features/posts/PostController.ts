@@ -78,6 +78,7 @@ export class PostController {
   ) {
     try {
       const result = await this.postService.createPost(req.body);
+      console.log(result)
 
       if (!result) {
         throw ApiError.NotFoundError(`Post can't be created`);
@@ -201,7 +202,7 @@ export class PostController {
 
       if (!result) {
         throw ApiError.NotFoundError("Post to react is not found", [
-          `Post with id ${req.params.postId} does not exist`,
+          `Post with id ${req.params.postId} does not exist in Controller`,
         ]);
       }
 
